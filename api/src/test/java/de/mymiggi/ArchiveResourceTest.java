@@ -1,27 +1,23 @@
 package de.mymiggi;
 
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
 import org.junit.jupiter.api.Test;
 
+import de.mymiggi.movie.api.entity.config.DefaultPage;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 public class ArchiveResourceTest
 {
+	@Inject
+	protected DefaultPage defaultPage;
 
 	@Test
-	public void testHelloEndpoint()
+	@Transactional
+	void basicTest()
 	{
-		/*
-		 * given() .queryParam("page", "0")
-		 * .when().get("movie-archive/user/get-movies") .then()
-		 * .statusCode(200); given() .queryParam("page", "1")
-		 * .when().get("movie-archive/user/get-movies") .then()
-		 * .statusCode(200); given() .queryParam("page", "-1")
-		 * .when().get("movie-archive/user/get-movies") .then()
-		 * .statusCode(404); given() .queryParam("page", "999")
-		 * .when().get("movie-archive/user/get-movies") .then()
-		 * .statusCode(404);
-		 */
+		new TestAction().run(defaultPage);
 	}
-
 }

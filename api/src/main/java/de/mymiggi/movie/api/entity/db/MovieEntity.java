@@ -19,6 +19,19 @@ public class MovieEntity extends PanacheEntity
 	public String wikiUrl;
 	public String type;
 
+	public MovieEntity()
+	{
+	}
+
+	public MovieEntity(int year, String name, String block, String wikiUrl, String type)
+	{
+		this.year = year;
+		this.name = name;
+		this.block = block;
+		this.wikiUrl = wikiUrl;
+		this.type = type;
+	}
+
 	public static List<MovieEntity> startWith(String start)
 	{
 		try (Stream<MovieEntity> persons = MovieEntity.streamAll())

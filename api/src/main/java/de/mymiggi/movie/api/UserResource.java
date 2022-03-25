@@ -8,11 +8,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import org.jboss.logging.Logger;
-
 import de.mymiggi.movie.api.actions.user.GetMovieByIDAction;
 import de.mymiggi.movie.api.actions.user.GetMoviesAction;
 import de.mymiggi.movie.api.actions.user.GetSortedMoviesAction;
+import de.mymiggi.movie.api.actions.user.SearchAction;
 import de.mymiggi.movie.api.entity.config.DefaultPage;
 import io.quarkus.security.identity.SecurityIdentity;
 
@@ -25,8 +24,6 @@ public class UserResource
 	SecurityIdentity identity;
 	@Inject
 	DefaultPage defaultPage;
-
-	private static final Logger LOG = Logger.getLogger(UserResource.class.getSimpleName());
 
 	@GET
 	@Path("get-movies")
@@ -43,18 +40,23 @@ public class UserResource
 	}
 
 	@GET
-	@Path("get-name-sorted-movies")
+	@Path("sorted-movies/by-name")
 	public Response getNameSortedMovies(@QueryParam("page") int page, @QueryParam("desc") boolean desc)
 	{
-		LOG.info(desc);
 		return new GetSortedMoviesAction().runByName(page, desc, defaultPage);
 	}
 
 	@GET
-	@Path("get-year-sorted-movies")
+	@Path("sorted-movies/by-year")
 	public Response getYearSortedMovies(@QueryParam("page") int page, @QueryParam("desc") boolean desc)
 	{
-		LOG.info(desc);
 		return new GetSortedMoviesAction().runByYear(page, desc, defaultPage);
+	}
+
+	@GET
+	@Path("search")
+	public Response searchMovie(@QueryParam("query") String query)
+	{
+		return new SearchAction().run(query);
 	}
 }
