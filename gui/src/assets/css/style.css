@@ -1,0 +1,103 @@
+:root {
+    --background-color: #2b2e31;
+    --text-color: #f8f9fa;
+    --secondary-color: #212326;
+    --primary-color: #1f2022;
+    --selected-color: var(--secondary-color);
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.mobile {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile {
+        display: unset;
+        visibility: unset;
+    }
+    .desktop {
+        display: none;
+    }
+}
+
+
+/* Color-calendar */
+
+.color-calendar.glass {
+    color: white;
+}
+
+.color-calendar.glass {
+    --cal-header-background-color: none;
+    --cal-drop-shadow: none;
+}
+
+.color-calendar.glass .calendar__body {
+    background-color: unset;
+}
+
+::-moz-selection {
+    background-color: var(--selected-color) !important;
+}
+
+ ::selection {
+    background-color: var(--selected-color) !important;
+}
+
+.ce-block--selected .ce-block__content {
+    background: var(--selected-color) !important;
+}
+
+.ce-inline-toolbar {
+    color: black;
+}
+
+.ce-toolbar__actions div span:hover {
+    background-color: var(--secondary-color);
+}
+
+.ce-toolbar__plus:hover {
+    background-color: var(--secondary-color);
+}
+
+.ce-toolbar__actions div span {
+    color: var(--text-color);
+}
+
+.ce-toolbar__plus {
+    color: var(--text-color);
+}
+
+.ce-toolbox__button {
+    color: var(--text-color);
+}
+
+.ce-toolbox__button:hover {
+    background-color: var(--secondary-color);
+}
+
+.ce-block__content {
+    max-width: unset;
+    padding: 0 55px 0;
+}
+
+.ce-toolbar__content {
+    max-width: 91%;
+}
+
+.ce-toolbar__actions div span {
+    color: black;
+}
+
+.ce-toolbar__actions div span:hover {
+    color: var(--text-color);
+}
+
+.ce-toolbar__settings-btn {
+    color: var(--text-color) !important;
+}
