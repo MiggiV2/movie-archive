@@ -19,6 +19,9 @@ public class TokenRequest
 	@FormParam("code")
 	private String code;
 
+	@FormParam("refresh_token")
+	private String refreshToken;
+
 	public String getGrandType()
 	{
 		return grandType;
@@ -67,5 +70,15 @@ public class TokenRequest
 	public void setCode(String code)
 	{
 		this.code = code;
+	}
+
+	public String getRefreshToken()
+	{
+		return refreshToken;
+	}
+
+	public void setRefreshToken(String refreshToken)
+	{
+		this.refreshToken = refreshToken;
 	}
 }

@@ -18,7 +18,7 @@ public class KeycloakTokens
 	private String idToken;
 	@JsonAlias("not_before_policy")
 	private int notBeforePolicy;
-	@JsonAlias("season_state")
+	@JsonAlias("session_state")
 	private String seasonState;
 	@JsonAlias("scope")
 	private String scope;

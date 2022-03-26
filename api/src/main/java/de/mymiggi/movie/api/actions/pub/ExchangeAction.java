@@ -18,27 +18,31 @@ public class ExchangeAction
 	public Response runCode(TokenRequest tokenRequest, ExchangeService exchangeService, OAuthRedirectURL redirectURL)
 	{
 		tokenRequest.setGrandType("authorization_code");
+		if (tokenRequest.getCode() == null || tokenRequest.getCode().isBlank())
+		{
+			ShortMessage message = new ShortMessage("You need your code for exchange", MessageStatus.ERROR);
+			return Response.status(Status.BAD_REQUEST).entity(message).build();
+		}
 		return run(tokenRequest, exchangeService, redirectURL);
 	}
 
 	public Response runRefresh(TokenRequest tokenRequest, ExchangeService exchangeService, OAuthRedirectURL redirectURL)
 	{
 		tokenRequest.setGrandType("refresh_token");
+		if (tokenRequest.getRefreshToken() == null || tokenRequest.getRefreshToken().isBlank())
+		{
+			ShortMessage message = new ShortMessage("You need your refreshToken for exchange", MessageStatus.ERROR);
+			return Response.status(Status.BAD_REQUEST).entity(message).build();
+		}
 		return run(tokenRequest, exchangeService, redirectURL);
 	}
 
-	// set refresh_token
 	private Response run(TokenRequest tokenRequest, ExchangeService exchangeService, OAuthRedirectURL redirectURL)
 	{
 		SmallRyeConfig config = ConfigProvider.getConfig().unwrap(SmallRyeConfig.class);
 		tokenRequest.setClientID(config.getConfigValue("quarkus.oidc.client-id").getValue());
 		tokenRequest.setClientSecret(config.getConfigValue("quarkus.oidc.credentials.secret").getValue());
 		tokenRequest.setRedircetURL(redirectURL.RedirectURL());
-		if (tokenRequest.getCode() == null || tokenRequest.getCode().isBlank())
-		{
-			ShortMessage message = new ShortMessage("You need your code for exchange", MessageStatus.ERROR);
-			return Response.status(Status.BAD_REQUEST).entity(message).build();
-		}
 		try
 		{
 			return Response.ok(exchangeService.getTokens(tokenRequest)).build();

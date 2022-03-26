@@ -1,4 +1,5 @@
-export var HOST = "http://localhost:8888/api/";
+export var HOST = "http://localhost:8080/movie-archive/";
+export var Owner = "Familie Hainz";
 
 import { createApp, h } from 'vue/dist/vue.esm-bundler.js';
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -6,12 +7,14 @@ import "bootstrap/dist/js/bootstrap.min.js";
 import "bootstrap-icons/font/bootstrap-icons.css"
 
 import HomePage from './HomePage.vue';
+import Auth from './Auth.vue';
 import NoPage from './NoPage.vue';
 
 require('@/assets/css/style.css');
 
 const routes = {
     '/': HomePage,
+    '/auth': Auth,
 }
 
 const SimpleRouter = {

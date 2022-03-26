@@ -1,8 +1,10 @@
 <template>
   <Header />
-  <div></div>
+  <Content />
 </template>
 
 <script setup>
-import Header from "./components/HeaderCom.vue";
+import Header from "@/components/HeaderCom.vue";
+import Content from "@/components/HomeComp.vue";
+document.title = 'MovieArchive | Home';
 </script>

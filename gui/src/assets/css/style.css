@@ -15,6 +15,16 @@ body {
     display: none;
 }
 
+.box {
+    background-color: var(--secondary-color);
+    margin: 2rem auto;
+    max-width: 70rem;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(21, 21, 21, 0.5);
+}
+
 @media (max-width: 768px) {
     .mobile {
         display: unset;
@@ -23,81 +33,4 @@ body {
     .desktop {
         display: none;
     }
-}
-
-
-/* Color-calendar */
-
-.color-calendar.glass {
-    color: white;
-}
-
-.color-calendar.glass {
-    --cal-header-background-color: none;
-    --cal-drop-shadow: none;
-}
-
-.color-calendar.glass .calendar__body {
-    background-color: unset;
-}
-
-::-moz-selection {
-    background-color: var(--selected-color) !important;
-}
-
- ::selection {
-    background-color: var(--selected-color) !important;
-}
-
-.ce-block--selected .ce-block__content {
-    background: var(--selected-color) !important;
-}
-
-.ce-inline-toolbar {
-    color: black;
-}
-
-.ce-toolbar__actions div span:hover {
-    background-color: var(--secondary-color);
-}
-
-.ce-toolbar__plus:hover {
-    background-color: var(--secondary-color);
-}
-
-.ce-toolbar__actions div span {
-    color: var(--text-color);
-}
-
-.ce-toolbar__plus {
-    color: var(--text-color);
-}
-
-.ce-toolbox__button {
-    color: var(--text-color);
-}
-
-.ce-toolbox__button:hover {
-    background-color: var(--secondary-color);
-}
-
-.ce-block__content {
-    max-width: unset;
-    padding: 0 55px 0;
-}
-
-.ce-toolbar__content {
-    max-width: 91%;
-}
-
-.ce-toolbar__actions div span {
-    color: black;
-}
-
-.ce-toolbar__actions div span:hover {
-    color: var(--text-color);
-}
-
-.ce-toolbar__settings-btn {
-    color: var(--text-color) !important;
 }

@@ -3,10 +3,18 @@
     <div class="row align-items-center">
       <div class="col-auto">
         <h2>
-          <a href="/">Mini-Diary</a>
+          <a href="/" class="link"
+            ><i class="bi bi-camera-reels"></i> MovieArchive
+            <i class="bi bi-film"></i
+          ></a>
         </h2>
       </div>
       <div class="col" />
+      <div class="col-auto desktop">
+        <h4 v-if="user.name.length > 0">
+          <a href="/search"><i class="bi bi-search"></i> Suchen</a>
+        </h4>
+      </div>
       <div class="col-auto desktop">
         <h4 class="logout" v-if="user.name.length > 0" @click="logout()">
           <i class="bi bi-box-arrow-right"></i> Logout
@@ -39,9 +47,12 @@
         <hr />
         <div class="list-group">
           <a v-if="user.name.length > 0">
+            <i class="bi bi-search"></i> Suchen
+          </a>
+          <a v-if="user.name.length > 0">
             {{ user.name }} <i class="bi bi-person-circle"></i>
           </a>
-          <a v-else @click="openLogin()">
+          <a v-else @click="login()">
             Login <i class="bi bi-box-arrow-in-right"></i>
           </a>
           <a class="logout" v-if="user.name.length > 0" @click="logout()">
@@ -51,45 +62,73 @@
       </div>
     </div>
   </div>
+  <!-- toast -->
+  <div>
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+      <div
+        id="liveToast"
+        class="toast"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="toast-header">
+          <img src="/img/unlock.png" class="rounded me-2" alt="..." />
+          <strong class="me-auto">Erfolgreich eingeloggt!</strong>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { reactive } from "vue";
-import { setCookie, getCookie } from "../tools/Cookies";
-import { checkToken } from "../tools/Auth";
+import { getCookie, setCookieSeasson } from "@/tools/Cookies";
+import {
+  checkTokenAndRun,
+  getUserName,
+  isAdmin,
+  openLogin,
+  openLogout,
+} from "@/tools/Auth";
+import { reactive } from "@vue/reactivity";
+import { Toast } from "bootstrap";
 
 var user = reactive({
-  name:
-    getCookie("access_token") && localStorage.getItem("username")
-      ? localStorage.getItem("username")
-      : "",
+  name: "",
+  isAdmin: false,
 });
-var authURL =
-  "http://localhost:8180/realms/quarkus/protocol/openid-connect/auth" +
-  "?client_id=gui" +
-  "&redirect_uri=http%3A%2F%2Flocalhost:3000%2Fauth" +
-  "&state=351fd66e-93ac-4feb-b36a-43f81e1bcbfd" +
-  "&response_type=code" +
-  "&scope=openid";
 
-var logoutURL =
-  "http://localhost:8180/realms/quarkus/protocol/openid-connect/logout" +
-  "?redirect_uri=http%3A%2F%2Flocalhost:3000";
-
-function openLogin() {
-  localStorage.setItem("redirect", window.location.pathname);
-  window.location = authURL;
+function login() {
+  openLogin();
 }
 
 function logout() {
-  localStorage.removeItem("username");
-  localStorage.removeItem("isAdmin");
-  setCookie("access_token", "", -1);
-  setCookie("refresh_token", "", -1);
-  window.location = logoutURL;
+  openLogout();
 }
 
-checkToken();
+if (getCookie("refreshToken")) {
+  checkTokenAndRun(() => {
+    user.name = getUserName();
+    user.isAdmin = isAdmin();
+    if (getCookie("login-toast") != "showed") {
+      showToast();
+    }
+  });
+}
+function showToast() {
+  setTimeout(() => {
+    var toastLiveExample = document.getElementById("liveToast");
+    var toast = new Toast(toastLiveExample);
+    toast.show();
+    setCookieSeasson("login-toast", "showed");
+  }, 100);
+}
 </script>
 
 <style scoped>
@@ -98,20 +137,19 @@ i {
 }
 .row {
   margin: auto;
-  max-width: 85vw;
+  max-width: 92vw;
   padding-top: 10px;
 }
 .header-content {
   background-color: var(--primary-color);
   max-width: 100vw;
 }
+.link:hover {
+  text-decoration: underline;
+}
 a {
   color: unset;
   text-decoration: unset;
-}
-a:hover {
-  color: unset;
-  text-decoration: underline;
 }
 div h4 {
   cursor: pointer;
@@ -122,6 +160,10 @@ div h4 {
 .card .list-group {
   text-align: right;
   padding-right: 10px;
+}
+img {
+  max-width: 40px;
+  margin-right: 1rem !important;
 }
 @media (max-width: 768px) {
   .row {

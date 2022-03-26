@@ -1,12 +1,39 @@
-import { setCookieInSec, getCookie } from "./Cookies";
+import { setCookieInSec, getCookie, setCookie, setCookieSeasson } from "./Cookies";
 import { HOST } from "../main.js";
+import { v4 as uuidv4 } from "uuid";
 
-export function login(code, funcToRun) {
-    fetch(HOST + "code-exchange", {
+var authURL =
+    "http://localhost:8180/realms/quarkus/protocol/openid-connect/auth" +
+    "?client_id=backend-service" +
+    "&redirect_uri=http%3A%2F%2Flocalhost:3000%2Fauth" +
+    "&response_type=code" +
+    "&scope=openid&state=";
+
+var logoutURL =
+    "http://localhost:8180/realms/quarkus/protocol/openid-connect/logout" +
+    "?redirect_uri=http%3A%2F%2Flocalhost:3000";
+
+export function openLogin() {
+    localStorage.setItem("redirect", window.location.pathname);
+    var uuid = uuidv4();
+    setCookieSeasson("state", uuid);
+    window.location = authURL + uuid;
+}
+
+export function openLogout() {
+    setCookie("accessToken", "", -1);
+    setCookie("refreshToken", "", -1);
+    setCookie("login-toast", "", -1);
+    window.location = logoutURL;
+}
+
+export function login(code) {
+    var data = {
+        "code": code
+    };
+    return fetch(HOST + "public/code-exchange", {
             method: "POST",
-            credentails: "same-origin",
-            mode: "cors",
-            body: code,
+            body: JSON.stringify(data),
             headers: {
                 "Content-Type": "application/json",
             },
@@ -19,52 +46,35 @@ export function login(code, funcToRun) {
         })
         .then((tokens) => {
             if (tokens != null) {
-                setCookieInSec("access_token", tokens.access_token, tokens.expires_in);
+                setCookieInSec("accessToken", tokens.accessToken, tokens.expiresIn);
+                setCookieInSec("state", "", -1);
                 setCookieInSec(
-                    "refresh_token",
-                    tokens.refresh_token,
-                    tokens.refresh_expires_in
+                    "refreshToken",
+                    tokens.refreshToken,
+                    tokens.refreshTokenIn
                 );
-                getUserInfo(funcToRun);
+                console.log("Welcome " + getUser().preferred_username + "!");
+                if (localStorage.getItem("redirect") != null) {
+                    window.location = localStorage.getItem("redirect");
+                } else {
+                    window.location = "/";
+                }
             }
+        }).catch(e => {
+            console.error(e);
+            alert("Something went wrong!");
         });
 }
 
-export function getUserInfo(funcToRun) {
-    fetch(HOST + "user-info", {
-            method: "GET",
-            credentails: "same-origin",
-            mode: "cors",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + getCookie("access_token")
-            },
-        })
-        .then((response) => {
-            if (response.status == 200) {
-                return response.json();
-            }
-            alert("Cant load user info! " + response.statusText);
-        })
-        .then((user) => {
-            if (user != null) {
-                localStorage.setItem("username", user.name);
-                localStorage.setItem("isAdmin", user.admin);
-            }
-            if (typeof funcToRun == "function") {
-                funcToRun();
-            } else {
-                window.location = localStorage.getItem("redirect") ? localStorage.getItem("redirect") : "/";
-            }
-        });
-}
-
-export function refreshToken(funcToRun) {
-    fetch(HOST + "refresh-token", {
+export function refreshToken() {
+    var data = {
+        "refreshToken": getCookie("refreshToken")
+    };
+    return fetch(HOST + "public/refresh-exchange", {
             method: "POST",
             credentails: "same-origin",
             mode: "cors",
-            body: getCookie("refresh_token"),
+            body: JSON.stringify(data),
             headers: {
                 "Content-Type": "application/json",
             },
@@ -77,30 +87,39 @@ export function refreshToken(funcToRun) {
         })
         .then((tokens) => {
             if (tokens != null) {
-                setCookieInSec("access_token", tokens.access_token, tokens.expires_in);
+                setCookieInSec("accessToken", tokens.accessToken, tokens.expires_in);
                 setCookieInSec(
-                    "refresh_token",
-                    tokens.refresh_token,
+                    "refreshToken",
+                    tokens.refreshToken,
                     tokens.refresh_expires_in
                 );
-                getUserInfo(funcToRun);
             }
         });
 }
 
 export function checkToken() {
-    if (getCookie("refresh_token") && !getCookie("access_token")) {
+    if (getCookie("refreshToken") && !getCookie("accessToken")) {
         refreshToken();
     }
 }
 
-export function checkTokenAndRun(funcToRun) {
-    if (getCookie("access_token")) {
-        funcToRun();
-    } else if (getCookie("refresh_token")) {
-        refreshToken(funcToRun);
+export function checkTokenAndRun(callBack) {
+    if (getCookie("accessToken")) {
+        if (typeof callBack == "function") {
+            callBack();
+        } else {
+            console.log("nope - " + typeof callBack);
+        }
+    } else if (getCookie("refreshToken")) {
+        refreshToken().then(() => {
+            if (typeof callBack == "function") {
+                callBack();
+            } else {
+                console.log("nope - " + typeof callBack);
+            }
+        });
     }
-    if (!getCookie("access_token") && !getCookie("refresh_token")) {
+    if (!getCookie("accessToken") && !getCookie("refreshToken")) {
         alert("Pls login first!");
     }
 }
@@ -116,21 +135,29 @@ export function getURLHashParams() {
 }
 
 export function isAdmin() {
-    if (!getCookie("access_token")) {
-        if (getCookie("refresh_token")) {
-            refreshToken(goToAdmin);
-        }
-        return false;
-    }
-    var user = parseJwt(getCookie("access_token"));
-    return user.apiRoles.includes("admin");
+    return getUser().realm_access.roles.includes("admin");
 }
 
-function goToAdmin() {
-    window.location = "/admin";
+export function getUserName() {
+    return getUser().preferred_username;
+}
+
+export function getUser() {
+    if (!getCookie("accessToken")) {
+        if (getCookie("refreshToken")) {
+            refreshToken();
+        } else {
+            console.log("Can't update user!");
+            return {};
+        }
+    }
+    return parseJwt(getCookie("accessToken"));
 }
 
 function parseJwt(token) {
+    if (token == null || token == "") {
+        return {};
+    }
     var base64Url = token.split('.')[1];
     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
     var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
