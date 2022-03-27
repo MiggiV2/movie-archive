@@ -9,7 +9,7 @@ export function setCookieInSec(cname, cvalue, exSec) {
     const d = new Date();
     d.setTime(d.getTime() + (exSec * 1000));
     let expires = "expires=" + d.toUTCString();
-    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/; Secure";
+    document.cookie = cname + "=" + cvalue + ";expires=" + expires + ";path=/; Secure";
 }
 
 export function setCookieSeasson(cname, cvalue) {

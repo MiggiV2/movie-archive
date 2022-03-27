@@ -6,15 +6,17 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
 import "bootstrap-icons/font/bootstrap-icons.css"
 
-import HomePage from './HomePage.vue';
-import Auth from './Auth.vue';
-import NoPage from './NoPage.vue';
+import HomePage from '@/HomePage.vue';
+import Auth from '@/Auth.vue';
+import NoPage from '@/NoPage.vue';
+import Search from '@/Search.vue';
 
 require('@/assets/css/style.css');
 
 const routes = {
     '/': HomePage,
     '/auth': Auth,
+    '/search': Search,
 }
 
 const SimpleRouter = {

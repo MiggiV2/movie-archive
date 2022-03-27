@@ -18,8 +18,7 @@ public class SimpleSearchAction
 	{
 		List<MovieEntity> result = new ArrayList<MovieEntity>();
 		List<MovieEntity> db = MovieEntity.listAll();
-		String[] words = query.split(" ");
-		db.forEach(m -> checkForQuery(query.toLowerCase(), words, m));
+		db.forEach(m -> checkForQuery(query.toLowerCase(), m));
 		if (!nameEquals.isEmpty())
 		{
 			result.addAll(nameEquals);
@@ -42,7 +41,7 @@ public class SimpleSearchAction
 		return words;
 	}
 
-	private void checkForQuery(String query, String[] words, MovieEntity m)
+	private void checkForQuery(String query, MovieEntity m)
 	{
 		String name = m.name.toLowerCase();
 		if (name.equals(query))
@@ -55,16 +54,16 @@ public class SimpleSearchAction
 		}
 		else
 		{
-			handleWords(words, m, name);
+			handleWords(query.split(" "), m);
 		}
 	}
 
-	private void handleWords(String[] words, MovieEntity m, String name)
+	private void handleWords(String[] words, MovieEntity movie)
 	{
 		int hits = 0;
 		for (String w : words)
 		{
-			if (name.contains(w))
+			if (movie.name.toLowerCase().contains(w))
 			{
 				hits++;
 			}
@@ -74,13 +73,13 @@ public class SimpleSearchAction
 			if (wordsContains.containsKey(hits))
 			{
 				List<MovieEntity> wordList = wordsContains.get(hits);
-				wordList.add(m);
+				wordList.add(movie);
 				wordsContains.put(hits, wordList);
 			}
 			else
 			{
 				List<MovieEntity> wordList = new ArrayList<MovieEntity>();
-				wordList.add(m);
+				wordList.add(movie);
 				wordsContains.put(hits, wordList);
 			}
 		}

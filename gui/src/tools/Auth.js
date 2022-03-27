@@ -51,7 +51,7 @@ export function login(code) {
                 setCookieInSec(
                     "refreshToken",
                     tokens.refreshToken,
-                    tokens.refreshTokenIn
+                    tokens.refreshExpiresIn
                 );
                 console.log("Welcome " + getUser().preferred_username + "!");
                 if (localStorage.getItem("redirect") != null) {

@@ -7,6 +7,7 @@
 
 <script setup>
 import Header from "./components/HeaderCom.vue";
+document.title = 'MovieArchive | 404';
 </script>
 
 <style scoped>
