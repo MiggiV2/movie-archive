@@ -1,6 +1,5 @@
 package de.mymiggi;
 
-import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.Test;
@@ -11,8 +10,14 @@ import io.quarkus.test.junit.QuarkusTest;
 @QuarkusTest
 public class ArchiveResourceTest
 {
-	@Inject
-	protected DefaultPage defaultPage;
+	protected DefaultPage defaultPage = new DefaultPage()
+	{
+		@Override
+		public int Size()
+		{
+			return 30;
+		}
+	};
 
 	@Test
 	@Transactional

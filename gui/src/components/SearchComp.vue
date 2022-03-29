@@ -1,6 +1,6 @@
 <template>
   <!-- search -->
-  <div id="search-input" class="container">    
+  <div id="search-input" class="container">
     <form @submit="search" onsubmit="return false">
       <div class="input-group mb-3">
         <input
@@ -24,6 +24,7 @@
       class="box box-movie"
       v-for="(movie, index) in data.movies"
       :key="index"
+      @click="showMovie(movie)"
     >
       <h2>{{ movie.name }}</h2>
       <p>Aus dem Jahre {{ movie.year }}</p>
@@ -38,21 +39,23 @@
   <!-- 404 -->
   <div v-else-if="data.movies.length == 0" class="container">
     <div class="box">
-      <h2>Leider keine Filme gefunden!</h2>
+      <h2>Leider keine Filme mit diesem Namen gefunden!</h2>
     </div>
   </div>
-  <!-- Modal - not working yet -->
+  <!-- Modal-->
   <div
     class="modal fade"
-    id="exampleModal"
+    id="movieModal"
     tabindex="-1"
-    aria-labelledby="exampleModalLabel"
+    aria-labelledby="movieModalLabel"
     aria-hidden="true"
   >
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <h5 class="modal-title" id="movieModalLabel">
+            Film - {{ data.currentMovie.name }}
+          </h5>
           <button
             type="button"
             class="btn-close"
@@ -60,7 +63,37 @@
             aria-label="Close"
           ></button>
         </div>
-        <div class="modal-body">...</div>
+        <div class="modal-body">
+          <!-- Modal-Body -->
+          <div class="row">
+            <div class="col-2">
+              <p>{{ data.currentMovie.name }}</p>
+              <p>Zu finden in {{ data.currentMovie.block }}</p>
+              <p>Aus dem Jahre {{ data.currentMovie.year }}</p>
+              <p>Type: {{ data.currentMovie.type }}</p>
+              <a
+                v-if="allowIframe(data.currentMovie.wikiUrl)"
+                :href="data.currentMovie.wikiUrl"
+                >Wikipedia Link</a
+              >
+              <a
+                v-else-if="isVideoBuster(data.currentMovie.wikiUrl)"
+                :href="data.currentMovie.wikiUrl"
+              >
+                VideoBuster Link
+              </a>
+            </div>
+            <div v-if="allowIframe(data.currentMovie.wikiUrl)" class="col">
+              <iframe
+                :src="data.currentMovie.wikiUrl"
+                title="Wikipedia"
+              ></iframe>
+            </div>
+            <div v-else class="col">
+              <h2>Leider kein Wikipedia Artikel verzeichnet!</h2>
+            </div>
+          </div>
+        </div>
         <div class="modal-footer">
           <button
             type="button"
@@ -80,13 +113,33 @@
 import { checkTokenAndRun } from "@/tools/Auth";
 import { getMovies, searchMovie } from "@/tools/UserMovie";
 import { reactive } from "@vue/reactivity";
+import { Modal } from "bootstrap";
 
 const data = reactive({
   movies: [],
+  currentMovie: {
+    name: "...",
+    year: 0,
+    uuid: "...",
+    block: "...",
+    wikiUrl: "...",
+    type: "...",
+  },
   query: "",
   isLoading: true,
   lastSearch: 0,
 });
+
+const wikiWhiteList = [
+  "https://de.wikipedia.org",
+  "https://www.wikipedia.org",
+  "https://en.wikipedia.org",
+];
+
+const videoBusterList = [
+  "https://www.videobuster.de",
+  "https://videobuster.de",
+];
 
 checkTokenAndRun(() => {
   loadMovies();
@@ -98,6 +151,24 @@ function search() {
       startSearch();
     }
   }, 500);
+}
+
+function allowIframe(url) {
+  return startURLWith(url, wikiWhiteList);
+}
+
+function isVideoBuster(url) {
+  return startURLWith(url, videoBusterList);
+}
+
+function startURLWith(url, domainArray) {
+  for (let index = 0; index < domainArray.length; index++) {
+    const element = domainArray[index];
+    if (url.startsWith(element)) {
+      return true;
+    }
+  }
+  return false;
 }
 
 function startSearch() {
@@ -134,6 +205,13 @@ function loadMovies() {
       data.isLoading = false;
     });
 }
+
+function showMovie(movie) {
+  data.currentMovie = movie;
+  var modalElement = document.getElementById("movieModal");
+  var modal = new Modal(modalElement);
+  modal.toggle();
+}
 </script>
 
 <style scoped>
@@ -144,5 +222,23 @@ function loadMovies() {
 #search-input input {
   background: unset;
   color: white;
+}
+.modal-dialog {
+  color: rgb(12, 12, 12);
+}
+iframe {
+  width: 100%;
+  height: 40rem;
+}
+.modal-xl {
+  max-width: 1500px;
+}
+.col h2 {
+  text-align: center;
+}
+@media (max-width: 1500px) {
+  .modal-xl {
+    max-width: 97vw;
+  }
 }
 </style>

@@ -46,6 +46,7 @@ export function login(code) {
         })
         .then((tokens) => {
             if (tokens != null) {
+                console.log("Expires in " + tokens.expiresIn)
                 setCookieInSec("accessToken", tokens.accessToken, tokens.expiresIn);
                 setCookieInSec("state", "", -1);
                 setCookieInSec(
