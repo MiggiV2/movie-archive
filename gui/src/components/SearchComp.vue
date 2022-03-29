@@ -114,6 +114,8 @@ import { checkTokenAndRun } from "@/tools/Auth";
 import { getMovies, searchMovie } from "@/tools/UserMovie";
 import { reactive } from "@vue/reactivity";
 import { Modal } from "bootstrap";
+import { wikiWhiteList, videoBusterList } from "@/tools/SearchList";
+import { getMoviePageCount } from "@/tools/PubMovie";
 
 const data = reactive({
   movies: [],
@@ -128,22 +130,30 @@ const data = reactive({
   query: "",
   isLoading: true,
   lastSearch: 0,
+  currentPage: 0,
+  maxPageCount: 0,
 });
-
-const wikiWhiteList = [
-  "https://de.wikipedia.org",
-  "https://www.wikipedia.org",
-  "https://en.wikipedia.org",
-];
-
-const videoBusterList = [
-  "https://www.videobuster.de",
-  "https://videobuster.de",
-];
 
 checkTokenAndRun(() => {
   loadMovies();
+  getMoviePageCount().then((count) => {
+    data.maxPageCount = count;
+  });
 });
+
+window.onscroll = function () {
+  var scrollPosition =
+    document.documentElement.scrollTop || document.body.scrollTop;
+  if (
+    document.body.scrollHeight - scrollPosition < 1200 &&
+    data.currentPage < data.maxPageCount &&
+    !data.isLoading &&
+    data.query.replace(/\s+/g, "").length == 0
+  ) {
+    data.currentPage++;
+    loadMovies();
+  }
+};
 
 function search() {
   setTimeout(() => {
@@ -173,6 +183,8 @@ function startURLWith(url, domainArray) {
 
 function startSearch() {
   if (data.query.replace(/\s+/g, "").length == 0) {
+    data.currentPage = 0;
+    data.movies = [];
     loadMovies();
   } else {
     data.isLoading = true;
@@ -193,9 +205,9 @@ function startSearch() {
 
 function loadMovies() {
   data.isLoading = true;
-  getMovies(0)
+  getMovies(data.currentPage)
     .then((movies) => {
-      data.movies = movies;
+      data.movies = data.movies.concat(movies);
     })
     .catch((e) => {
       console.error(e);
