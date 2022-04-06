@@ -1,0 +1,130 @@
+<template>
+  <div
+    class="modal fade"
+    id="updateModal"
+    tabindex="-1"
+    aria-labelledby="updateModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="updateModalLabel">
+            Update {{ props.movie.name }}
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3 row">
+            <label for="movie-name" class="col-sm-3 col-form-label"
+              >Film Name</label
+            >
+            <div class="col-sm-9">
+              <input
+                type="text"
+                class="form-control"
+                id="movie-name"
+                v-model="data.movie.name"
+              />
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="movie-year" class="col-sm-3 col-form-label"
+              >Jahr des Films</label
+            >
+            <div class="col-sm-9">
+              <input
+                type="text"
+                class="form-control"
+                id="movie-year"
+                v-model="data.movie.year"
+              />
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="movie-name" class="col-sm-3 col-form-label"
+              >Film Block</label
+            >
+            <div class="col-sm-9">
+              <input
+                type="text"
+                class="form-control"
+                id="movie-name"
+                v-model="data.movie.block"
+              />
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="movie-name" class="col-sm-3 col-form-label"
+              >Wikipedia URL</label
+            >
+            <div class="col-sm-9">
+              <input
+                type="text"
+                class="form-control"
+                id="movie-name"
+                v-model="data.movie.wikiUrl"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+            @click="showMovieModal()"
+          >
+            Close
+          </button>
+          <button type="button" class="btn btn-primary" @click="update()">
+            <i class="bi bi-sd-card"></i> Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+const { reactive } = require("@vue/reactivity");
+import { updateMovie } from "@/tools/AdminMovie";
+import { Modal } from "bootstrap";
+// eslint-disable-next-line
+const props = defineProps({
+  movie: {},
+});
+var data = reactive({
+  movie: props.movie,
+});
+
+setTimeout(() => {
+  setHandler();
+}, 100);
+
+function setHandler() {
+  var myModal = document.getElementById("updateModal");
+  // eslint-disable-next-line
+  myModal.addEventListener("show.bs.modal", function (event) {
+    data.movie = props.movie;
+    console.log(data.movie);
+  });
+}
+
+function update() {
+  updateMovie(data.movie).then(() => {
+    console.log("Updated!");
+  });
+}
+
+function showMovieModal() {
+  var movieEle = document.getElementById("movieModal");
+  var movieModal = new Modal(movieEle);
+  movieModal.show();
+}
+</script>

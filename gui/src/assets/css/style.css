@@ -29,6 +29,10 @@ body {
     cursor: pointer;
 }
 
+.modal-dialog {
+    color: rgb(12, 12, 12);
+}
+
 @media (max-width: 768px) {
     .mobile {
         display: unset;
