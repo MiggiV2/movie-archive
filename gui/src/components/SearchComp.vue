@@ -203,6 +203,8 @@ import { getMoviePageCount } from "@/tools/PubMovie";
 import UpdateModal from "@/components/UpdateModal.vue";
 import { deleteMovie } from "@/tools/AdminMovie";
 
+var urlParams = new URLSearchParams(window.location.search);
+
 const data = reactive({
   movies: [],
   currentMovie: {
@@ -213,7 +215,7 @@ const data = reactive({
     wikiUrl: "...",
     type: "...",
   },
-  query: "",
+  query: urlParams.has("query") ? urlParams.get("query") : "",
   isLoading: true,
   lastSearch: 0,
   currentPage: 0,
@@ -226,7 +228,11 @@ const data = reactive({
 });
 
 checkTokenAndRun(() => {
-  loadMovies();
+  if (data.query.length == 0) {
+    loadMovies();
+  } else {
+    startSearch();
+  }
   getMoviePageCount().then((count) => {
     data.maxPageCount = count;
   });
@@ -274,9 +280,12 @@ function startURLWith(url, domainArray) {
 
 function startSearch() {
   if (data.query.replace(/\s+/g, "").length == 0) {
-    data.currentPage = 0;
-    data.movies = [];
-    loadMovies();
+    if (urlParams.has("query")) {
+      window.location = "/search";
+    } else {
+      data.currentPage = 0;
+      loadMovies();
+    }
   } else {
     data.isLoading = true;
     searchMovie(data.query.replaceAll(" ", "+"))
@@ -298,6 +307,9 @@ function loadMovies() {
   data.isLoading = true;
   getMovies(data.currentPage)
     .then((movies) => {
+      if (data.currentPage == 0) {
+        data.movies = [];
+      }
       data.movies = data.movies.concat(movies);
     })
     .catch((e) => {
@@ -335,6 +347,9 @@ function sendDelete() {
     .finally(() => {
       data.delete.isSending = false;
       data.delete.hasResponed = true;
+      setTimeout(() => {
+        window.location = "/search?query=" + data.query;
+      }, 2500);
     });
 }
 </script>

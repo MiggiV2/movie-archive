@@ -12,17 +12,43 @@
       <div class="col" />
       <div class="col-auto desktop">
         <h4 v-if="user.name.length > 0">
-          <a href="/search"><i class="bi bi-search"></i> Suchen</a>
-        </h4>
-      </div>
-      <div class="col-auto desktop">
-        <h4 class="logout" v-if="user.name.length > 0" @click="logout()">
-          <i class="bi bi-box-arrow-right"></i> Logout
+          <a href="/add"><i class="bi bi-plus-circle"></i> Neuer Film</a>
         </h4>
       </div>
       <div class="col-auto desktop">
         <h4 v-if="user.name.length > 0">
-          <i class="bi bi-person-circle"></i> {{ user.name }}
+          <a href="/search"><i class="bi bi-search"></i> Suchen</a>
+        </h4>
+      </div>
+      <!--UserName/Login-->
+      <div class="col-auto desktop">
+        <h4 class="dropdown" v-if="user.name.length > 0">
+          <div class="dropdown">
+            <a
+              class="dropdown-toggle"
+              href="#"
+              role="button"
+              id="dropdownMenuLink"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <i class="bi bi-person-circle"></i> {{ user.name }}
+            </a>
+
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+              <li>
+                <a class="dropdown-item" href="#"
+                  >Infos <i class="bi bi-person-bounding-box icon-right "></i></a
+                >
+              </li>
+              <hr />
+              <li>
+                <a class="dropdown-item logout" @click="logout()">
+                  Logout <i class="bi bi-box-arrow-right icon-right"></i> 
+                </a>
+              </li>
+            </ul>
+          </div>
         </h4>
         <h4 v-else @click="openLogin()">
           <i class="bi bi-box-arrow-in-right"></i> Login
@@ -164,6 +190,13 @@ div h4 {
 img {
   max-width: 40px;
   margin-right: 1rem !important;
+}
+.icon-right {
+  right: 1.2rem;
+  position: absolute;
+}
+.dropdown-menu hr {
+  margin: 8px 0;
 }
 @media (max-width: 768px) {
   .row {
