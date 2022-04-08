@@ -101,13 +101,13 @@
       >
         <div class="toast-header">
           <img
-            src="https://cdn.pixabay.com/photo/2017/02/12/21/29/false-2061131_960_720.png"
+            src="/img/false.png"
             class="rounded me-2"
             alt="Error"
             v-if="status.failed"
           />
           <img
-            src="https://cdn.pixabay.com/photo/2014/04/02/11/01/tick-305245_960_720.png"
+            src="/img/tick.png"
             class="rounded me-2"
             alt="Done"
             v-else

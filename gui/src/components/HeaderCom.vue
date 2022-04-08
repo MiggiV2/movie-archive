@@ -37,14 +37,14 @@
 
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
               <li>
-                <a class="dropdown-item" href="#"
-                  >Infos <i class="bi bi-person-bounding-box icon-right "></i></a
-                >
+                <a class="dropdown-item" @click="showUserModal()"
+                  >Infos <i class="bi bi-person-bounding-box icon-right"></i
+                ></a>
               </li>
               <hr />
               <li>
                 <a class="dropdown-item logout" @click="logout()">
-                  Logout <i class="bi bi-box-arrow-right icon-right"></i> 
+                  Logout <i class="bi bi-box-arrow-right icon-right"></i>
                 </a>
               </li>
             </ul>
@@ -111,6 +111,7 @@
       </div>
     </div>
   </div>
+  <UserModal />
 </template>
 
 <script setup>
@@ -123,7 +124,8 @@ import {
   openLogout,
 } from "@/tools/Auth";
 import { reactive } from "@vue/reactivity";
-import { Toast } from "bootstrap";
+import { Modal, Toast } from "bootstrap";
+import UserModal from "@/components/UserModal.vue";
 
 var user = reactive({
   name: "",
@@ -154,6 +156,11 @@ function showToast() {
     toast.show();
     setCookieSeasson("login-toast", "showed");
   }, 100);
+}
+function showUserModal() {
+  var modalElement = document.getElementById("user-modal");
+  var userModal = new Modal(modalElement);
+  userModal.show();
 }
 </script>
 
