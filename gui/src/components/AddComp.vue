@@ -16,6 +16,7 @@
           id="staticEmail"
           placeholder="Film Titel"
           required
+          v-model="movie.name"
         />
         <div class="invalid-feedback">Bitte gibt einen Film Namen ein!</div>
       </div>
@@ -31,6 +32,7 @@
           id="inputPassword"
           placeholder="https://de.wikipedia.org/wiki/..."
           required
+          v-model="movie.wikiUrl"
         />
         <div class="invalid-feedback">Bitte gibt einen Wikipedia Link ein!</div>
       </div>
@@ -44,6 +46,7 @@
           id="inputPassword"
           placeholder="1"
           required
+          v-model="movie.block"
         />
         <div class="invalid-feedback">Bitte gibt eine gültige Nummber ein!</div>
       </div>
@@ -57,6 +60,7 @@
           id="inputPassword"
           placeholder="2020"
           required
+          v-model="movie.year"
         />
         <div class="invalid-feedback">
           Bitte gibt eine gültige Jahreszahl ein!
@@ -66,7 +70,7 @@
     <div class="mb-3 row">
       <label for="inputPassword" class="col-sm-2 col-form-label">Type</label>
       <div class="col-sm-9">
-        <select class="form-select" required>
+        <select class="form-select" required v-model="movie.type">
           <option selected disabled value="">Wähle einen Type</option>
           <option value="BD">BlueRay Disc</option>
           <option value="4k-BD">BlueRay Disc 4k</option>
@@ -75,15 +79,40 @@
         <div class="invalid-feedback">Bitte wähle eine Kategorie</div>
       </div>
     </div>
-    <button id="save-button" type="submit" class="btn btn-success">Speichern</button>
+    <button
+      id="save-button"
+      type="submit"
+      class="btn btn-success"
+      @click="save()"
+    >
+      Speichern
+    </button>
   </form>
 </template>
 
 <script setup>
+const { reactive } = require("@vue/reactivity");
+
+const movie = reactive({
+  name: "",
+  year: "",
+  block: "",
+  wikiUrl: "",
+  type: "",
+});
+
 function setCustomValidity(elementID) {
   var form = document.getElementById(elementID);
   if (!form.classList.contains("was-validated")) {
     form.classList.add("was-validated");
+  }
+}
+
+function save() {
+  var list = document.getElementsByClassName("invalid-feedback");
+  for (let i = 0; i < list.length; i++) {
+    const element = list[i];
+    console.log(element.getAttribute('display'))
   }
 }
 </script>
