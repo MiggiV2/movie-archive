@@ -284,11 +284,21 @@ function startSearch() {
       window.location = "/search";
     } else {
       data.currentPage = 0;
-      loadMovies();
+      checkTokenAndRun(() => {
+        loadMovies();
+      });
     }
   } else {
     data.isLoading = true;
-    searchMovie(data.query.replaceAll(" ", "+"))
+    checkTokenAndRun(() => {
+      sendSearch();
+    })
+  }
+  data.lastSearch = new Date().getTime();
+}
+
+function sendSearch() {
+  searchMovie(data.query.replaceAll(" ", "+"))
       .then((movies) => {
         data.movies = movies;
       })
@@ -299,8 +309,6 @@ function startSearch() {
       .finally(() => {
         data.isLoading = false;
       });
-  }
-  data.lastSearch = new Date().getTime();
 }
 
 function loadMovies() {

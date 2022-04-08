@@ -3,7 +3,7 @@
     id="add-form"
     class="box needs-validation"
     onsubmit="return false"
-    @submit="setCustomValidity('add-form')"
+    @submit="save()"
     novalidate
   >
     <h2>Einen neuen Film hinzufügen</h2>
@@ -79,41 +79,120 @@
         <div class="invalid-feedback">Bitte wähle eine Kategorie</div>
       </div>
     </div>
-    <button
-      id="save-button"
-      type="submit"
-      class="btn btn-success"
-      @click="save()"
-    >
+    <button class="btn btn-success" type="submit">
+      <span
+        class="spinner-border spinner-border-sm"
+        role="status"
+        aria-hidden="true"
+        v-if="status.isSending"
+      ></span>
       Speichern
     </button>
   </form>
+  <!-- toast -->
+  <div>
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 11">
+      <div
+        id="errorToast"
+        class="toast"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="toast-header">
+          <img
+            src="https://cdn.pixabay.com/photo/2017/02/12/21/29/false-2061131_960_720.png"
+            class="rounded me-2"
+            alt="Error"
+            v-if="status.failed"
+          />
+          <img
+            src="https://cdn.pixabay.com/photo/2014/04/02/11/01/tick-305245_960_720.png"
+            class="rounded me-2"
+            alt="Done"
+            v-else
+          />
+          <strong class="me-auto">{{ status.message }}</strong>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-const { reactive } = require("@vue/reactivity");
+import { reactive } from "@vue/reactivity";
+import { setCustomValidation } from "@/tools/BS5Helper";
+import { addMovie } from "@/tools/AdminMovie";
+import { Toast } from "bootstrap";
+import { checkTokenAndRun } from "@/tools/Auth";
 
 const movie = reactive({
-  name: "",
-  year: "",
-  block: "",
-  wikiUrl: "",
+  name: undefined,
+  year: undefined,
+  block: undefined,
+  wikiUrl: undefined,
   type: "",
 });
 
-function setCustomValidity(elementID) {
-  var form = document.getElementById(elementID);
-  if (!form.classList.contains("was-validated")) {
-    form.classList.add("was-validated");
+const status = reactive({
+  sending: false,
+  failed: false,
+  message: undefined,
+});
+
+setTimeout(() => {
+  setCustomValidation();
+}, 200);
+
+function save() {
+  var form = document.getElementById("add-form");
+  if (form.checkValidity()) {
+    status.sending = true;
+    console.log("Sending...");
+    checkTokenAndRun(() => {
+      sendSave();
+    });
   }
 }
 
-function save() {
-  var list = document.getElementsByClassName("invalid-feedback");
-  for (let i = 0; i < list.length; i++) {
-    const element = list[i];
-    console.log(element.getAttribute('display'))
-  }
+function sendSave() {
+  addMovie(movie)
+    .then((addedMovie) => {
+      status.message = "Film '" + addedMovie.name + "' gespeichert!";
+      status.failed = false;
+      resetMovie();
+    })
+    .catch((e) => {
+      console.log(e);
+      status.message = e;
+      status.failed = true;
+    })
+    .finally(() => {
+      status.sending = false;
+      showToast();
+    });
+}
+
+function resetMovie() {
+  movie.name = undefined;
+  movie.year = undefined;
+  movie.block = undefined;
+  movie.wikiUrl = undefined;
+  movie.type = "";
+  var form = document.getElementById('add-form');
+  form.classList.remove('was-validated')
+}
+
+function showToast() {
+  var toastError = document.getElementById("errorToast");
+  var toast = new Toast(toastError);
+  toast.show();
 }
 </script>
 
@@ -123,5 +202,9 @@ function save() {
 }
 #save-button {
   margin: 2rem auto 1.5rem;
+}
+img {
+  max-width: 40px;
+  margin-right: 1rem !important;
 }
 </style>

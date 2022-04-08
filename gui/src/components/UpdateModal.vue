@@ -72,6 +72,9 @@
               />
             </div>
           </div>
+          <strong v-if="data.failed && data.message != null">
+            {{ data.message }}
+          </strong>
         </div>
         <div class="modal-footer">
           <button
@@ -80,10 +83,13 @@
             data-bs-dismiss="modal"
             @click="showMovieModal()"
           >
-            Close
+            Abbrechen
           </button>
           <button type="button" class="btn btn-primary" @click="update()">
-            <i class="bi bi-sd-card"></i> Save
+            <div v-if="!data.failed && data.message != null">
+              <i class="bi bi-check-circle"></i> Gespeichert!
+            </div>
+            <div v-else><i class="bi bi-sd-card"></i> Speichern</div>
           </button>
         </div>
       </div>
@@ -94,6 +100,7 @@
 <script setup>
 const { reactive } = require("@vue/reactivity");
 import { updateMovie } from "@/tools/AdminMovie";
+import { checkTokenAndRun } from "@/tools/Auth";
 import { Modal } from "bootstrap";
 // eslint-disable-next-line
 const props = defineProps({
@@ -101,6 +108,8 @@ const props = defineProps({
 });
 var data = reactive({
   movie: props.movie,
+  failed: false,
+  message: null,
 });
 
 setTimeout(() => {
@@ -112,19 +121,27 @@ function setHandler() {
   // eslint-disable-next-line
   myModal.addEventListener("show.bs.modal", function (event) {
     data.movie = props.movie;
-    console.log(data.movie);
   });
 }
 
 function update() {
-  updateMovie(data.movie).then(() => {
-    console.log("Updated!");
+  checkTokenAndRun(() => {
+    updateMovie(data.movie)
+      .then(() => {
+        data.failed = false;
+        data.message = "Film gespeicher!";
+      })
+      .catch((e) => {
+        data.message = e;
+        data.failed = true;
+      });
   });
 }
 
 function showMovieModal() {
   var movieEle = document.getElementById("movieModal");
   var movieModal = new Modal(movieEle);
+  data.message = null;
   movieModal.show();
 }
 </script>

@@ -46,7 +46,7 @@ export function login(code) {
         })
         .then((tokens) => {
             if (tokens != null) {
-                console.log("Expires in " + tokens.expiresIn)
+                console.log("Expires in " + tokens.expiresIn);
                 setCookieInSec("accessToken", tokens.accessToken, tokens.expiresIn);
                 setCookieInSec("state", "", -1);
                 setCookieInSec(
@@ -88,7 +88,8 @@ export function refreshToken() {
         })
         .then((tokens) => {
             if (tokens != null) {
-                setCookieInSec("accessToken", tokens.accessToken, tokens.expires_in);
+                console.log("Expires in " + tokens.expiresIn)
+                setCookieInSec("accessToken", tokens.accessToken, tokens.expiresIn);
                 setCookieInSec(
                     "refreshToken",
                     tokens.refreshToken,
