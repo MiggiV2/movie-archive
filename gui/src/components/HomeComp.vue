@@ -2,13 +2,13 @@
   <div class="container">
     <div class="box">
       <h1>Herzlich Willkommen im Filmarchiv von {{ owner }}</h1>
-    </div>
-    <div class="box">
-      <h4>
+      <img
+        src="/img/film.jpg"
+        alt=""
+      />
+      <h4 id="counter">
         Aktuell sind {{ user.movies }} Filme in diesem Archiv verzeichnet!
       </h4>
-    </div>
-    <div class="box">
       <h4 v-if="!user.login">
         Wenn Sie sich einloggen, können Sie alle Filme aufgelistet finden!
       </h4>
@@ -58,3 +58,19 @@ function countAnimation(count) {
   }
 }
 </script>
+
+<style scoped>
+h1 {
+  margin: 1rem;
+}
+#counter {
+  margin-bottom: 2rem;
+}
+a.btn {
+  margin-top: 2rem;
+}
+img {
+  max-width: 60rem;
+  margin-bottom: 2rem;
+}
+</style>

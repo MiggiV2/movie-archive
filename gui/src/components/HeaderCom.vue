@@ -116,13 +116,8 @@
 
 <script setup>
 import { getCookie, setCookieSeasson } from "@/tools/Cookies";
-import {
-  checkTokenAndRun,
-  getUserName,
-  isAdmin,
-  openLogin,
-  openLogout,
-} from "@/tools/Auth";
+import { getUserName, isAdmin } from "@/tools/User";
+import { checkTokenAndRun, openLogin, openLogout } from "@/tools/Auth";
 import { reactive } from "@vue/reactivity";
 import { Modal, Toast } from "bootstrap";
 import UserModal from "@/components/UserModal.vue";

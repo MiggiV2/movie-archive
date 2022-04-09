@@ -14,9 +14,9 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-auto">
-              <p>Name {{ data.user.preferred_username }}</p>
-              <p>Gruppe {{ data.user.group }}</p>
-              <p>Verifizierte {{ data.user.email_verified }}</p>
+              <p>Name: {{ data.user.preferred_username }}</p>
+              <p>Gruppe: {{ data.user.group }}</p>
+              <p>Verifizierte E-Mail: {{ data.user.email_verified }}</p>
             </div>
             <div class="col"></div>
             <div class="col-auto">
@@ -42,7 +42,7 @@
 </template>
 
 <script setup>
-const { getUser, isAdmin } = require("@/tools/Auth");
+const { getUser, isAdmin } = require("@/tools/User");
 const { reactive } = require("@vue/reactivity");
 
 const data = reactive({

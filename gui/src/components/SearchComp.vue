@@ -12,9 +12,18 @@
           v-model="data.query"
           @input="search"
         />
-        <button class="btn btn-primary" type="button" id="button-addon2">
-          <i class="bi bi-search"></i> Suchen
-        </button>
+        <span class="input-group-text" id="basic-addon1">Sortierung</span>
+        <select
+          @change="setSortIDAndLoad($event)"
+          class="form-select"
+          aria-label="Default select example"
+        >
+          <option value="0" selected>Keine Sortierung</option>
+          <option value="1">Alphapethisch \/</option>
+          <option value="2">Alphapethisch /\</option>
+          <option value="3">Jahr \/</option>
+          <option value="4">Jahr /\</option>
+        </select>
       </div>
     </form>
   </div>
@@ -195,7 +204,7 @@
 
 <script setup>
 import { checkTokenAndRun } from "@/tools/Auth";
-import { getMovies, searchMovie } from "@/tools/UserMovie";
+import { getMovies, getSortedMovies, searchMovie } from "@/tools/UserMovie";
 import { reactive } from "@vue/reactivity";
 import { Modal } from "bootstrap";
 import { wikiWhiteList, videoBusterList } from "@/tools/SearchList";
@@ -220,6 +229,7 @@ const data = reactive({
   lastSearch: 0,
   currentPage: 0,
   maxPageCount: 0,
+  sortID: 0,
   delete: {
     isSending: false,
     hasResponed: false,
@@ -292,41 +302,27 @@ function startSearch() {
     data.isLoading = true;
     checkTokenAndRun(() => {
       sendSearch();
-    })
+    });
   }
   data.lastSearch = new Date().getTime();
 }
 
-function sendSearch() {
-  searchMovie(data.query.replaceAll(" ", "+"))
-      .then((movies) => {
-        data.movies = movies;
-      })
-      .catch((e) => {
-        console.error(e);
-        alert("Something went wrong! " + e);
-      })
-      .finally(() => {
-        data.isLoading = false;
-      });
+function loadMovies() {
+  if (data.sortID == 0) {
+    checkTokenAndRun(() => {
+      loadUnsortedMovies();
+    });
+  } else {
+    checkTokenAndRun(() => {
+      loadSortedMovies();
+    });
+  }
 }
 
-function loadMovies() {
-  data.isLoading = true;
-  getMovies(data.currentPage)
-    .then((movies) => {
-      if (data.currentPage == 0) {
-        data.movies = [];
-      }
-      data.movies = data.movies.concat(movies);
-    })
-    .catch((e) => {
-      console.error(e);
-      alert("Something went wrong! " + e);
-    })
-    .finally(() => {
-      data.isLoading = false;
-    });
+function setSortIDAndLoad(event) {
+  data.sortID = event.target.value;
+  data.currentPage = 0;
+  loadMovies();
 }
 
 function showMovie(movie) {
@@ -356,8 +352,59 @@ function sendDelete() {
       data.delete.isSending = false;
       data.delete.hasResponed = true;
       setTimeout(() => {
-        window.location = "/search?query=" + data.query;
+        window.location =
+          data.query.length > 0 ? "/search?query=" + data.query : "/search";
       }, 2500);
+    });
+}
+
+function loadUnsortedMovies() {
+  data.isLoading = true;
+  getMovies(data.currentPage)
+    .then((movies) => {
+      if (data.currentPage == 0) {
+        data.movies = [];
+      }
+      data.movies = data.movies.concat(movies);
+    })
+    .catch((e) => {
+      console.error(e);
+      alert("Something went wrong! " + e);
+    })
+    .finally(() => {
+      data.isLoading = false;
+    });
+}
+
+function loadSortedMovies() {
+  data.isLoading = true;
+  getSortedMovies(data.currentPage, data.sortID)
+    .then((movies) => {
+      if (data.currentPage == 0) {
+        data.movies = [];
+      }
+      data.movies = data.movies.concat(movies);
+    })
+    .catch((e) => {
+      console.error(e);
+      alert("Something went wrong! " + e);
+    })
+    .finally(() => {
+      data.isLoading = false;
+    });
+}
+
+function sendSearch() {
+  searchMovie(data.query.replaceAll(" ", "+"))
+    .then((movies) => {
+      data.movies = movies;
+    })
+    .catch((e) => {
+      console.error(e);
+      alert("Something went wrong! " + e);
+    })
+    .finally(() => {
+      data.isLoading = false;
     });
 }
 </script>
@@ -380,6 +427,9 @@ iframe {
 }
 .col h2 {
   text-align: center;
+}
+select {
+  max-width: 11rem;
 }
 @media (max-width: 1500px) {
   .modal-xl {

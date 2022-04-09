@@ -2,6 +2,10 @@
   <Header />
   <div class="box">
     <h2>404 - Page not found!</h2>
+    <img
+      src="/img/pixel-cells.png"
+      alt=""
+    />
   </div>
 </template>
 
@@ -16,5 +20,9 @@ document.title = "MovieArchive | 404";
   max-width: 45rem;
   padding: 3rem;
   margin: 4rem auto;
+}
+img {
+  max-width: 36rem;
+  margin-top: 2rem;
 }
 </style>

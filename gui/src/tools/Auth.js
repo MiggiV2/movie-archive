@@ -1,6 +1,7 @@
 import { setCookieInSec, getCookie, setCookie, setCookieSeasson } from "./Cookies";
 import { HOST } from "../main.js";
 import { v4 as uuidv4 } from "uuid";
+import { getUser } from "./User";
 
 var authURL =
     "http://localhost:8180/realms/quarkus/protocol/openid-connect/auth" +
@@ -46,7 +47,6 @@ export function login(code) {
         })
         .then((tokens) => {
             if (tokens != null) {
-                console.log("Expires in " + tokens.expiresIn);
                 setCookieInSec("accessToken", tokens.accessToken, tokens.expiresIn);
                 setCookieInSec("state", "", -1);
                 setCookieInSec(
@@ -88,7 +88,6 @@ export function refreshToken() {
         })
         .then((tokens) => {
             if (tokens != null) {
-                console.log("Expires in " + tokens.expiresIn)
                 setCookieInSec("accessToken", tokens.accessToken, tokens.expiresIn);
                 setCookieInSec(
                     "refreshToken",
@@ -134,36 +133,4 @@ export function getURLHashParams() {
         return res;
     }, {});
     return result;
-}
-
-export function isAdmin() {
-    return getUser().realm_access.roles.includes("admin");
-}
-
-export function getUserName() {
-    return getUser().preferred_username;
-}
-
-export function getUser() {
-    if (!getCookie("accessToken")) {
-        if (getCookie("refreshToken")) {
-            refreshToken();
-        } else {
-            console.log("Can't update user!");
-            return {};
-        }
-    }
-    return parseJwt(getCookie("accessToken"));
-}
-
-function parseJwt(token) {
-    if (token == null || token == "") {
-        return {};
-    }
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-    return JSON.parse(jsonPayload);
 }
