@@ -97,7 +97,7 @@ export function refreshToken() {
                 setCookieInSec(
                     "refreshToken",
                     tokens.refreshToken,
-                    tokens.refresh_expires_in
+                    tokens.refreshExpiresIn
                 );
             }
         });

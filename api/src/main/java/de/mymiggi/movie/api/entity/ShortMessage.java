@@ -1,5 +1,8 @@
 package de.mymiggi.movie.api.entity;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public class ShortMessage
 {
 	private String content;

@@ -72,8 +72,8 @@
       <div class="col-sm-9">
         <select class="form-select" required v-model="movie.type">
           <option selected disabled value="">Wähle einen Type</option>
-          <option value="BD">BlueRay Disc</option>
-          <option value="4k-BD">BlueRay Disc 4k</option>
+          <option value="BD">BluRay Disc</option>
+          <option value="4k-BD">BluRay Disc 4k</option>
           <option value="DVD">DVD</option>
         </select>
         <div class="invalid-feedback">Bitte wähle eine Kategorie</div>
