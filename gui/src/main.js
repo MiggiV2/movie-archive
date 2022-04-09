@@ -1,4 +1,5 @@
 export var HOST = "http://localhost:8080/movie-archive/";
+export var AUTH_HOST = "http://localhost:8180/";
 export var Owner = "Familie Hainz";
 
 import { createApp, h } from 'vue/dist/vue.esm-bundler.js';

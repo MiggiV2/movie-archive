@@ -1,18 +1,23 @@
-import { setCookieInSec, getCookie, setCookie, setCookieSeasson } from "./Cookies";
-import { HOST } from "../main.js";
+import { setCookieInSec, getCookie, setCookie, setCookieSeasson } from "@/tools/Cookies";
+import { AUTH_HOST, HOST } from "@/main";
 import { v4 as uuidv4 } from "uuid";
-import { getUser } from "./User";
+import { getUser } from "@/tools/User";
 
-var authURL =
-    "http://localhost:8180/realms/quarkus/protocol/openid-connect/auth" +
-    "?client_id=backend-service" +
-    "&redirect_uri=http%3A%2F%2Flocalhost:3000%2Fauth" +
-    "&response_type=code" +
-    "&scope=openid&state=";
+var authURL;
+var logoutURL;
+var redirectURI = window.location.protocol.replace(":", "%3A") + "%2F%2F" + window.location.host;
 
-var logoutURL =
-    "http://localhost:8180/realms/quarkus/protocol/openid-connect/logout" +
-    "?redirect_uri=http%3A%2F%2Flocalhost:3000";
+setTimeout(() => {
+    authURL = AUTH_HOST +
+        "realms/quarkus/protocol/openid-connect/auth" +
+        "?client_id=backend-service" +
+        "&redirect_uri=" + redirectURI + "%2Fauth" +
+        "&response_type=code" +
+        "&scope=openid&state=";
+    logoutURL = AUTH_HOST +
+        "realms/quarkus/protocol/openid-connect/logout" +
+        "?redirect_uri=" + redirectURI;
+}, 100)
 
 export function openLogin() {
     localStorage.setItem("redirect", window.location.pathname);
