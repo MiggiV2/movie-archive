@@ -12,10 +12,12 @@
           v-model="data.query"
           @input="search"
         />
-        <span class="input-group-text" id="basic-addon1">Sortierung</span>
+        <span class="input-group-text desktop" id="basic-addon1"
+          >Sortierung</span
+        >
         <select
           @change="setSortIDAndLoad($event)"
-          class="form-select"
+          class="form-select desktop"
           aria-label="Default select example"
         >
           <option value="0" selected>Keine Sortierung</option>
@@ -24,8 +26,34 @@
           <option value="3">Jahr \/</option>
           <option value="4">Jahr /\</option>
         </select>
+        <button
+          class="btn btn-primary mobile"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#collapseMenu"
+          aria-expanded="false"
+          aria-controls="collapseMenu"
+        >
+          Sortieren <i class="bi bi-wrench"></i>
+        </button>
       </div>
     </form>
+  </div>
+  <!--mobile-sort-content-->
+  <div class="container collapse" id="collapseMenu">
+    <div class="card card-body">
+      <select
+        @change="setSortIDAndLoad($event)"
+        class="form-select"
+        aria-label="Default select example"
+      >
+        <option value="0" selected>Keine Sortierung</option>
+        <option value="1">Alphapethisch \/</option>
+        <option value="2">Alphapethisch /\</option>
+        <option value="3">Jahr \/</option>
+        <option value="4">Jahr /\</option>
+      </select>
+    </div>
   </div>
   <!-- movies -->
   <div class="container">
@@ -75,30 +103,47 @@
         <div class="modal-body">
           <!-- Modal-Body -->
           <div class="row">
-            <div class="col-2">
+            <div class="col">
               <p>{{ data.currentMovie.name }}</p>
               <p>Zu finden in {{ data.currentMovie.block }}</p>
               <p>Aus dem Jahre {{ data.currentMovie.year }}</p>
               <p>Type: {{ data.currentMovie.type }}</p>
-              <a
-                v-if="allowIframe(data.currentMovie.wikiUrl)"
-                :href="data.currentMovie.wikiUrl"
-                >Wikipedia Link</a
-              >
-              <a
-                v-else-if="isVideoBuster(data.currentMovie.wikiUrl)"
-                :href="data.currentMovie.wikiUrl"
-              >
-                VideoBuster Link
-              </a>
+              <p class="wikis">
+                <a
+                  class="btn btn-primary"
+                  v-if="allowIframe(data.currentMovie.wikiUrl)"
+                  :href="data.currentMovie.wikiUrl"
+                  >Seite auf Wikipedia öffnen</a
+                >
+                <a
+                  class="btn btn-primary"
+                  v-else-if="isVideoBuster(data.currentMovie.wikiUrl)"
+                  :href="data.currentMovie.wikiUrl"
+                >
+                  VideoBuster Link
+                </a>
+              </p>
+              <p class="youtube-search">
+                <a
+                  class="btn btn-primary"
+                  :href="
+                    'https://www.youtube.com/results?search_query=Trailer ' +
+                    data.currentMovie.name
+                  "
+                  >Auf Youtube suchen <i class="bi bi-youtube"></i
+                ></a>
+              </p>
             </div>
-            <div v-if="allowIframe(data.currentMovie.wikiUrl)" class="col">
+            <div
+              v-if="allowIframe(data.currentMovie.wikiUrl)"
+              class="col-10 desktop"
+            >
               <iframe
                 :src="data.currentMovie.wikiUrl"
                 title="Wikipedia"
               ></iframe>
             </div>
-            <div v-else class="col">
+            <div v-else class="col-10">
               <h2>Leider kein Wikipedia Artikel verzeichnet!</h2>
             </div>
           </div>
@@ -423,17 +468,15 @@ iframe {
   height: 40rem;
 }
 .modal-xl {
-  max-width: 1500px;
+  max-width: 97vw;
 }
 .col h2 {
   text-align: center;
 }
-select {
-  max-width: 11rem;
+div.col-10 h2{
+  text-align: center;
 }
-@media (max-width: 1500px) {
-  .modal-xl {
-    max-width: 97vw;
-  }
+select.desktop {
+  max-width: 11rem;
 }
 </style>

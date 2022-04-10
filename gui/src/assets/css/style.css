@@ -33,6 +33,10 @@ body {
     color: rgb(12, 12, 12);
 }
 
+.card {
+    background-color: var(--primary-color);
+}
+
 @media (max-width: 768px) {
     .mobile {
         display: unset;

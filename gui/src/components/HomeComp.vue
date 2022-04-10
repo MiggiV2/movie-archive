@@ -1,9 +1,14 @@
 <template>
   <div class="container">
     <div class="box">
-      <h1>Herzlich Willkommen im Filmarchiv von {{ owner }}</h1>
+      <h1>
+        Herzlich Willkommen im Filmarchiv
+        <span class="desktop">von {{ owner }}</span>
+      </h1>
+      <img src="/img/film.jpg" alt="" class="desktop" />
       <img
-        src="/img/film.jpg"
+        class="mobile"
+        src="/img/cinema.jpg"
         alt=""
       />
       <h4 id="counter">
@@ -70,7 +75,7 @@ a.btn {
   margin-top: 2rem;
 }
 img {
-  max-width: 60rem;
+  max-width: 100%;
   margin-bottom: 2rem;
 }
 </style>

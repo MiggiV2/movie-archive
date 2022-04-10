@@ -1,5 +1,5 @@
 <template>
-  <div class="header-content">
+  <div class="header-content">    
     <div class="row align-items-center">
       <div class="col-auto">
         <h2>
@@ -9,6 +9,7 @@
           ></a>
         </h2>
       </div>
+      <!--desktop-menu-->
       <div class="col" />
       <div class="col-auto desktop">
         <h4 v-if="user.name.length > 0">
@@ -54,8 +55,9 @@
           <i class="bi bi-box-arrow-in-right"></i> Login
         </h4>
       </div>
+      <!--mobile-menu-->
       <div class="col-auto mobile">
-        <h2>
+        <h2 v-if="user.name.length > 0">
           <a
             data-bs-toggle="collapse"
             href="#mobileMenu"
@@ -66,24 +68,29 @@
             <i class="bi bi-list"></i>
           </a>
         </h2>
+        <h4 v-else @click="openLogin()">
+          <i class="bi bi-box-arrow-in-right"></i> Login
+        </h4>
       </div>
     </div>
     <div class="collapse" id="mobileMenu">
       <div class="card card-body">
-        <hr />
-        <div class="list-group">
-          <a v-if="user.name.length > 0">
-            <i class="bi bi-search"></i> Suchen
-          </a>
-          <a v-if="user.name.length > 0">
+        <hr id="menu-hr"/>
+        <div class="row">
+          <div class="col-6">
+            <a href="/search"><i class="bi bi-search"></i> Suchen</a>
+          </div>
+          <div class="col-6">
             {{ user.name }} <i class="bi bi-person-circle"></i>
-          </a>
-          <a v-else @click="login()">
-            Login <i class="bi bi-box-arrow-in-right"></i>
-          </a>
-          <a class="logout" v-if="user.name.length > 0" @click="logout()">
-            Logout <i class="bi bi-box-arrow-right"></i>
-          </a>
+          </div>
+          <div class="col-6">
+            <a href="/add"><i class="bi bi-plus-circle"></i> Neuer Film</a>
+          </div>
+          <div class="col-6">
+            <a @click="openLogout()">
+              Logout <i class="bi bi-box-arrow-right"></i>
+            </a>
+          </div>
         </div>
       </div>
     </div>
@@ -126,14 +133,6 @@ var user = reactive({
   name: "",
   isAdmin: false,
 });
-
-function login() {
-  openLogin();
-}
-
-function logout() {
-  openLogout();
-}
 
 if (getCookie("refreshToken")) {
   checkTokenAndRun(() => {
@@ -193,6 +192,12 @@ img {
   max-width: 40px;
   margin-right: 1rem !important;
 }
+#menu-hr {
+  margin: 0 0 0.5rem;
+}
+#mobileMenu .row div{
+  padding-top: 10px;
+}
 .icon-right {
   right: 1.2rem;
   position: absolute;
@@ -205,4 +210,4 @@ img {
     max-width: 98vw;
   }
 }
-</style>
+</style> 
