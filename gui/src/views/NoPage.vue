@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import Header from "./components/HeaderCom.vue";
+import Header from "@/components/HeaderCom.vue";
 document.title = "MovieArchive | 404";
 </script>
 
