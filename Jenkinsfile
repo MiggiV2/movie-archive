@@ -11,11 +11,9 @@ node {
       */
       dir("api") {
         sh 'ls -la'
-        sh './mvnw clean package -DskipTests'        
-      }
-      dir("api/target/quarkus-app"){
+        sh './mvnw clean package -DskipTests'
         sh 'docker build -f src/main/docker/Dockerfile.jvm -t $ROOT_IMAGE/api .'
-      }          
+      }    
     }
     stage('Build GUI') {
       dir("gui") {
