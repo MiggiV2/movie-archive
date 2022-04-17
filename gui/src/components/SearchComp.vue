@@ -302,8 +302,10 @@ window.onscroll = function () {
     !data.isLoading &&
     data.query.replace(/\s+/g, "").length == 0
   ) {
-    data.currentPage++;
-    loadMovies();
+    if (window.location.pathname == "/search") {
+      data.currentPage++;
+      loadMovies();
+    }
   }
 };
 
@@ -473,7 +475,7 @@ iframe {
 .col h2 {
   text-align: center;
 }
-div.col-10 h2{
+div.col-10 h2 {
   text-align: center;
 }
 select.desktop {

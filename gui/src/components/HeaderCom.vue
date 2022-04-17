@@ -44,7 +44,7 @@
               </li>
               <hr />
               <li>
-                <a class="dropdown-item logout" @click="logout()">
+                <a class="dropdown-item logout" @click="openLogout()">
                   Logout <i class="bi bi-box-arrow-right icon-right"></i>
                 </a>
               </li>

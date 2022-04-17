@@ -2,11 +2,20 @@ node {
   git branch: 'master', url: 'ssh://git@gitea:22/Miggi/movie-archive.git'
   withEnv(['ROOT_IMAGE=registry.mymiggi.de/miggi/movie-archive']) {
     stage('Build API') {
+      /* Skipped, RAM Probelm
       dir("api") {
         sh 'export JAVA_HOME="/root/mandrel-java11-21.3.1.1-Final" && export GRAALVM_HOME="${JAVA_HOME}" && export PATH="${JAVA_HOME}/bin:${PATH}"'
         sh './mvnw clean package -Dnative -DskipTests'
+        sh 'docker build -f src/main/docker/Dockerfile.native -t $ROOT_IMAGE/api .'  
       }
-      sh 'docker build -f src/main/docker/Dockerfile.native -t $ROOT_IMAGE/api .'      
+      */
+      dir("api") {
+        sh 'ls -la'
+        sh './mvnw clean package -DskipTests'        
+      }
+      dir("api/target/quarkus-app"){
+        sh 'docker build -f src/main/docker/Dockerfile.jvm -t $ROOT_IMAGE/api .'
+      }          
     }
     stage('Build GUI') {
       dir("gui") {

@@ -37,6 +37,10 @@ body {
     background-color: var(--primary-color);
 }
 
+a:hover {
+    color: unset;
+}
+
 @media (max-width: 768px) {
     .mobile {
         display: unset;
