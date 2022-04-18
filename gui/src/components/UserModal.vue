@@ -20,10 +20,7 @@
             </div>
             <div class="col"></div>
             <div class="col-auto">
-              <img
-                src="/img/avatar.png"
-                alt="USER-IMAGE"
-              />
+              <img src="/img/avatar.png" alt="USER-IMAGE" />
             </div>
           </div>
         </div>
@@ -50,9 +47,12 @@ const data = reactive({
     group: undefined,
   },
 });
-data.user = getUser();
-data.user.group = isAdmin() ? "Admin" : "Nutzer";
-data.user.email_verified = data.user.email_verified ? "Ja" : "Nein";
+
+setTimeout(() => {
+  data.user = getUser();
+  data.user.group = isAdmin() ? "Admin" : "Nutzer";
+  data.user.email_verified = data.user.email_verified ? "Ja" : "Nein";
+}, 1500);
 </script>
 
 <style scoped>

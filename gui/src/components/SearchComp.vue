@@ -150,6 +150,7 @@
         </div>
         <div class="modal-footer">
           <button
+            v-if="user.isAdmin"
             type="button"
             class="btn btn-danger"
             data-bs-target="#deleteModal"
@@ -158,6 +159,7 @@
             <i class="bi bi-trash3"></i> Löschen
           </button>
           <button
+            v-if="user.isAdmin"
             @click="showUpdateModal()"
             type="button"
             class="btn btn-primary"
@@ -256,8 +258,14 @@ import { wikiWhiteList, videoBusterList } from "@/tools/SearchList";
 import { getMoviePageCount } from "@/tools/PubMovie";
 import UpdateModal from "@/components/UpdateModal.vue";
 import { deleteMovie } from "@/tools/AdminMovie";
+import { isAdmin } from "@/tools/User";
+import { getCookie } from "@/tools/Cookies";
 
 var urlParams = new URLSearchParams(window.location.search);
+
+const user = reactive({
+  isAdmin: false,
+});
 
 const data = reactive({
   movies: [],
@@ -282,16 +290,27 @@ const data = reactive({
   },
 });
 
-checkTokenAndRun(() => {
-  if (data.query.length == 0) {
-    loadMovies();
+start();
+
+function start() {
+  if (!getCookie("accessToken")) {
+    setTimeout(() => {
+      start();
+    }, 10);
   } else {
-    startSearch();
+    user.isAdmin = isAdmin();
+    checkTokenAndRun(() => {
+      if (data.query.length == 0) {
+        loadMovies();
+      } else {
+        startSearch();
+      }
+      getMoviePageCount().then((count) => {
+        data.maxPageCount = count;
+      });
+    });
   }
-  getMoviePageCount().then((count) => {
-    data.maxPageCount = count;
-  });
-});
+}
 
 window.onscroll = function () {
   var scrollPosition =

@@ -12,7 +12,7 @@
       <!--desktop-menu-->
       <div class="col" />
       <div class="col-auto desktop">
-        <h4 v-if="user.name.length > 0">
+        <h4 v-if="user.name.length > 0 && user.isAdmin" >
           <router-link to="/add"><i class="bi bi-plus-circle"></i> Neuer Film</router-link>
         </h4>
       </div>
@@ -83,7 +83,7 @@
           <div class="col-6">
             {{ user.name }} <i class="bi bi-person-circle"></i>
           </div>
-          <div class="col-6">
+          <div v-if="user.isAdmin" class="col-6">
             <router-link to="/add"><i class="bi bi-plus-circle"></i> Neuer Film</router-link>
           </div>
           <div class="col-6">

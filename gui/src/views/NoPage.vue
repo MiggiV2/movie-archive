@@ -17,7 +17,7 @@ document.title = "MovieArchive | 404";
 <style scoped>
 .box {
   text-align: center;
-  max-width: 45rem;
+  width: 45rem;
   padding: 3rem;
   margin: 4rem auto;
 }
