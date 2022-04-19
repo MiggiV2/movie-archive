@@ -1,5 +1,5 @@
 <template>
-  <div class="header-content">    
+  <div class="header-content">
     <div class="row align-items-center">
       <div class="col-auto">
         <h2>
@@ -12,18 +12,22 @@
       <!--desktop-menu-->
       <div class="col" />
       <div class="col-auto desktop">
-        <h4 v-if="user.name.length > 0 && user.isAdmin" >
-          <router-link to="/add"><i class="bi bi-plus-circle"></i> Neuer Film</router-link>
+        <h4 v-if="user.simpleName.length > 0 && user.isAdmin">
+          <router-link to="/add"
+            ><i class="bi bi-plus-circle"></i> Neuer Film</router-link
+          >
         </h4>
       </div>
       <div class="col-auto desktop">
-        <h4 v-if="user.name.length > 0">
-          <router-link to="/search"><i class="bi bi-search"></i> Suchen</router-link>
+        <h4 v-if="user.simpleName.length > 0">
+          <router-link to="/search"
+            ><i class="bi bi-search"></i> Suchen</router-link
+          >
         </h4>
       </div>
       <!--UserName/Login-->
       <div class="col-auto desktop">
-        <h4 class="dropdown" v-if="user.name.length > 0">
+        <h4 class="dropdown" v-if="user.simpleName.length > 0">
           <div class="dropdown">
             <a
               class="dropdown-toggle"
@@ -33,7 +37,7 @@
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
-              <i class="bi bi-person-circle"></i> {{ user.name }}
+              <i class="bi bi-person-circle"></i> {{ user.simpleName }}
             </a>
 
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -57,7 +61,7 @@
       </div>
       <!--mobile-menu-->
       <div class="col-auto mobile">
-        <h2 v-if="user.name.length > 0">
+        <h2 v-if="user.simpleName.length > 0">
           <a
             data-bs-toggle="collapse"
             href="#mobileMenu"
@@ -75,16 +79,20 @@
     </div>
     <div class="collapse" id="mobileMenu">
       <div class="card card-body">
-        <hr id="menu-hr"/>
+        <hr id="menu-hr" />
         <div class="row">
           <div class="col-6">
-            <router-link to="/search"><i class="bi bi-search"></i> Suchen</router-link>
+            <router-link to="/search"
+              ><i class="bi bi-search"></i> Suchen</router-link
+            >
           </div>
           <div class="col-6">
-            {{ user.name }} <i class="bi bi-person-circle"></i>
+            {{ user.simpleName }} <i class="bi bi-person-circle"></i>
           </div>
           <div v-if="user.isAdmin" class="col-6">
-            <router-link to="/add"><i class="bi bi-plus-circle"></i> Neuer Film</router-link>
+            <router-link to="/add"
+              ><i class="bi bi-plus-circle"></i> Neuer Film</router-link
+            >
           </div>
           <div class="col-6">
             <a @click="openLogout()">
@@ -107,7 +115,7 @@
       >
         <div class="toast-header">
           <img src="/img/unlock.png" class="rounded me-2" alt="..." />
-          <strong class="me-auto">Erfolgreich eingeloggt!</strong>
+          <strong class="me-auto">{{ user.motto }}</strong>
           <button
             type="button"
             class="btn-close"
@@ -123,23 +131,29 @@
 
 <script setup>
 import { getCookie, setCookieSeasson } from "@/tools/Cookies";
-import { getUserName, isAdmin } from "@/tools/User";
+import { getUserName, getUsersSimpleName, isAdmin } from "@/tools/User";
 import { checkTokenAndRun, openLogin, openLogout } from "@/tools/Auth";
 import { reactive } from "@vue/reactivity";
 import { Modal, Toast } from "bootstrap";
+import { getRandomMotto } from "@/tools/Motto";
 import UserModal from "@/components/UserModal.vue";
 
 var user = reactive({
-  name: "",
+  simpleName: "",
+  fullName: "",
   isAdmin: false,
+  motto: "",
 });
 
 if (getCookie("refreshToken")) {
   checkTokenAndRun(() => {
-    user.name = getUserName();
+    user.simpleName = getUsersSimpleName();
+    user.fullName = getUserName();
     user.isAdmin = isAdmin();
+    user.motto = getRandomMotto(user);
     if (getCookie("login-toast") != "showed") {
       showToast();
+      console.log(getRandomMotto(user));
     }
   });
 }
@@ -195,7 +209,7 @@ img {
 #menu-hr {
   margin: 0 0 0.5rem;
 }
-#mobileMenu .row div{
+#mobileMenu .row div {
   padding-top: 10px;
 }
 .icon-right {

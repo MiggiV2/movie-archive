@@ -7,7 +7,16 @@ export function isAdmin() {
 }
 
 export function getUserName() {
+    const user = getUser();
+    return user.name == undefined ? user.preferred_username : user.name;
+}
+
+export function getUsersSimpleName() {
     return getUser().preferred_username;
+}
+
+export function getUsersFullName() {
+    return getUser().name;
 }
 
 export function getUser() {
