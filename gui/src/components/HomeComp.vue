@@ -35,7 +35,7 @@
 import { Owner } from "@/main";
 import { getCookie } from "@/tools/Cookies";
 import { reactive } from "@vue/reactivity";
-import { getMovieCount } from "@/tools/PubMovie";
+import { getMovieCount } from "@/tools/api-wrapper/PubMovie";
 
 var owner = Owner;
 var user = reactive({

@@ -1,12 +1,12 @@
 <template>
     <Header />
-    <AddComp />
+    <AuditLogComp />
   <Footer />
 </template>
 
 <script setup>
 import Header from "@/components/HeaderCom.vue";
-import AddComp from '@/components/AddComp.vue'
+import AuditLogComp from "@/components/AuditLogComp.vue";
 import Footer from "@/components/FooterComp.vue";
-document.title = 'MovieArchive | Neuer Film';
+document.title = 'MovieArchive | Auditlog';
 </script>

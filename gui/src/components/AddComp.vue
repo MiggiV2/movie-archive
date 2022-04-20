@@ -129,7 +129,7 @@
 <script setup>
 import { reactive } from "@vue/reactivity";
 import { setCustomValidation } from "@/tools/BS5Helper";
-import { addMovie } from "@/tools/AdminMovie";
+import { addMovie } from "@/tools/api-wrapper/AdminMovie";
 import { Toast } from "bootstrap";
 import { checkTokenAndRun } from "@/tools/Auth";
 

@@ -13,6 +13,7 @@ import de.mymiggi.movie.api.actions.admin.UpdateMovieAction;
 import de.mymiggi.movie.api.actions.user.GetMovieByIDAction;
 import de.mymiggi.movie.api.actions.user.GetSortedMoviesAction;
 import de.mymiggi.movie.api.actions.user.SearchAction;
+import de.mymiggi.movie.api.entity.KeycloakUser;
 import de.mymiggi.movie.api.entity.config.DefaultPage;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 
@@ -27,13 +28,13 @@ public class TestAction
 		MovieEntity movieEntity = new MovieEntity(2077, "Cyberpunk-Movie", "Block 77", "", "DB");
 
 		/** Add-Test **/
-		Response response = new AddMovieAction().run(movieEntity);
+		Response response = new AddMovieAction().run(movieEntity, new KeycloakUser());
 		movieEntity = response.readEntity(MovieEntity.class);
 		Assertions.assertEquals(response.getStatus(), 200);
 
 		/** Update-Test **/
 		movieEntity.name = "Cyberpunk";
-		response = new UpdateMovieAction().run(movieEntity);
+		response = new UpdateMovieAction().run(movieEntity, new KeycloakUser());
 		movieEntity = response.readEntity(MovieEntity.class);
 		Assertions.assertEquals(response.getStatus(), 200);
 
@@ -66,7 +67,7 @@ public class TestAction
 		Assertions.assertEquals(movies, null);
 
 		/** Delete-Test **/
-		response = new DeleteMovieAction().run(movieEntity.id);
-		Assertions.assertEquals(response.getStatus(), 200);
+		response = new DeleteMovieAction().run(movieEntity.id, new KeycloakUser());
+		Assertions.assertEquals(response.getStatus(), 204);
 	}
 }

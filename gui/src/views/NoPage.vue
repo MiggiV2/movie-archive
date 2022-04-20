@@ -7,10 +7,12 @@
       alt=""
     />
   </div>
+  <Footer />
 </template>
 
 <script setup>
 import Header from "@/components/HeaderCom.vue";
+import Footer from "@/components/FooterComp.vue";
 document.title = "MovieArchive | 404";
 </script>
 

@@ -17,6 +17,7 @@
               <p>Name: {{ data.user.preferred_username }}</p>
               <p>Gruppe: {{ data.user.group }}</p>
               <p>Verifizierte E-Mail: {{ data.user.email_verified }}</p>
+              <p v-if="data.user.isAdmin"><a href="/audit-log">Admin-Log <i class="bi bi-shield-check"></i></a></p>
             </div>
             <div class="col"></div>
             <div class="col-auto">
@@ -50,6 +51,7 @@ const data = reactive({
 
 setTimeout(() => {
   data.user = getUser();
+  data.user.isAdmin = isAdmin();
   data.user.group = isAdmin() ? "Admin" : "Nutzer";
   data.user.email_verified = data.user.email_verified ? "Ja" : "Nein";
 }, 1500);
@@ -59,5 +61,8 @@ setTimeout(() => {
 img {
   max-width: 5rem;
   margin-right: 1rem;
+}
+a {
+  text-decoration: unset;
 }
 </style>

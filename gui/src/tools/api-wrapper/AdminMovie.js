@@ -1,5 +1,5 @@
 import { HOST } from "@/main";
-import { getCookie } from "./Cookies";
+import { getCookie } from "@/tools/Cookies";
 
 export function addMovie(movie) {
     return fetch(HOST + "admin/add-movie", {
@@ -71,5 +71,53 @@ export function deleteMovie(movie) {
         }
         console.error(response);
         throw new Error("Can't delete movie!");
+    });
+}
+
+export function getAuditLog(page) {
+    return fetch(HOST + "admin/auditlog?page=" + page, {
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + getCookie("accessToken")
+        },
+    }).then(response => {
+        if (response.status == 200) {
+            return response.json();
+        }
+        if (response.status == 204) {
+            throw new Error("Expected body. Got no content!");
+        }
+        if (response.status == 401) {
+            throw new Error("You are not authorized to read this log!");
+        }
+        if (response.status == 403) {
+            throw new Error("You only admins can read this log!");
+        }
+        console.error(response);
+        throw new Error("Failed to read the audit log!");
+    });
+}
+
+export function getAuditLogPageCount() {
+    return fetch(HOST + "admin/auditlog-page-count", {
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + getCookie("accessToken")
+        },
+    }).then(response => {
+        if (response.status == 200) {
+            return response.json();
+        }
+        if (response.status == 204) {
+            throw new Error("Expected body. Got no content!");
+        }
+        if (response.status == 401) {
+            throw new Error("You are not authorized to read this log!");
+        }
+        if (response.status == 403) {
+            throw new Error("You only admins can read this log!");
+        }
+        console.error(response);
+        throw new Error("Failed to read the audit log!");
     });
 }

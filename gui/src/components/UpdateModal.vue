@@ -99,7 +99,7 @@
 
 <script setup>
 const { reactive } = require("@vue/reactivity");
-import { updateMovie } from "@/tools/AdminMovie";
+import { updateMovie } from "@/tools/api-wrapper/AdminMovie";
 import { checkTokenAndRun } from "@/tools/Auth";
 import { Modal } from "bootstrap";
 // eslint-disable-next-line

@@ -13,7 +13,7 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import de.mymiggi.movie.api.actions.pub.ExchangeAction;
 import de.mymiggi.movie.api.actions.pub.GetMovieCountAction;
-import de.mymiggi.movie.api.actions.pub.GetMoviePageCount;
+import de.mymiggi.movie.api.actions.pub.GetMoviePageCountAction;
 import de.mymiggi.movie.api.entity.config.DefaultPage;
 import de.mymiggi.movie.api.entity.config.OAuthRedirectURL;
 import de.mymiggi.movie.api.entity.oauth.TokenRequest;
@@ -45,7 +45,7 @@ public class PublicResource
 	@Path("movie-page-count")
 	public Response getMoviePageCount()
 	{
-		return new GetMoviePageCount().run(defaultPage);
+		return new GetMoviePageCountAction().run(defaultPage);
 	}
 
 	@POST

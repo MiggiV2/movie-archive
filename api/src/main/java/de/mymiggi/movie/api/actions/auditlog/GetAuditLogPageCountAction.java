@@ -1,15 +1,15 @@
-package de.mymiggi.movie.api.actions.pub;
+package de.mymiggi.movie.api.actions.auditlog;
 
 import javax.ws.rs.core.Response;
 
 import de.mymiggi.movie.api.entity.config.DefaultPage;
-import de.mymiggi.movie.api.entity.db.MovieEntity;
+import de.mymiggi.movie.api.entity.db.AuditLogEntity;
 
-public class GetMoviePageCount
+public class GetAuditLogPageCountAction
 {
 	public Response run(DefaultPage defaultPage)
 	{
-		double max = MovieEntity.count() / defaultPage.Size();
+		double max = AuditLogEntity.count() / defaultPage.Size();
 		return Response.ok((int)Math.nextUp(max)).build();
 	}
 }

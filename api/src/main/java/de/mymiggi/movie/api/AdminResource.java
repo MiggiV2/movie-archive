@@ -5,6 +5,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -14,6 +15,10 @@ import javax.ws.rs.core.Response;
 import de.mymiggi.movie.api.actions.admin.AddMovieAction;
 import de.mymiggi.movie.api.actions.admin.DeleteMovieAction;
 import de.mymiggi.movie.api.actions.admin.UpdateMovieAction;
+import de.mymiggi.movie.api.actions.auditlog.GetAuditLogAction;
+import de.mymiggi.movie.api.actions.auditlog.GetAuditLogPageCountAction;
+import de.mymiggi.movie.api.entity.KeycloakUser;
+import de.mymiggi.movie.api.entity.config.DefaultPage;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import io.quarkus.security.identity.SecurityIdentity;
 
@@ -24,13 +29,15 @@ public class AdminResource
 {
 	@Inject
 	SecurityIdentity identity;
+	@Inject
+	DefaultPage defaultPage;
 
 	@POST
 	@Path("add-movie")
 	@Transactional
 	public Response addMovie(MovieEntity movieEntity)
 	{
-		return new AddMovieAction().run(movieEntity);
+		return new AddMovieAction().run(movieEntity, new KeycloakUser(identity));
 	}
 
 	@PUT
@@ -38,7 +45,7 @@ public class AdminResource
 	@Transactional
 	public Response updateMovieById(MovieEntity movieEntity)
 	{
-		return new UpdateMovieAction().run(movieEntity);
+		return new UpdateMovieAction().run(movieEntity, new KeycloakUser(identity));
 	}
 
 	@DELETE
@@ -46,6 +53,20 @@ public class AdminResource
 	@Transactional
 	public Response deleteMovieByID(@QueryParam("id") Long id)
 	{
-		return new DeleteMovieAction().run(id);
+		return new DeleteMovieAction().run(id, new KeycloakUser(identity));
+	}
+
+	@GET
+	@Path("auditlog")
+	public Response getAuditLog(@QueryParam("page") int page)
+	{
+		return new GetAuditLogAction().run(page, defaultPage);
+	}
+
+	@GET
+	@Path("auditlog-page-count")
+	public Response getAuditLogPageCount()
+	{
+		return new GetAuditLogPageCountAction().run(defaultPage);
 	}
 }

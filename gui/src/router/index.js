@@ -25,6 +25,11 @@ const routes = [{
         name: 'add',
         component: () =>
             import ( /* webpackChunkName: "add" */ '@/views/Add.vue')
+    }, {
+        path: '/audit-log',
+        name: 'audit-log',
+        component: () =>
+            import ( /* webpackChunkName: "search" */ '@/views/AuditLog.vue')
     }
 ]
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="header-content">
+  <nav class="header-content">
     <div class="row align-items-center">
       <div class="col-auto">
         <h2>
@@ -102,7 +102,8 @@
         </div>
       </div>
     </div>
-  </div>
+  </nav>
+  <div id="dummy" />
   <!-- toast -->
   <div>
     <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
@@ -181,9 +182,17 @@ i {
   max-width: 92vw;
   padding-top: 10px;
 }
+nav {
+  position: fixed;
+  width: 100vw;
+  top: 0px;
+  z-index: 100;
+}
 .header-content {
   background-color: var(--primary-color);
-  max-width: 100vw;
+}
+#dummy {
+  height: 55px;
 }
 .link:hover {
   text-decoration: underline;

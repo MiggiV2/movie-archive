@@ -4,7 +4,6 @@ export function getRandomMotto(user) {
     return mottos[randomInt];
 }
 
-// eslint-disable-next-line
 function getMottos(name) {
     return [
         'Schön dich zusehen, ' + name,

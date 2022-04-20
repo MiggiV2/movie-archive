@@ -6,6 +6,11 @@ public class KeycloakUser
 {
 	private final String userName;
 
+	public KeycloakUser()
+	{
+		this.userName = "testUser";
+	}
+
 	public KeycloakUser(SecurityIdentity identity)
 	{
 		this.userName = identity.getPrincipal().getName();

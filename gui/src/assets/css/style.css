@@ -29,6 +29,10 @@ body {
     cursor: pointer;
 }
 
+.box-movie:hover {
+    background-color: var(--bs-gray-700);
+}
+
 .modal-dialog {
     color: rgb(12, 12, 12);
 }

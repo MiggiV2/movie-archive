@@ -1,5 +1,5 @@
 import { HOST } from "@/main";
-import { getCookie } from "./Cookies";
+import { getCookie } from "@/tools/Cookies";
 
 export function getMovies(page) {
     return fetch(HOST + "user/get-movies?page=" + page, {

@@ -1,5 +1,5 @@
-import { refreshToken } from "./Auth";
-import { getCookie } from "./Cookies";
+import { refreshToken } from "@/tools/Auth";
+import { getCookie } from "@/tools/Cookies";
 
 export function isAdmin() {
     var user = getUser();

@@ -251,13 +251,13 @@
 
 <script setup>
 import { checkTokenAndRun } from "@/tools/Auth";
-import { getMovies, getSortedMovies, searchMovie } from "@/tools/UserMovie";
+import { getMovies, getSortedMovies, searchMovie } from "@/tools/api-wrapper/UserMovie";
 import { reactive } from "@vue/reactivity";
 import { Modal } from "bootstrap";
 import { wikiWhiteList, videoBusterList } from "@/tools/SearchList";
-import { getMoviePageCount } from "@/tools/PubMovie";
+import { getMoviePageCount } from "@/tools/api-wrapper/PubMovie";
 import UpdateModal from "@/components/UpdateModal.vue";
-import { deleteMovie } from "@/tools/AdminMovie";
+import { deleteMovie } from "@/tools/api-wrapper/AdminMovie";
 import { isAdmin } from "@/tools/User";
 import { getCookie } from "@/tools/Cookies";
 
@@ -298,17 +298,7 @@ function start() {
       start();
     }, 10);
   } else {
-    user.isAdmin = isAdmin();
-    checkTokenAndRun(() => {
-      if (data.query.length == 0) {
-        loadMovies();
-      } else {
-        startSearch();
-      }
-      getMoviePageCount().then((count) => {
-        data.maxPageCount = count;
-      });
-    });
+    load();
   }
 }
 
@@ -327,6 +317,20 @@ window.onscroll = function () {
     }
   }
 };
+
+function load() {
+  user.isAdmin=isAdmin();
+  checkTokenAndRun(() => {
+    if(data.query.length==0) {
+      loadMovies();
+    } else {
+      startSearch();
+    }
+    getMoviePageCount().then((count) => {
+      data.maxPageCount=count;
+    });
+  });
+}
 
 function search() {
   setTimeout(() => {
