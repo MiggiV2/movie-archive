@@ -56,7 +56,7 @@
     </div>
   </div>
   <!-- movies -->
-  <div class="container">
+  <div id="movies" class="container">
     <div
       class="box box-movie"
       v-for="(movie, index) in data.movies"
@@ -251,7 +251,11 @@
 
 <script setup>
 import { checkTokenAndRun } from "@/tools/Auth";
-import { getMovies, getSortedMovies, searchMovie } from "@/tools/api-wrapper/UserMovie";
+import {
+  getMovies,
+  getSortedMovies,
+  searchMovie,
+} from "@/tools/api-wrapper/UserMovie";
 import { reactive } from "@vue/reactivity";
 import { Modal } from "bootstrap";
 import { wikiWhiteList, videoBusterList } from "@/tools/SearchList";
@@ -319,15 +323,15 @@ window.onscroll = function () {
 };
 
 function load() {
-  user.isAdmin=isAdmin();
+  user.isAdmin = isAdmin();
   checkTokenAndRun(() => {
-    if(data.query.length==0) {
+    if (data.query.length == 0) {
       loadMovies();
     } else {
       startSearch();
     }
     getMoviePageCount().then((count) => {
-      data.maxPageCount=count;
+      data.maxPageCount = count;
     });
   });
 }
@@ -487,6 +491,9 @@ function sendSearch() {
 #search-input input {
   background: unset;
   color: white;
+}
+#movies {
+  margin-bottom: 6rem;
 }
 iframe {
   width: 100%;

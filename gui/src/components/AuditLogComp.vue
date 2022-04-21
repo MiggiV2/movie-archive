@@ -2,9 +2,12 @@
   <!-- log -->
   <div class="container">
     <h2 class="box">Admin Audit Log</h2>
-    <div class="box" v-for="(item, index) in data.log" :key="index">
+    <div class="box log" v-for="(item, index) in data.log" :key="index">
       <p>{{ item.userName }}: {{ item.message }}</p>
       <small>{{ item.date.substring(0, 19) }}</small>
+    </div>
+    <div class="container box" v-if="!data.isLoading && data.log.length == 0">
+      <h2>No logs found!</h2>
     </div>
   </div>
   <!-- spinner -->
@@ -66,13 +69,10 @@ function loadLog() {
 </script>
 
 <style scoped>
-.box {
+.log {
   text-align: left;
 }
-h2.box {
-  text-align: center;
-}
 .container {
-  margin-bottom: 10rem;
+  margin-bottom: 6rem;
 }
 </style>

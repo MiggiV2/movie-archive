@@ -68,6 +68,9 @@ function countAnimation(count) {
 h1 {
   margin: 1rem;
 }
+.box {
+  margin-bottom: 6rem;
+}
 #counter {
   margin-bottom: 2rem;
 }

@@ -86,7 +86,7 @@
               ><i class="bi bi-search"></i> Suchen</router-link
             >
           </div>
-          <div class="col-6">
+          <div class="col-6" @click="showUserModal()">
             {{ user.simpleName }} <i class="bi bi-person-circle"></i>
           </div>
           <div v-if="user.isAdmin" class="col-6">

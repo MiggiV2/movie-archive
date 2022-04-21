@@ -96,7 +96,7 @@
     </form>
     <!-- toast -->
     <div>
-      <div class="position-fixed top-0 end-0 p-3" style="z-index: 11">
+      <div class="position-fixed top-0 end-0 p-3" style="z-index: 101">
         <div
           id="errorToast"
           class="toast"

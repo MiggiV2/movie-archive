@@ -1,7 +1,12 @@
 <template>
   <footer>
     <div class="row align-items-center">
-      <div class="col-auto">Entwickelt vom Michael Hainz <i class="bi bi-person-check-fill"></i></div>
+      <div class="col-auto">
+        <span class="desktop">Entwickelt vom</span>
+        <span class="mobile">Von</span>
+         Michael Hainz
+        <i class="bi bi-person-check-fill"></i>
+      </div>
       <div class="col" />
       <div class="col-auto">
         <a href="https://github.com/MiggiV2">
@@ -33,5 +38,10 @@ footer {
 a {
   color: unset;
   text-decoration: unset;
+}
+@media (max-width: 768px) {
+  .row {
+    max-width: 100vw;
+  }
 }
 </style>
