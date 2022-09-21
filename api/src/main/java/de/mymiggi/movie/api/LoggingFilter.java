@@ -10,6 +10,8 @@ import org.jboss.logging.Logger;
 
 import io.vertx.core.http.HttpServerRequest;
 
+import java.util.Objects;
+
 @Provider
 public class LoggingFilter implements ContainerRequestFilter
 {
@@ -27,7 +29,9 @@ public class LoggingFilter implements ContainerRequestFilter
 
 		final String method = context.getMethod();
 		final String path = info.getPath();
-		final String address = request.remoteAddress().toString();
+		final String address = Objects.isNull(request.getHeader("X-Real-Ip"))
+			? request.remoteAddress().toString()
+			: request.getHeader("X-Real-Ip");
 
 		LOG.infof("Request %s %s from IP %s", method, path, address);
 	}
