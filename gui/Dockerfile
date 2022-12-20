@@ -1,9 +1,9 @@
 FROM node:16 as build-stage
 WORKDIR /app
 COPY package*.json ./
-RUN npm install && npm update
+RUN yarn 
 COPY ./ .
-RUN npm run build
+RUN yarn run build
 
 FROM nginx as production-stage
 RUN mkdir /app
