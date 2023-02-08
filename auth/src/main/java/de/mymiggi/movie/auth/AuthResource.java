@@ -13,7 +13,7 @@ import de.mymiggi.movie.auth.action.RefreshAction;
 import de.mymiggi.movie.auth.entity.config.OAuthConfig;
 import de.mymiggi.movie.auth.entity.login.UserCredentials;
 
-@Path("/auth")
+@Path("movie-archive/auth")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class AuthResource

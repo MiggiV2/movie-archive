@@ -36,6 +36,7 @@ public class PublicResource
 
 	@GET
 	@Path("movie-count")
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response getMovieCount()
 	{
 		return new GetMovieCountAction().run();
@@ -43,6 +44,7 @@ public class PublicResource
 
 	@GET
 	@Path("movie-page-count")
+	@Produces(MediaType.TEXT_PLAIN)
 	public Response getMoviePageCount()
 	{
 		return new GetMoviePageCountAction().run(defaultPage);

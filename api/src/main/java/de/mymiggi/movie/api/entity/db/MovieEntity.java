@@ -42,7 +42,13 @@ public class MovieEntity extends PanacheEntity
 		}
 		catch (Exception e)
 		{
-			return new ArrayList<MovieEntity>();
+			return new ArrayList<>();
 		}
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format("year:%d,name:%s,uuid:%s,block:%s,wikiUrl:%s,type:%s", year, name, uuid, block, wikiUrl, type);
 	}
 }

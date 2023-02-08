@@ -5,7 +5,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import de.mymiggi.movie.api.actions.user.GetMovieByIDAction;
@@ -13,17 +15,19 @@ import de.mymiggi.movie.api.actions.user.GetMoviesAction;
 import de.mymiggi.movie.api.actions.user.GetSortedMoviesAction;
 import de.mymiggi.movie.api.actions.user.SearchAction;
 import de.mymiggi.movie.api.entity.config.DefaultPage;
-import io.quarkus.security.identity.SecurityIdentity;
+import de.mymiggi.movie.api.service.SyncService;
 
 @Path("movie-archive/user")
 @RolesAllowed({ "user", "admin" })
+@Produces(MediaType.APPLICATION_JSON)
 @ApplicationScoped
 public class UserResource
 {
 	@Inject
-	SecurityIdentity identity;
-	@Inject
 	DefaultPage defaultPage;
+
+	@Inject
+	SyncService syncService;
 
 	@GET
 	@Path("get-movies")
@@ -58,5 +62,12 @@ public class UserResource
 	public Response searchMovie(@QueryParam("query") String query)
 	{
 		return new SearchAction().run(query);
+	}
+
+	@GET
+	@Path("sync")
+	public Response getHashMap()
+	{
+		return Response.ok(syncService.getHashMap()).build();
 	}
 }
