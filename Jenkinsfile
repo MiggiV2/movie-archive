@@ -1,6 +1,5 @@
 node {
-  git branch: 'master', url: 'ssh://git@gitea:22/Miggi/movie-archive.git'
-  withEnv(['ROOT_IMAGE=registry.mymiggi.de/miggi/movie-archive']) {
+  withEnv(['ROOT_IMAGE= gitea.familyhainz.de/miggi']) {
     stage('Build API') {
       /* Skipped, RAM Probelm
       dir("api") {
