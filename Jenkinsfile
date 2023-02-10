@@ -24,6 +24,9 @@ node {
       sh "docker tag $ROOT_IMAGE-api $ROOT_IMAGE-api:build-$BUILD_ID"
       sh "docker tag $ROOT_IMAGE-gui $ROOT_IMAGE-gui:build-$BUILD_ID"
       sh 'docker image prune -f'
+      /*push images*/
+      sh "docker push $ROOT_IMAGE-api && docker push $ROOT_IMAGE-api:build-$BUILD_ID"
+      sh "docker push $ROOT_IMAGE-gui && docker push $ROOT_IMAGE-gui:build-$BUILD_ID"
     }
   }
 }
