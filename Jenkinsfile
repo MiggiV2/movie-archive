@@ -1,5 +1,8 @@
 node {
   git branch: 'master', url: 'https://gitea.familyhainz.de/Miggi/movie-archive.git'
+  environment {
+    DOCKER_LOGIN = credentials('jenkins-docker')
+  }
   withEnv(['ROOT_IMAGE= gitea.familyhainz.de/miggi/movie']) {
     /* Skipped, RAM Probelm
     stage('Build API native') {      
@@ -29,6 +32,7 @@ node {
       }         
     }
     stage ('Manage tags & remove untagged') {
+      sh 'docker login gitea.familyhainz.de -u $DOCKER_LOGIN_USR -p $DOCKER_LOGIN_PSW'
       sh "docker tag $ROOT_IMAGE-gui $ROOT_IMAGE-gui:build-$BUILD_ID"
       sh 'docker image prune -f'
       /*push images*/
