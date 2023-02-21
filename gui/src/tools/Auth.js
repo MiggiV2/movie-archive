@@ -6,6 +6,7 @@ import { getUser } from "@/tools/User";
 var authURL;
 var logoutURL;
 var redirectURI = window.location.protocol.replace(":", "%3A") + "%2F%2F" + window.location.host;
+var clientID = "backend-service";
 
 setTimeout(() => {
     authURL = AUTH_HOST +
@@ -16,7 +17,8 @@ setTimeout(() => {
         "&scope=openid&state=";
     logoutURL = AUTH_HOST +
         "realms/quarkus/protocol/openid-connect/logout" +
-        "?redirect_uri=" + redirectURI;
+        "?post_logout_redirect_ur=" + redirectURI +
+        "&client_id=" + clientID;
 }, 100)
 
 export function openLogin() {
