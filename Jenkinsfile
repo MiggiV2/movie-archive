@@ -8,7 +8,9 @@ node {
         dir("api") {
           sh 'ls -la'
           sh './mvnw clean package -DskipTests'
-          sh "docker build -f src/main/docker/Dockerfile.jvm -t $ROOT_IMAGE-api:jdk17_build-$BUILD_ID ."
+
+          def apiImage = docker.build("$ROOT_IMAGE-api:jdk17_build-$BUILD_ID", "-f src/main/docker/Dockerfile.jvm")
+          apiImage.push()
         }
       }
 
@@ -16,21 +18,17 @@ node {
         dir("auth") {
           sh 'ls -la'
           sh './mvnw clean package -DskipTests'
-          sh "docker build -f src/main/docker/Dockerfile.jvm -t $ROOT_IMAGE-auth:jdk17_build-$BUILD_ID ."
+
+          def authImage = docker.build("$ROOT_IMAGE-auth:jdk17_build-$BUILD_ID", "-f src/main/docker/Dockerfile.jvm")
+          authImage.push()
         }
       }
 
       stage('Build GUI') {
         dir("gui") {
-          sh "docker build . -t $ROOT_IMAGE-gui"
+          def guiImage = docker.build("$ROOT_IMAGE-gui")
+          guiImage.push()
         }
-      }
-
-      stage ('Manage tags & remove untagged') {
-        sh "docker tag $ROOT_IMAGE-gui $ROOT_IMAGE-gui:build-$BUILD_ID"
-        sh "docker push $ROOT_IMAGE-auth:jdk17_build-$BUILD_ID"
-        sh "docker push $ROOT_IMAGE-api:jdk17_build-$BUILD_ID"
-        sh "docker push $ROOT_IMAGE-gui && docker push $ROOT_IMAGE-gui:build-$BUILD_ID"
       }
     }
   }
