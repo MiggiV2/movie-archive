@@ -1,12 +1,8 @@
 node {
   git branch: 'master', url: 'https://gitea.familyhainz.de/Miggi/movie-archive.git'
 
-  environment {
-    DOCKER_LOGIN = credentials('jenkins-docker')
-  }
-
   withEnv(['ROOT_IMAGE= gitea.familyhainz.de/miggi/movie']) {
-    docker.withRegistry('https://gitea.familyhainz.de', 'credentials-id') {
+    docker.withRegistry('https://gitea.familyhainz.de', 'jenkins-docker') {
 
       stage('Build API') {
         dir("api") {
