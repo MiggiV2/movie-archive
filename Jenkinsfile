@@ -2,15 +2,15 @@ node {
   git branch: 'master', url: 'https://gitea.familyhainz.de/Miggi/movie-archive.git'
 
   withEnv(['ROOT_IMAGE=gitea.familyhainz.de/miggi/movie']) {
-    docker.withRegistry('https://gitea.familyhainz.de', 'jenkins-docker') {
-
       stage('Build API') {
         dir("api") {
           sh 'ls -la'
           sh './mvnw clean package -DskipTests'
 
-          def apiImage = docker.build("$ROOT_IMAGE-api:jdk17-build-$BUILD_ID", "-f src/main/docker/Dockerfile.jvm .")
-          apiImage.push()
+          docker.withRegistry('https://gitea.familyhainz.de', 'jenkins-docker') {
+            def apiImage = docker.build("$ROOT_IMAGE-api:jdk17-build-$BUILD_ID", "-f src/main/docker/Dockerfile.jvm .")
+            apiImage.push()
+          }
         }
       }
 
@@ -30,6 +30,5 @@ node {
           guiImage.push()
         }
       }
-    }
   }
 }
