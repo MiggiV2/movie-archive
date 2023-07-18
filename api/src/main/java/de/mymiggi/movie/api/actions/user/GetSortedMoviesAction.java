@@ -1,5 +1,6 @@
 package de.mymiggi.movie.api.actions.user;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -9,6 +10,7 @@ import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Sort;
 
+@ApplicationScoped
 public class GetSortedMoviesAction
 {
 	public Response runByYear(int page, boolean desc, DefaultPage defaultPage)

@@ -1,5 +1,6 @@
 package de.mymiggi.movie.api.actions.user;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -8,6 +9,7 @@ import de.mymiggi.movie.api.entity.db.MovieEntity;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 
+@ApplicationScoped
 public class GetMoviesAction
 {
 	public Response run(int page, DefaultPage defaultPage)

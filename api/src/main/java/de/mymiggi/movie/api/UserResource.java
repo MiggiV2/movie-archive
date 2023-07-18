@@ -1,8 +1,8 @@
 package de.mymiggi.movie.api;
 
 import javax.annotation.security.RolesAllowed;
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -20,48 +20,61 @@ import de.mymiggi.movie.api.service.SyncService;
 @Path("movie-archive/user")
 @RolesAllowed({ "user", "admin" })
 @Produces(MediaType.APPLICATION_JSON)
-@ApplicationScoped
+@Consumes(MediaType.APPLICATION_JSON)
 public class UserResource
 {
-	@Inject
 	DefaultPage defaultPage;
+	SyncService syncService;
+	GetSortedMoviesAction sortedMoviesAction;
+	GetMoviesAction getMoviesAction;
+	GetMovieByIDAction getMovieByIDAction;
+	SearchAction searchAction;
 
 	@Inject
-	SyncService syncService;
+	public UserResource(DefaultPage defaultPage, SyncService syncService, GetSortedMoviesAction sortedMoviesAction,
+		GetMoviesAction getMoviesAction, GetMovieByIDAction getMovieByIDAction, SearchAction searchAction)
+	{
+		this.defaultPage = defaultPage;
+		this.syncService = syncService;
+		this.sortedMoviesAction = sortedMoviesAction;
+		this.getMoviesAction = getMoviesAction;
+		this.getMovieByIDAction = getMovieByIDAction;
+		this.searchAction = searchAction;
+	}
 
 	@GET
 	@Path("get-movies")
 	public Response getMovieListByPage(@QueryParam("page") int page)
 	{
-		return new GetMoviesAction().run(page, defaultPage);
+		return getMoviesAction.run(page, defaultPage);
 	}
 
 	@GET
 	@Path("get-movie-by-id")
 	public Response getMovieByID(@QueryParam("id") long id)
 	{
-		return new GetMovieByIDAction().run(id);
+		return getMovieByIDAction.run(id);
 	}
 
 	@GET
 	@Path("sorted-movies/by-name")
 	public Response getNameSortedMovies(@QueryParam("page") int page, @QueryParam("desc") boolean desc)
 	{
-		return new GetSortedMoviesAction().runByName(page, desc, defaultPage);
+		return sortedMoviesAction.runByName(page, desc, defaultPage);
 	}
 
 	@GET
 	@Path("sorted-movies/by-year")
 	public Response getYearSortedMovies(@QueryParam("page") int page, @QueryParam("desc") boolean desc)
 	{
-		return new GetSortedMoviesAction().runByYear(page, desc, defaultPage);
+		return sortedMoviesAction.runByYear(page, desc, defaultPage);
 	}
 
 	@GET
 	@Path("search")
 	public Response searchMovie(@QueryParam("query") String query)
 	{
-		return new SearchAction().run(query);
+		return searchAction.run(query);
 	}
 
 	@GET

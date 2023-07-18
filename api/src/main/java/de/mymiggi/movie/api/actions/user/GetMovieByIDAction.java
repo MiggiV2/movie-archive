@@ -2,11 +2,13 @@ package de.mymiggi.movie.api.actions.user;
 
 import java.util.Optional;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 
+@ApplicationScoped
 public class GetMovieByIDAction
 {
 	public Response run(long id)

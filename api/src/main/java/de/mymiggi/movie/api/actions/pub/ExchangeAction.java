@@ -1,9 +1,12 @@
 package de.mymiggi.movie.api.actions.pub;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import de.mymiggi.movie.api.entity.MessageStatus;
 import de.mymiggi.movie.api.entity.ShortMessage;
@@ -13,9 +16,16 @@ import de.mymiggi.movie.api.service.ExchangeException;
 import de.mymiggi.movie.api.service.ExchangeService;
 import io.smallrye.config.SmallRyeConfig;
 
+@ApplicationScoped
 public class ExchangeAction
 {
-	public Response runCode(TokenRequest tokenRequest, ExchangeService exchangeService, OAuthRedirectURL redirectURL)
+	@Inject
+	OAuthRedirectURL redirectURL;
+	@Inject
+	@RestClient
+	ExchangeService exchangeService;
+
+	public Response runCode(TokenRequest tokenRequest)
 	{
 		tokenRequest.setGrandType("authorization_code");
 		if (tokenRequest.getCode() == null || tokenRequest.getCode().isBlank())
@@ -26,7 +36,7 @@ public class ExchangeAction
 		return run(tokenRequest, exchangeService, redirectURL);
 	}
 
-	public Response runRefresh(TokenRequest tokenRequest, ExchangeService exchangeService, OAuthRedirectURL redirectURL)
+	public Response runRefresh(TokenRequest tokenRequest)
 	{
 		tokenRequest.setGrandType("refresh_token");
 		if (tokenRequest.getRefreshToken() == null || tokenRequest.getRefreshToken().isBlank())
