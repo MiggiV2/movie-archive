@@ -65,137 +65,105 @@ public class UserResourceTest
 	@Test
 	public void testGetNameSortedMovies() throws JsonProcessingException
 	{
+		long[] sortedIDs = { 62, 63, 64, 65, 66, 67, 68, 70, 69, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83,
+			85, 87, 84, 86, 88, 89, 90, 91 };
+
 		Response response = given().when()
 			.queryParam("page", 2)
 			.queryParam("desc", false)
 			.get("sorted-movies/by-name");
 
 		response.then().statusCode(200);
-		String body = response.body().asString();
-		MovieEntity[] movies = MAPPER.readValue(body, MovieEntity[].class);
-		long[] sortedIDs = { 62, 63, 64, 65, 66, 67, 68, 70, 69, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83,
-			85, 87, 84, 86, 88, 89, 90, 91 };
-
-		assertEquals(movies.length, sortedIDs.length);
-		for (int i = 0; i < defaultPage.Size(); i++)
-		{
-			assertEquals(movies[i].id, sortedIDs[i]);
-		}
+		compareIDs(sortedIDs, response.body().asString());
 	}
 
 	@Test
 	public void testGetNameSortedMoviesDesc() throws JsonProcessingException
 	{
+		long[] sortedIDs = { 303, 302, 301, 300, 299, 298, 294, 293, 297, 296, 295, 292, 291, 290, 289, 288, 287, 286,
+			285, 284, 283, 275, 274, 276, 278, 281, 273, 279, 277, 272 };
+
 		Response response = given().when()
 			.queryParam("page", 2)
 			.queryParam("desc", true)
 			.get("sorted-movies/by-name");
 
 		response.then().statusCode(200);
-		String body = response.body().asString();
-		MovieEntity[] movies = MAPPER.readValue(body, MovieEntity[].class);
-		long[] sortedIDs = { 303, 302, 301, 300, 299, 298, 294, 293, 297, 296, 295, 292, 291, 290, 289, 288, 287, 286,
-			285, 284, 283, 275, 274, 276, 278, 281, 273, 279, 277, 272 };
-
-		assertEquals(movies.length, sortedIDs.length);
-		for (int i = 0; i < defaultPage.Size(); i++)
-		{
-			assertEquals(movies[i].id, sortedIDs[i]);
-		}
+		compareIDs(sortedIDs, response.body().asString());
 	}
 
 	@Test
 	public void testGetYearSortedMovies() throws JsonProcessingException
 	{
+		long[] sortedIDs = { 201, 23, 41, 133, 324, 134, 185, 32, 270, 172, 282, 24, 179, 322, 93, 226, 182, 104, 279,
+			145, 146, 321, 91, 144, 14, 46, 325, 85, 280, 97 };
+
 		Response response = given().when()
 			.queryParam("page", 2)
 			.queryParam("desc", false)
 			.get("sorted-movies/by-year");
 
 		response.then().statusCode(200);
-		String body = response.body().asString();
-		MovieEntity[] movies = MAPPER.readValue(body, MovieEntity[].class);
-		long[] sortedIDs = { 201, 23, 41, 133, 324, 134, 185, 32, 270, 172, 282, 24, 179, 322, 93, 226, 182, 104, 279,
-			145, 146, 321, 91, 144, 14, 46, 325, 85, 280, 97 };
-
-		assertEquals(movies.length, sortedIDs.length);
-		for (int i = 0; i < defaultPage.Size(); i++)
-		{
-			assertEquals(movies[i].id, sortedIDs[i]);
-		}
+		compareIDs(sortedIDs, response.body().asString());
 	}
 
 	@Test
 	public void testGetYearSortedMoviesDesc() throws JsonProcessingException
 	{
+		long[] sortedIDs = { 51, 160, 13, 247, 117, 354, 213, 152, 76, 318, 153, 73, 158, 314, 214, 34, 274, 302, 63,
+			254, 350, 294, 55, 124, 269, 123, 88, 272, 122, 130 };
+
 		Response response = given().when()
 			.queryParam("page", 2)
 			.queryParam("desc", true)
 			.get("sorted-movies/by-year");
 
 		response.then().statusCode(200);
-		String body = response.body().asString();
-		MovieEntity[] movies = MAPPER.readValue(body, MovieEntity[].class);
-		long[] sortedIDs = { 51, 160, 13, 247, 117, 354, 213, 152, 76, 318, 153, 73, 158, 314, 214, 34, 274, 302, 63,
-			254, 350, 294, 55, 124, 269, 123, 88, 272, 122, 130 };
-
-		assertEquals(movies.length, sortedIDs.length);
-		for (int i = 0; i < defaultPage.Size(); i++)
-		{
-			assertEquals(movies[i].id, sortedIDs[i]);
-		}
+		compareIDs(sortedIDs, response.body().asString());
 	}
 
 	@Test
 	public void testSearchMovie() throws JsonProcessingException
 	{
+		long[] sortedIDs = { 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 324, 353 };
+
 		Response response = given().when()
 			.queryParam("query", "Star")
 			.get("search");
 
 		response.then().statusCode(200);
-		String body = response.body().asString();
-		MovieEntity[] movies = MAPPER.readValue(body, MovieEntity[].class);
-		long[] sortedIDs = { 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 324, 353 };
-
-		assertEquals(movies.length, sortedIDs.length);
-		for (int i = 0; i < sortedIDs.length; i++)
-		{
-			assertEquals(movies[i].id, sortedIDs[i]);
-		}
+		compareIDs(sortedIDs, response.body().asString());
 	}
 
 	@Test
 	public void testSearchMovieLowerCase() throws JsonProcessingException
 	{
+		long[] sortedIDs = { 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 324, 353 };
+
 		Response response = given().when()
 			.queryParam("query", "star")
 			.get("search");
 
 		response.then().statusCode(200);
-		String body = response.body().asString();
-		MovieEntity[] movies = MAPPER.readValue(body, MovieEntity[].class);
-		long[] sortedIDs = { 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 324, 353 };
-
-		assertEquals(movies.length, sortedIDs.length);
-		for (int i = 0; i < sortedIDs.length; i++)
-		{
-			assertEquals(movies[i].id, sortedIDs[i]);
-		}
+		compareIDs(sortedIDs, response.body().asString());
 	}
 
 	@Test
 	public void testSearchMovieMoreWords() throws JsonProcessingException
 	{
+		long[] sortedIDs = { 273, 278, 270, 271, 272, 274, 275, 276, 277, 279, 280, 281, 282, 324, 353 };
+
 		Response response = given().when()
 			.queryParam("query", "star jedi")
 			.get("search");
 
 		response.then().statusCode(200);
-		String body = response.body().asString();
-		MovieEntity[] movies = MAPPER.readValue(body, MovieEntity[].class);
-		long[] sortedIDs = { 273, 278, 270, 271, 272, 274, 275, 276, 277, 279, 280, 281, 282, 324, 353 };
+		compareIDs(sortedIDs, response.body().asString());
+	}
 
+	private void compareIDs(long[] sortedIDs, String jsonResponse) throws JsonProcessingException
+	{
+		MovieEntity[] movies = MAPPER.readValue(jsonResponse, MovieEntity[].class);
 		assertEquals(movies.length, sortedIDs.length);
 		for (int i = 0; i < sortedIDs.length; i++)
 		{
