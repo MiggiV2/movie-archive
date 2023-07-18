@@ -19,14 +19,9 @@ public class SearchWrapper implements Comparable<SearchWrapper>
 
 	public void calcRelevance(String query)
 	{
-		if (movie.name.equals(query))
+		if (movie.name.equalsIgnoreCase(query))
 		{
 			this.matchesQuery = 100;
-		}
-		else if (movie.name.contains(query))
-		{
-			double percent = (double)query.length() / (double)movie.name.length();
-			this.matchesQuery = (int)(percent * 100);
 		}
 		else
 		{
@@ -39,15 +34,19 @@ public class SearchWrapper implements Comparable<SearchWrapper>
 		int hits = 0;
 
 		Set<String> queryWords = new HashSet<>();
-		Collections.addAll(queryWords, query.split(" "));
+		Collections.addAll(queryWords, query.toLowerCase().split(" "));
 		Set<String> nameWords = new HashSet<>();
-		Collections.addAll(nameWords, movie.name.split(" "));
+		Collections.addAll(nameWords, movie.name.toLowerCase().split(" "));
 
 		for (String w : queryWords)
 		{
 			for (String m : nameWords)
 			{
-				if (m.contains(w))
+				if (m.equals(w))
+				{
+					hits += m.length();
+				}
+				else if (m.contains(w))
 				{
 					hits++;
 				}
