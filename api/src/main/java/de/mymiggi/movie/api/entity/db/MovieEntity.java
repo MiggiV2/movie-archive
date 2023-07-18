@@ -6,11 +6,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 
 @Entity
-public class MovieEntity extends PanacheEntity
+public class MovieEntity extends PanacheEntityBase
 {
 	public int year;
 	public String name;
@@ -18,6 +21,10 @@ public class MovieEntity extends PanacheEntity
 	public String block;
 	public String wikiUrl;
 	public String type;
+	@Id
+	@SequenceGenerator(name = "movieSequence", sequenceName = "movie_id_seq", initialValue = 364)
+	@GeneratedValue(generator = "movieSequence")
+	public Long id;
 
 	public MovieEntity()
 	{
