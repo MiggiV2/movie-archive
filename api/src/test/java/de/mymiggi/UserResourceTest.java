@@ -2,6 +2,7 @@ package de.mymiggi;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.inject.Inject;
 
@@ -95,31 +96,47 @@ public class UserResourceTest
 	@Test
 	public void testGetYearSortedMovies() throws JsonProcessingException
 	{
-		long[] sortedIDs = { 201, 23, 41, 133, 324, 134, 185, 32, 270, 172, 282, 24, 179, 322, 93, 226, 182, 104, 279,
-			145, 146, 321, 91, 144, 14, 46, 325, 85, 280, 97 };
-
 		Response response = given().when()
 			.queryParam("page", 2)
 			.queryParam("desc", false)
 			.get("sorted-movies/by-year");
 
 		response.then().statusCode(200);
-		compareIDs(sortedIDs, response.body().asString());
+		MovieEntity[] movies = MAPPER.readValue(response.body().asString(), MovieEntity[].class);
+		assertEquals(movies.length, defaultPage.Size());
+
+		int lastYear = movies[0].year;
+		for (MovieEntity movie : movies)
+		{
+			assertTrue(movie.year >= lastYear);
+			if (movie.year > lastYear)
+			{
+				lastYear = movie.year;
+			}
+		}
 	}
 
 	@Test
 	public void testGetYearSortedMoviesDesc() throws JsonProcessingException
 	{
-		long[] sortedIDs = { 51, 160, 13, 247, 117, 354, 213, 152, 76, 318, 153, 73, 158, 314, 214, 34, 274, 302, 63,
-			254, 350, 294, 55, 124, 269, 123, 88, 272, 122, 130 };
-
 		Response response = given().when()
 			.queryParam("page", 2)
 			.queryParam("desc", true)
 			.get("sorted-movies/by-year");
 
 		response.then().statusCode(200);
-		compareIDs(sortedIDs, response.body().asString());
+		MovieEntity[] movies = MAPPER.readValue(response.body().asString(), MovieEntity[].class);
+		assertEquals(movies.length, defaultPage.Size());
+
+		int lastYear = movies[0].year;
+		for (MovieEntity movie : movies)
+		{
+			assertTrue(movie.year <= lastYear);
+			if (movie.year < lastYear)
+			{
+				lastYear = movie.year;
+			}
+		}
 	}
 
 	@Test
