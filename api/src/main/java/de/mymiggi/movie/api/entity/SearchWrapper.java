@@ -1,5 +1,7 @@
 package de.mymiggi.movie.api.entity;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import de.mymiggi.movie.api.entity.db.MovieEntity;
@@ -35,12 +37,20 @@ public class SearchWrapper implements Comparable<SearchWrapper>
 	private int analyzeWords(MovieEntity movie, String query)
 	{
 		int hits = 0;
-		Set<String> words = Set.of(query.split(" "));
-		for (String w : words)
+
+		Set<String> queryWords = new HashSet<>();
+		Collections.addAll(queryWords, query.split(" "));
+		Set<String> nameWords = new HashSet<>();
+		Collections.addAll(nameWords, movie.name.split(" "));
+
+		for (String w : queryWords)
 		{
-			if (movie.name.toLowerCase().contains(w))
+			for (String m : nameWords)
 			{
-				hits++;
+				if (m.contains(w))
+				{
+					hits++;
+				}
 			}
 		}
 		return Math.min(hits, 50);
@@ -49,7 +59,7 @@ public class SearchWrapper implements Comparable<SearchWrapper>
 	@Override
 	public int compareTo(SearchWrapper other)
 	{
-		return Integer.compare(this.matchesQuery, other.getMatchesQuery());
+		return Integer.compare(other.getMatchesQuery(), this.matchesQuery);
 	}
 
 	public MovieEntity getMovie()
