@@ -1,26 +1,5 @@
-# movie-archive
+## Quarkus RestAPI
 
-A simple archive to save movie information.
-
-![start_page](./assets/Screenshot%202023-07-19%20at%2011-05-25%20MovieArchive%20Home.png)
-
-### This repository contains:
-- Quarkus RestAPI
-- Vue.JS frontend
-
-This project does not store any video files! Only the information about movies you have at home, for example.
-
-## Vue.JS frontend:
-Search:
-![search_page](./assets/Screenshot%202023-07-19%20at%2011-06-42%20MovieArchive%20Suche.png)
-
-Movie Information:
-![movie_information](./assets/Screenshot%202023-07-19%20at%2011-06-54%20MovieArchive%20Suche.png)
-
-Admin Log:
-![admin_log](./assets/Screenshot%202023-07-19%20at%2011-11-38%20MovieArchive%20Auditlog.png)
-
-## Quarkus backend:
 This RestAPI handles all movie data.  
 You can _add_, _remove_, _update_ and _search_ movies.
 
