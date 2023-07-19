@@ -8,13 +8,6 @@ node {
         sh "docker build -f src/main/docker/Dockerfile.jvm -t $ROOT_IMAGE-api:jdk17_build-$BUILD_ID ."
       }
     }
-    stage('Build Auth') {
-      dir("auth") {
-        sh 'ls -la'
-        sh './mvnw clean package -DskipTests'
-        sh "docker build -f src/main/docker/Dockerfile.jvm -t $ROOT_IMAGE-auth:jdk17_build-$BUILD_ID ."
-      }
-    }
     stage('Build GUI') {
       dir("gui") {
         sh "docker build . -t $ROOT_IMAGE-gui"
