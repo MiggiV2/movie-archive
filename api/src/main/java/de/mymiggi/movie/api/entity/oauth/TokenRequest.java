@@ -16,6 +16,12 @@ public class TokenRequest
 	@FormParam("redirect_uri")
 	private String redircetURL;
 
+	@FormParam("username")
+	private String username;
+
+	@FormParam("password")
+	private String password;
+
 	@FormParam("code")
 	private String code;
 
@@ -80,5 +86,25 @@ public class TokenRequest
 	public void setRefreshToken(String refreshToken)
 	{
 		this.refreshToken = refreshToken;
+	}
+
+	public String getUsername()
+	{
+		return username;
+	}
+
+	public void setUsername(String username)
+	{
+		this.username = username;
+	}
+
+	public String getPassword()
+	{
+		return password;
+	}
+
+	public void setPassword(String password)
+	{
+		this.password = password;
 	}
 }

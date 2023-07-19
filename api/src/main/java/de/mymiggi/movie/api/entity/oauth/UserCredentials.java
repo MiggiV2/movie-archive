@@ -1,4 +1,4 @@
-package de.mymiggi.movie.auth.entity.login;
+package de.mymiggi.movie.api.entity.oauth;
 
 public class UserCredentials
 {

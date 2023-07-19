@@ -2,6 +2,7 @@ package de.mymiggi.movie.api.actions.pub;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -10,9 +11,8 @@ import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import de.mymiggi.movie.api.entity.MessageStatus;
 import de.mymiggi.movie.api.entity.ShortMessage;
-import de.mymiggi.movie.api.entity.config.OAuthRedirectURL;
+import de.mymiggi.movie.api.entity.config.OAuthConfig;
 import de.mymiggi.movie.api.entity.oauth.TokenRequest;
-import de.mymiggi.movie.api.service.ExchangeException;
 import de.mymiggi.movie.api.service.ExchangeService;
 import io.smallrye.config.SmallRyeConfig;
 
@@ -20,7 +20,7 @@ import io.smallrye.config.SmallRyeConfig;
 public class ExchangeAction
 {
 	@Inject
-	OAuthRedirectURL redirectURL;
+	OAuthConfig redirectURL;
 	@Inject
 	@RestClient
 	ExchangeService exchangeService;
@@ -47,7 +47,7 @@ public class ExchangeAction
 		return run(tokenRequest, exchangeService, redirectURL);
 	}
 
-	private Response run(TokenRequest tokenRequest, ExchangeService exchangeService, OAuthRedirectURL redirectURL)
+	private Response run(TokenRequest tokenRequest, ExchangeService exchangeService, OAuthConfig redirectURL)
 	{
 		SmallRyeConfig config = ConfigProvider.getConfig().unwrap(SmallRyeConfig.class);
 		tokenRequest.setClientID(config.getConfigValue("quarkus.oidc.client-id").getValue());
@@ -55,9 +55,9 @@ public class ExchangeAction
 		tokenRequest.setRedircetURL(redirectURL.RedirectURL());
 		try
 		{
-			return Response.ok(exchangeService.getTokens(tokenRequest)).build();
+			return Response.ok(exchangeService.useToken(tokenRequest)).build();
 		}
-		catch (ExchangeException e)
+		catch (WebApplicationException e)
 		{
 			return Response.status(400).entity(e.getMessage()).build();
 		}
