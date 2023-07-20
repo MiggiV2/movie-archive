@@ -4,7 +4,7 @@ node {
     stage('Build API') {
       dir("api") {
         sh 'ls -la'
-        sh './mvnw clean package -DskipTests'
+        sh './mvnw clean package -Dquarkus.container-image.push=false'
         sh "docker build -f src/main/docker/Dockerfile.jvm -t $ROOT_IMAGE-api:jdk17_build-$BUILD_ID ."
       }
     }
