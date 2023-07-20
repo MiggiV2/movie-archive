@@ -2,7 +2,7 @@ package de.mymiggi.movie.api.entity.db;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.Entity;
+import jakarta.persistence.Entity;
 
 import de.mymiggi.movie.api.actions.auditlog.AbstractAuditLogAction;
 import de.mymiggi.movie.api.entity.KeycloakUser;

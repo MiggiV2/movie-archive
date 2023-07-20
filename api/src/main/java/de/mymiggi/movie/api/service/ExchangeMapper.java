@@ -1,13 +1,11 @@
 package de.mymiggi.movie.api.service;
 
 import java.io.ByteArrayInputStream;
-
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
+import jakarta.annotation.Priority;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
 
 import org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper;
-
-import io.quarkus.arc.Priority;
 
 @Priority(4000)
 public class ExchangeMapper implements ResponseExceptionMapper<Exception>

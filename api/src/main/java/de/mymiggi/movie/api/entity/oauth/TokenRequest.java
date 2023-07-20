@@ -1,6 +1,6 @@
 package de.mymiggi.movie.api.entity.oauth;
 
-import javax.ws.rs.FormParam;
+import jakarta.ws.rs.FormParam;
 
 public class TokenRequest
 {

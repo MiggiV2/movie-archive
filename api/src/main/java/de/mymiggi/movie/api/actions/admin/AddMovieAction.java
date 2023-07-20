@@ -1,7 +1,7 @@
 package de.mymiggi.movie.api.actions.admin;
 
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import de.mymiggi.movie.api.actions.auditlog.AbstractAuditLogAction;
 import de.mymiggi.movie.api.actions.auditlog.SaveAuditLogAction;

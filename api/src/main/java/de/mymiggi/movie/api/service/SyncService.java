@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.xml.bind.DatatypeConverter;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.xml.bind.DatatypeConverter;
 
 import org.jboss.logging.Logger;
 
