@@ -1,6 +1,6 @@
 <template>
-    <Header />
-    <AuthComp />
+  <Header />
+  <AuthComp />
   <Footer />
 </template>
 

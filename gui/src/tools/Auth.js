@@ -70,7 +70,7 @@ export function login(code) {
             }
         }).catch(e => {
             console.error(e);
-            alert("Something went wrong!");
+            window.location = "/logout";
         });
 }
 
@@ -88,10 +88,15 @@ export function refreshToken() {
             },
         })
         .then((response) => {
-            if (response.status == 200) {
+            if (response.status === 200) {
                 return response.json();
             }
-            alert("Oopps! Something went wrong! " + response.statusText);
+            if (response.status === 400) {
+                window.location = "/logout";
+            } else if (getCookie("error-showed") !== "yes"){
+                setCookieInSec("error-showed", "yes", 2);
+                alert("Oopps! Something went wrong! " + response.statusText);
+            }
         })
         .then((tokens) => {
             if (tokens != null) {

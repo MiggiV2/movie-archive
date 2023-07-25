@@ -29,7 +29,12 @@ const routes = [{
         path: '/audit-log',
         name: 'audit-log',
         component: () =>
-            import ( /* webpackChunkName: "search" */ '@/views/AuditLogView.vue')
+            import ( /* webpackChunkName: "audit-log" */ '@/views/AuditLogView.vue')
+    }, {
+        path: '/logout',
+        name: 'logout',
+        component: () =>
+            import ( /* webpackChunkName: "logout" */ '@/views/LogoutView.vue')
     }
 ]
 

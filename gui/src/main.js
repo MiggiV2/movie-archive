@@ -6,8 +6,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css"
 import "@/assets/css/style.css";
 
-export var HOST = "https://apis.mymiggi.de/movie-archive/";
-export var AUTH_HOST = "https://auth.familyhainz.de/";
+export var HOST = "http://localhost:8080/movie-archive/";
+export var AUTH_HOST = "http://localhost:8888/";
 export var Owner = "Familie Hainz";
 
 createApp(App).use(router).mount('#app')
