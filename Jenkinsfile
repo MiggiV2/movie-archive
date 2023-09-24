@@ -1,6 +1,7 @@
 node {
-  git branch: 'master', url: 'https://gitea.familyhainz.de/Miggi/movie-archive.git'
+  git branch: 'main', url: 'https://gitea.familyhainz.de/Miggi/movie-archive.git'
   withEnv(['ROOT_IMAGE= gitea.familyhainz.de/miggi/movie']) {
+    /*
     stage('Build API') {
       dir("api") {
         sh 'ls -la'
@@ -8,6 +9,7 @@ node {
         sh "docker build -f src/main/docker/Dockerfile.jvm -t $ROOT_IMAGE-api:jdk17_build-$BUILD_ID ."
       }
     }
+    */
     stage('Build GUI') {
       dir("gui") {
         sh "docker build . -t $ROOT_IMAGE-gui"
