@@ -1,14 +1,5 @@
 package de.mymiggi;
 
-import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
-import org.junit.jupiter.api.Test;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import de.mymiggi.movie.api.AdminResource;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
@@ -16,16 +7,19 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.Test;
+
+import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @QuarkusTest
 @TestHTTPEndpoint(AdminResource.class)
 @TestSecurity(user = "admin", roles = "admin")
 public class AdminResourceTest
 {
-	private static final ObjectMapper MAPPER = new ObjectMapper();
-
 	@Test
-	public void testAddAndDelete() throws JsonProcessingException
+	public void testAddAndDelete()
 	{
 		long moviesBefore = MovieEntity.count();
 		MovieEntity movie = testAdd(moviesBefore);
@@ -33,7 +27,7 @@ public class AdminResourceTest
 	}
 
 	@Test
-	public void testUpdate() throws JsonProcessingException
+	public void testUpdate()
 	{
 		MovieEntity entity = new MovieEntity(2015, "Maggie", "Block 8",
 			"https://de.wikipedia.org/wiki/Maggie_(2015)", "BD");
@@ -46,15 +40,14 @@ public class AdminResourceTest
 			.put("update-movie");
 
 		response.then().statusCode(200);
-		String body = response.body().asString();
-		MovieEntity movie = MAPPER.readValue(body, MovieEntity.class);
+		MovieEntity movie = response.body().as(MovieEntity.class);
 
 		assertEquals(entity.name, movie.name);
 		assertEquals(entity.id, movie.id);
 		assertNotEquals(movie.block, "Block 7");
 	}
 
-	private MovieEntity testAdd(long moviesBefore) throws JsonProcessingException
+	private MovieEntity testAdd(long moviesBefore)
 	{
 		MovieEntity entity = new MovieEntity(2077, "Cyberpunk 2077", "Block1",
 			"https://de.wikipedia.org/wiki/Cyberpunk2077", "DB");
@@ -66,8 +59,7 @@ public class AdminResourceTest
 			.post("add-movie");
 
 		response.then().statusCode(200);
-		String body = response.body().asString();
-		MovieEntity movie = MAPPER.readValue(body, MovieEntity.class);
+		MovieEntity movie = response.body().as(MovieEntity.class);
 
 		assertEquals(entity.name, movie.name);
 		assertEquals(moviesBefore + 1, MovieEntity.count());
