@@ -1,7 +1,10 @@
 package de.mymiggi.movie.api.service;
 
+import java.io.Serial;
+
 public class ExchangeException extends Exception
 {
+	@Serial
 	private static final long serialVersionUID = 4151468759002665112L;
 
 	public ExchangeException(String msg)
