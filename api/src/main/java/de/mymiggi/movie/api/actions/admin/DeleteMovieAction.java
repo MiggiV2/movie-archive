@@ -1,38 +1,33 @@
 package de.mymiggi.movie.api.actions.admin;
 
-import java.util.Optional;
-
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-
 import de.mymiggi.movie.api.actions.auditlog.AbstractAuditLogAction;
 import de.mymiggi.movie.api.actions.auditlog.SaveAuditLogAction;
 import de.mymiggi.movie.api.entity.AuditLogType;
 import de.mymiggi.movie.api.entity.KeycloakUser;
-import de.mymiggi.movie.api.entity.MessageStatus;
-import de.mymiggi.movie.api.entity.ShortMessage;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.NotFoundException;
 
+import java.util.Optional;
+
+@ApplicationScoped
 public class DeleteMovieAction extends AbstractAuditLogAction
 {
-	public Response run(Long id, KeycloakUser user)
+	public void run(Long id, KeycloakUser user)
 	{
 		if (id == null)
 		{
-			ShortMessage message = new ShortMessage("We need an id for your movie!", MessageStatus.ERROR);
-			return Response.status(Status.NOT_FOUND).entity(message).build();
+			throw new NotFoundException("We need an id for your movie!");
 		}
 		Optional<MovieEntity> movieEntity = MovieEntity.findByIdOptional(id);
 		if (movieEntity.isEmpty())
 		{
-			ShortMessage message = new ShortMessage("Can't find your movie!", MessageStatus.ERROR);
-			return Response.status(Status.NOT_FOUND).entity(message).build();
+			throw new NotFoundException("Can't find your movie!");
 		}
 		movieEntity.ifPresent(movie -> {
 			movie.delete();
 			new SaveAuditLogAction().run(user, this, String.format("Removed movie '%s'", movie.name), movie);
 		});
-		return Response.noContent().build();
 	}
 
 	@Override

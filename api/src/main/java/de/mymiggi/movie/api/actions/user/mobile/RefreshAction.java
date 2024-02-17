@@ -1,18 +1,17 @@
 package de.mymiggi.movie.api.actions.user.mobile;
 
+import de.mymiggi.movie.api.entity.oauth.KeycloakTokens;
+import de.mymiggi.movie.api.entity.oauth.TokenRequest;
+import de.mymiggi.movie.api.service.ExchangeService;
+import io.quarkus.security.UnauthorizedException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response;
-
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
-
-import de.mymiggi.movie.api.entity.MessageStatus;
-import de.mymiggi.movie.api.entity.ShortMessage;
-import de.mymiggi.movie.api.entity.oauth.TokenRequest;
-import de.mymiggi.movie.api.service.ExchangeService;
 
 @ApplicationScoped
 public class RefreshAction
@@ -28,27 +27,25 @@ public class RefreshAction
 	@ConfigProperty(name = "quarkus.oidc.credentials.secret")
 	String clientSecret;
 
-	public Response run(TokenRequest userCredentials)
+	public KeycloakTokens run(TokenRequest userCredentials)
 	{
 		if (userCredentials.getRefreshToken() == null || userCredentials.getRefreshToken().isBlank())
 		{
-			ShortMessage msg = new ShortMessage("You need \"refreshToken\": \"YOUR_TOKEN\" in your json body!", MessageStatus.ERROR);
-			return Response.status(Response.Status.BAD_REQUEST).entity(msg).build();
+			throw new BadRequestException("You need \"refreshToken\": \"YOUR_TOKEN\" in your json body!");
 		}
 		TokenRequest loginRequest = createLoginRequest(userCredentials);
 		try
 		{
-			return Response.ok(loginService.useToken(loginRequest)).build();
+			return loginService.useToken(loginRequest);
 		}
 		catch (WebApplicationException webEx)
 		{
 			if (webEx.getResponse().getStatus() == 400)
 			{
-				ShortMessage msg = new ShortMessage("Invalid refresh token", MessageStatus.ERROR);
-				return Response.status(Response.Status.UNAUTHORIZED).entity(msg).build();
+				throw new UnauthorizedException("Invalid refresh token");
 			}
 			LOG.error("Unexpected response code in refresh request!", webEx);
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			throw new InternalServerErrorException("Unexpected response code in refresh request!");
 		}
 	}
 

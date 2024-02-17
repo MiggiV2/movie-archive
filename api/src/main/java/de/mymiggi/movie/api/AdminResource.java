@@ -1,29 +1,22 @@
 package de.mymiggi.movie.api;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-
 import de.mymiggi.movie.api.actions.admin.AddMovieAction;
 import de.mymiggi.movie.api.actions.admin.DeleteMovieAction;
 import de.mymiggi.movie.api.actions.admin.UpdateMovieAction;
 import de.mymiggi.movie.api.actions.auditlog.GetAuditLogAction;
-import de.mymiggi.movie.api.actions.auditlog.GetAuditLogPageCountAction;
 import de.mymiggi.movie.api.entity.KeycloakUser;
 import de.mymiggi.movie.api.entity.config.DefaultPage;
+import de.mymiggi.movie.api.entity.db.AuditLogEntity;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.security.RolesAllowed;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+
+import java.util.List;
 
 @Path("movie-archive/admin")
 @RolesAllowed("admin")
@@ -32,46 +25,60 @@ import jakarta.annotation.security.RolesAllowed;
 @Consumes(MediaType.APPLICATION_JSON)
 public class AdminResource
 {
-	@Inject
 	SecurityIdentity identity;
-	@Inject
 	DefaultPage defaultPage;
+	AddMovieAction addMovieAction;
+	UpdateMovieAction updateMovieAction;
+	DeleteMovieAction deleteMovieAction;
+	GetAuditLogAction getAuditLogAction;
+
+	@Inject
+	public AdminResource(SecurityIdentity identity, DefaultPage defaultPage, AddMovieAction addMovieAction,
+		UpdateMovieAction updateMovieAction, DeleteMovieAction deleteMovieAction, GetAuditLogAction getAuditLogAction)
+	{
+		this.identity = identity;
+		this.defaultPage = defaultPage;
+		this.addMovieAction = addMovieAction;
+		this.updateMovieAction = updateMovieAction;
+		this.deleteMovieAction = deleteMovieAction;
+		this.getAuditLogAction = getAuditLogAction;
+	}
 
 	@POST
 	@Path("add-movie")
 	@Transactional
-	public Response addMovie(MovieEntity movieEntity)
+	public MovieEntity addMovie(MovieEntity movieEntity)
 	{
-		return new AddMovieAction().run(movieEntity, new KeycloakUser(identity));
+		return addMovieAction.run(movieEntity, new KeycloakUser(identity));
 	}
 
 	@PUT
 	@Path("update-movie")
 	@Transactional
-	public Response updateMovieById(MovieEntity movieEntity)
+	public MovieEntity updateMovieById(MovieEntity movieEntity)
 	{
-		return new UpdateMovieAction().run(movieEntity, new KeycloakUser(identity));
+		return updateMovieAction.run(movieEntity, new KeycloakUser(identity));
 	}
 
 	@DELETE
 	@Path("delete-movie")
 	@Transactional
-	public Response deleteMovieByID(@QueryParam("id") Long id)
+	public void deleteMovieByID(@QueryParam("id") Long id)
 	{
-		return new DeleteMovieAction().run(id, new KeycloakUser(identity));
+		deleteMovieAction.run(id, new KeycloakUser(identity));
 	}
 
 	@GET
 	@Path("auditlog")
-	public Response getAuditLog(@QueryParam("page") int page)
+	public List<AuditLogEntity> getAuditLog(@QueryParam("page") int page)
 	{
-		return new GetAuditLogAction().run(page, defaultPage);
+		return getAuditLogAction.run(page, defaultPage);
 	}
 
 	@GET
 	@Path("auditlog-page-count")
-	public Response getAuditLogPageCount()
+	public long getAuditLogPageCount()
 	{
-		return new GetAuditLogPageCountAction().run(defaultPage);
+		return getAuditLogAction.run(defaultPage);
 	}
 }

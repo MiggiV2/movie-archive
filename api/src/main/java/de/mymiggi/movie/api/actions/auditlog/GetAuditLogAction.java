@@ -1,22 +1,31 @@
 package de.mymiggi.movie.api.actions.auditlog;
 
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-
 import de.mymiggi.movie.api.entity.config.DefaultPage;
 import de.mymiggi.movie.api.entity.db.AuditLogEntity;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Sort;
+import jakarta.enterprise.context.ApplicationScoped;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@ApplicationScoped
 public class GetAuditLogAction
 {
-	public Response run(int page, DefaultPage defaultPage)
+	public List<AuditLogEntity> run(int page, DefaultPage defaultPage)
 	{
 		PanacheQuery<AuditLogEntity> movieArchive = AuditLogEntity.findAll(Sort.descending("date"));
 		movieArchive.page(Page.ofSize(defaultPage.Size()));
-		return movieArchive.pageCount() <= page || page < 0
-			? Response.status(Status.NOT_FOUND).build()
-			: Response.ok(movieArchive.page(page, defaultPage.Size()).list()).build();
+		if (movieArchive.pageCount() <= page || page < 0)
+		{
+			return new ArrayList<>();
+		}
+		return movieArchive.page(page, defaultPage.Size()).list();
+	}
+
+	public long run(DefaultPage defaultPage)
+	{
+		return Math.ceilDiv(AuditLogEntity.count(), defaultPage.Size()) - 1;
 	}
 }

@@ -1,37 +1,33 @@
 package de.mymiggi.movie.api.actions.admin;
 
-import java.util.Optional;
-
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-
 import de.mymiggi.movie.api.actions.auditlog.AbstractAuditLogAction;
 import de.mymiggi.movie.api.actions.auditlog.SaveAuditLogAction;
 import de.mymiggi.movie.api.entity.AuditLogType;
 import de.mymiggi.movie.api.entity.KeycloakUser;
-import de.mymiggi.movie.api.entity.MessageStatus;
-import de.mymiggi.movie.api.entity.ShortMessage;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotFoundException;
 
+import java.util.Optional;
+
+@ApplicationScoped
 public class UpdateMovieAction extends AbstractAuditLogAction
 {
-	public Response run(MovieEntity movieEntity, KeycloakUser user)
+	public MovieEntity run(MovieEntity movieEntity, KeycloakUser user)
 	{
 		if (movieEntity == null)
 		{
-			ShortMessage message = new ShortMessage("You need an object!", MessageStatus.ERROR);
-			return Response.status(Status.BAD_REQUEST).entity(message).build();
+			throw new BadRequestException("You need an object!");
 		}
 		if (!checkMovie(movieEntity))
 		{
-			ShortMessage message = new ShortMessage("You object needs: String name, String type, int year!", MessageStatus.ERROR);
-			return Response.status(Status.BAD_REQUEST).entity(message).build();
+			throw new BadRequestException("You object needs: String name, String type, int year!");
 		}
 		Optional<MovieEntity> dbEntity = MovieEntity.findByIdOptional(movieEntity.id);
 		if (dbEntity.isEmpty())
 		{
-			ShortMessage message = new ShortMessage("I can't find your movie by id " + movieEntity.id, MessageStatus.ERROR);
-			return Response.status(Status.NOT_FOUND).entity(message).build();
+			throw new NotFoundException("I can't find your movie by id " + movieEntity.id);
 		}
 		dbEntity.ifPresent(entity -> {
 			String message = getUpdateMessage(entity, movieEntity);
@@ -39,7 +35,7 @@ public class UpdateMovieAction extends AbstractAuditLogAction
 			entity.persist();
 			new SaveAuditLogAction().run(user, this, message, movieEntity);
 		});
-		return Response.ok(movieEntity).build();
+		return movieEntity;
 	}
 
 	private String getUpdateMessage(MovieEntity entityOld, MovieEntity entityNew)

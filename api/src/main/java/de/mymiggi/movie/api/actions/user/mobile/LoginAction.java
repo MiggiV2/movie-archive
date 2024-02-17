@@ -1,19 +1,16 @@
 package de.mymiggi.movie.api.actions.user.mobile;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.Response;
-
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.eclipse.microprofile.rest.client.inject.RestClient;
-import org.jboss.logging.Logger;
-
-import de.mymiggi.movie.api.entity.MessageStatus;
-import de.mymiggi.movie.api.entity.ShortMessage;
 import de.mymiggi.movie.api.entity.oauth.KeycloakTokens;
 import de.mymiggi.movie.api.entity.oauth.TokenRequest;
 import de.mymiggi.movie.api.service.ExchangeService;
+import io.quarkus.security.UnauthorizedException;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.InternalServerErrorException;
+import jakarta.ws.rs.WebApplicationException;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.jboss.logging.Logger;
 
 @ApplicationScoped
 public class LoginAction
@@ -30,21 +27,20 @@ public class LoginAction
 	@ConfigProperty(name = "quarkus.oidc.credentials.secret")
 	String clientSecret;
 
-	public Response run(TokenRequest credentials)
+	public KeycloakTokens run(TokenRequest credentials)
 	{
 		try
 		{
-			return Response.ok(getTokens(credentials)).build();
+			return getTokens(credentials);
 		}
 		catch (WebApplicationException webEx)
 		{
 			if (webEx.getResponse().getStatus() == 401)
 			{
-				ShortMessage msg = new ShortMessage("Incorrect username or password", MessageStatus.ERROR);
-				return Response.status(Response.Status.UNAUTHORIZED).entity(msg).build();
+				throw new UnauthorizedException("Incorrect username or password");
 			}
 			LOG.error("Unexpected response code in login request!", webEx);
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			throw new InternalServerErrorException("Unexpected response code in login request!");
 		}
 	}
 

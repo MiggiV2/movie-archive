@@ -1,19 +1,19 @@
 package de.mymiggi.movie.api.actions.user;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-
 import de.mymiggi.movie.api.entity.config.DefaultPage;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Sort;
+import jakarta.enterprise.context.ApplicationScoped;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @ApplicationScoped
 public class GetSortedMoviesAction
 {
-	public Response runByYear(int page, boolean desc, DefaultPage defaultPage)
+	public List<MovieEntity> runByYear(int page, boolean desc, DefaultPage defaultPage)
 	{
 		PanacheQuery<MovieEntity> movieArchive = desc
 			? MovieEntity.findAll(Sort.descending("year"))
@@ -21,7 +21,7 @@ public class GetSortedMoviesAction
 		return run(movieArchive, page, defaultPage);
 	}
 
-	public Response runByName(int page, boolean desc, DefaultPage defaultPage)
+	public List<MovieEntity> runByName(int page, boolean desc, DefaultPage defaultPage)
 	{
 		PanacheQuery<MovieEntity> movieArchive = desc
 			? MovieEntity.findAll(Sort.descending("name"))
@@ -29,11 +29,13 @@ public class GetSortedMoviesAction
 		return run(movieArchive, page, defaultPage);
 	}
 
-	private Response run(PanacheQuery<MovieEntity> movieArchive, int page, DefaultPage defaultPage)
+	private List<MovieEntity> run(PanacheQuery<MovieEntity> movieArchive, int page, DefaultPage defaultPage)
 	{
 		movieArchive.page(Page.ofSize(defaultPage.Size()));
-		return movieArchive.pageCount() <= page || page < 0
-			? Response.status(Status.NOT_FOUND).entity("").build()
-			: Response.ok(movieArchive.page(page, defaultPage.Size()).list()).build();
+		if (movieArchive.pageCount() <= page || page < 0)
+		{
+			return new ArrayList<>();
+		}
+		return movieArchive.page(page, defaultPage.Size()).list();
 	}
 }

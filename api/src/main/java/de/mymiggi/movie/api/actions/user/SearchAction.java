@@ -1,34 +1,26 @@
 package de.mymiggi.movie.api.actions.user;
 
-import java.util.List;
-
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-
-import de.mymiggi.movie.api.entity.MessageStatus;
 import de.mymiggi.movie.api.entity.SearchWrapper;
-import de.mymiggi.movie.api.entity.ShortMessage;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.BadRequestException;
+
+import java.util.List;
 
 @ApplicationScoped
 public class SearchAction
 {
-	public Response run(String query)
+	public List<MovieEntity> run(String query)
 	{
 		if (query == null || query.isBlank())
 		{
-			ShortMessage message = new ShortMessage("You need a search query!", MessageStatus.ERROR);
-			return Response.status(Status.BAD_REQUEST).entity(message).build();
+			throw new BadRequestException("You need a search query!");
 		}
-		List<MovieEntity> result = search(query);
-		return result.isEmpty()
-			? Response.noContent().build()
-			: Response.ok(result).build();
+		return search(query);
 	}
 
 	/**
-	 * <h3>After some extrem tests:</h3>
+	 * <h3>After some extreme tests:</h3>
 	 * <p>
 	 * This stream method is ~5.85% - <0.9% slower [JVM dev mode]
 	 * </p>
