@@ -21,6 +21,7 @@ public class AddTagsAction
 		MovieEntity movieEntity = MovieEntity.findById(movieId);
 		if (movieEntity == null)
 		{
+			LOG.warn("Movie not found!");
 			throw new NotFoundException("Movie not found!");
 		}
 		for (String tag : tags)
@@ -40,6 +41,15 @@ public class AddTagsAction
 		{
 			tag = tag.replace("* ", "");
 		}
+		if (tag.startsWith("\"") && tag.endsWith("\""))
+		{
+			tag = tag.replace("\"", "");
+		}
+		if (tag.startsWith("'") && tag.endsWith("'"))
+		{
+			tag = tag.replace("'", "");
+		}
+		tag = tag.trim();
 		if (tag.isBlank())
 		{
 			return;

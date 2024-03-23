@@ -1,5 +1,6 @@
 package de.mymiggi.movie.api.entity.db;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Entity;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 public class TagEntity extends PanacheEntity
 {
 	private String name;
+	@JsonIgnore
 	private LocalDateTime created;
 
 	public TagEntity()

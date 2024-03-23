@@ -7,12 +7,16 @@ import de.mymiggi.movie.api.actions.user.GetSortedMoviesAction;
 import de.mymiggi.movie.api.actions.user.SearchAction;
 import de.mymiggi.movie.api.entity.config.DefaultPage;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
+import de.mymiggi.movie.api.entity.db.TagEntity;
+import de.mymiggi.movie.api.entity.db.TagMovieRelation;
 import de.mymiggi.movie.api.service.SyncService;
+import io.quarkus.panache.common.Sort;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -98,5 +102,25 @@ public class UserResource
 	public void addTag(@PathParam("movie-id") Long movieId, String[] tags)
 	{
 		addTagsAction.run(movieId, tags);
+	}
+
+	@GET
+	@Path("tags")
+	public List<TagEntity> list_tags()
+	{
+		return TagEntity.listAll(Sort.by("name"));
+	}
+
+	@GET
+	@Path("tags/{id}")
+	public List<MovieEntity> list_tagged_movies(@PathParam("id") Long tagId)
+	{
+		TagEntity tag = TagEntity.findById(tagId);
+		if (tag == null)
+		{
+			throw new NotFoundException("Tag not found!");
+		}
+		List<TagMovieRelation> relations = TagMovieRelation.find("tag", tag).list();
+		return relations.stream().map(TagMovieRelation::getMovie).toList();
 	}
 }
