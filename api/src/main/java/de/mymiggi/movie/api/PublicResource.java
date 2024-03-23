@@ -7,7 +7,11 @@ import de.mymiggi.movie.api.entity.oauth.KeycloakTokens;
 import de.mymiggi.movie.api.entity.oauth.TokenRequest;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
 @Path("movie-archive/public")

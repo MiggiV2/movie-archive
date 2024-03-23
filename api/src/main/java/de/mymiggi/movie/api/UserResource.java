@@ -1,27 +1,30 @@
 package de.mymiggi.movie.api;
 
+import de.mymiggi.movie.api.actions.user.AddTagsAction;
 import de.mymiggi.movie.api.actions.user.GetMovieByIDAction;
 import de.mymiggi.movie.api.actions.user.GetMoviesAction;
 import de.mymiggi.movie.api.actions.user.GetSortedMoviesAction;
 import de.mymiggi.movie.api.actions.user.SearchAction;
 import de.mymiggi.movie.api.entity.config.DefaultPage;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
-import de.mymiggi.movie.api.entity.db.TagEntity;
-import de.mymiggi.movie.api.entity.db.TagMovieRelation;
 import de.mymiggi.movie.api.service.SyncService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Path("movie-archive/user")
-// @RolesAllowed({ "user", "admin" })
-// #########################################################################################################################
+@RolesAllowed({ "user", "admin" })
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class UserResource
@@ -32,10 +35,11 @@ public class UserResource
 	GetMoviesAction getMoviesAction;
 	GetMovieByIDAction getMovieByIDAction;
 	SearchAction searchAction;
+	AddTagsAction addTagsAction;
 
 	@Inject
 	public UserResource(DefaultPage defaultPage, SyncService syncService, GetSortedMoviesAction sortedMoviesAction,
-		GetMoviesAction getMoviesAction, GetMovieByIDAction getMovieByIDAction, SearchAction searchAction)
+		GetMoviesAction getMoviesAction, GetMovieByIDAction getMovieByIDAction, SearchAction searchAction, AddTagsAction addTagsAction)
 	{
 		this.defaultPage = defaultPage;
 		this.syncService = syncService;
@@ -43,6 +47,7 @@ public class UserResource
 		this.getMoviesAction = getMoviesAction;
 		this.getMovieByIDAction = getMovieByIDAction;
 		this.searchAction = searchAction;
+		this.addTagsAction = addTagsAction;
 	}
 
 	@GET
@@ -88,29 +93,10 @@ public class UserResource
 	}
 
 	@POST
-	@Path("movie-tag/{movie-id}")
+	@Path("tag-movie/{movie-id}")
 	@Transactional
 	public void addTag(@PathParam("movie-id") Long movieId, String[] tags)
 	{
-		System.out.println("Adding tags to movie " + movieId + ": ");
-		MovieEntity movieEntity = MovieEntity.findById(movieId);
-		if (movieEntity == null)
-		{
-			throw new NotFoundException("Movie not found!");
-		}
-		for (String tag : tags)
-		{
-			Optional<TagEntity> tagOpt = TagEntity.find("name", tag).firstResultOptional();
-			TagEntity tagEntity = tagOpt.orElse(new TagEntity(tag, LocalDateTime.now()));
-			if (!tagEntity.isPersistent())
-			{
-				System.out.println("Saved new Tag: " + tag);
-				tagEntity.persist();
-			}
-
-			TagMovieRelation relation = new TagMovieRelation(movieEntity, tagEntity);
-			relation.persist();
-			System.out.println("Added TagMovieRelation");
-		}
+		addTagsAction.run(movieId, tags);
 	}
 }
