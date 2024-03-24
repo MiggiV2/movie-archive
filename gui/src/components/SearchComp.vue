@@ -69,14 +69,14 @@
           <div class="row">
             <!--Data-->
             <div class="col">
-              <p>{{ data.currentMovie.name }}</p>
+              <h4>{{ data.currentMovie.name }}</h4>
               <p>Zu finden in {{ data.currentMovie.block }}</p>
               <p>Aus dem Jahre {{ data.currentMovie.year }}</p>
               <p>Type: {{ data.currentMovie.type }}</p>
               <p class="wikis">
-                <a class="btn btn-outline-primary" v-if="allowIframe(data.currentMovie.wikiUrl)"
-                  :href="data.currentMovie.wikiUrl">Wikipedia Seite öffnen</a>
-                <a class="btn btn-outline-primary" v-else-if="isVideoBuster(data.currentMovie.wikiUrl)"
+                <a class="btn btn-primary" v-if="allowIframe(data.currentMovie.wikiUrl)"
+                  :href="data.currentMovie.wikiUrl">Mehr Details auf Wikipedia <i class="bi bi-globe"></i></a>
+                <a class="btn btn-primary" v-else-if="isVideoBuster(data.currentMovie.wikiUrl)"
                   :href="data.currentMovie.wikiUrl">
                   VideoBuster Link
                 </a>
@@ -84,7 +84,7 @@
               <p class="youtube-search">
                 <a class="btn btn-danger"
                   :href="'https://www.youtube.com/results?search_query=Trailer ' + data.currentMovie.name">
-                  Auf Youtube suchen <i class="bi bi-youtube"></i>
+                  Trailer auf Youtube suchen <i class="bi bi-youtube"></i>
                 </a>
               </p>
             </div>
@@ -98,24 +98,25 @@
               </div>
             </div>
           </div>
+          <hr>
           <!--Tags-->
           <div class="row justify-content-center">
-            <div class="col-auto tag-wrapper" v-for="tag in data.currentMovie.tags" :key="tag.name"
+            <div class="col-auto" v-for="tag in data.currentMovie.tags" :key="tag.name"
               @click="loadMoviesByTag(tag)" data-bs-dismiss="modal">
-              <p class="tag">{{ tag.name }}</p>
+              <p class="tag-outline">#{{ tag.name }}</p>
             </div>
           </div>
         </div>
         <div class="modal-footer">
           <div class="row">
             <div class="col">
-              <button v-if="user.isAdmin" type="button" class="btn btn-danger" data-bs-target="#deleteModal"
+              <button v-if="user.isAdmin" type="button" class="btn btn-outline-danger" data-bs-target="#deleteModal"
                 data-bs-toggle="modal">
                 <i class="bi bi-trash3"></i> Löschen
               </button>
             </div>
             <div class="col-auto">
-              <button v-if="user.isAdmin" @click="showUpdateModal()" type="button" class="btn btn-primary"
+              <button v-if="user.isAdmin" @click="showUpdateModal()" type="button" class="btn btn-outline-primary"
                 data-bs-dismiss="modal">
                 <i class="bi bi-pencil"></i> Update
               </button>
@@ -572,20 +573,39 @@ select.desktop {
   padding: 5px;
 }
 
-.tag-wrapper {
-  padding: 5px;
-}
-
-.modal-body {
+#movieModal .modal-body {
   text-align: center;
+  font-size: 1.2rem;
 }
 
-.modal-body>.row~.row.justify-content-center {
-  margin-top: 2rem;
+#movieModal .modal-body h4{
+  margin-top: 0.8rem;
+  margin-bottom: 1.2rem;
 }
+
+#movieModal .modal-body > hr {
+  margin-top: 3rem;
+}
+
+#movieModal .row.justify-content-center {
+  margin-top: 1.5rem;
+}
+
+#movieModal .modal-body .col-auto {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#movieModal p.tag-outline {
+  color: rgb(0, 102, 255);
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
 
 .wikis {
-  margin-top: 13rem;
+  margin-top: 11rem;
 }
 
 .modal-footer>.row {
@@ -603,4 +623,6 @@ select.desktop {
   border-radius: 5px;
   cursor: pointer;
 }
+
+
 </style>
