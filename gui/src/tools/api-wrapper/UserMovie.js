@@ -92,6 +92,25 @@ export function searchByTag(tagId) {
     });
 }
 
+
+export function getTagsByMovie(movieId) {
+    return fetch(HOST + "user/tags/by-movie/" + movieId, {
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + getCookie("accessToken")
+        },
+    }).then(response => {
+        if (response.status == 200) {
+            return response.json();
+        }
+        if (response.ok) {
+            return [];
+        }
+        console.error(response);
+        return new Error("Can't load movies!");
+    });
+}
+
 function getSorteByID(id) {
     var sort = {
         sortType: "",

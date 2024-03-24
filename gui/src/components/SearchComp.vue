@@ -7,7 +7,7 @@
           aria-label="Welchen Film suche Sie?" aria-describedby="button-addon2" v-model="data.query" @input="search" />
         <button class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#tagModal">
           Tags
-          <i class="bi bi-tag"></i>
+          <i class="bi bi-tag desktop"></i>
         </button>
         <select @change="setSortIDAndLoad($event)" class="form-select desktop" aria-label="Default select example">
           <option value="0" selected>Keine Sortierung</option>
@@ -17,9 +17,9 @@
           <option value="4">Jahr /\</option>
           <option value="5">Relevanz</option>
         </select>
-        <button class="btn btn-primary mobile" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMenu"
-          aria-expanded="false" aria-controls="collapseMenu">
-          Sortieren <i class="bi bi-wrench"></i>
+        <button class="btn btn-outline-light mobile" type="button" data-bs-toggle="collapse"
+          data-bs-target="#collapseMenu" aria-expanded="false" aria-controls="collapseMenu">
+          Sortieren
         </button>
       </div>
     </form>
@@ -51,7 +51,7 @@
   </div>
   <!-- 404 -->
   <div v-else-if="data.movies.length == 0" class="container">
-    <h2>Leider keine Filme mit diesem Namen gefunden!</h2>
+    <h2>Leider keine Filme mit diesem Namen gefunden :(</h2>
   </div>
   <!-- Modal-->
   <div class="modal fade" id="movieModal" tabindex="-1" aria-labelledby="movieModalLabel" aria-hidden="true">
@@ -72,18 +72,24 @@
               <p>Aus dem Jahre {{ data.currentMovie.year }}</p>
               <p>Type: {{ data.currentMovie.type }}</p>
               <p class="wikis">
-                <a class="btn btn-primary" v-if="allowIframe(data.currentMovie.wikiUrl)"
+                <a class="btn btn-outline-primary" v-if="allowIframe(data.currentMovie.wikiUrl)"
                   :href="data.currentMovie.wikiUrl">Seite auf Wikipedia öffnen</a>
-                <a class="btn btn-primary" v-else-if="isVideoBuster(data.currentMovie.wikiUrl)"
+                <a class="btn btn-outline-primary" v-else-if="isVideoBuster(data.currentMovie.wikiUrl)"
                   :href="data.currentMovie.wikiUrl">
                   VideoBuster Link
                 </a>
               </p>
               <p class="youtube-search">
-                <a class="btn btn-primary" :href="'https://www.youtube.com/results?search_query=Trailer ' +
+                <a class="btn btn-danger" :href="'https://www.youtube.com/results?search_query=Trailer ' +
       data.currentMovie.name
       ">Auf Youtube suchen <i class="bi bi-youtube"></i></a>
               </p>
+              <p>Tags:</p>
+              <div class="row">
+                <div class="col-auto tag-wrapper" v-for="tag in data.currentMovie.tags" :key="tag.name" @click="loadMoviesByTag(tag)" data-bs-dismiss="modal">
+                  <p class="tag">{{ tag.name }}</p>
+                </div>
+              </div>
             </div>
             <div v-if="allowIframe(data.currentMovie.wikiUrl)" class="col-10 desktop">
               <iframe :src="data.currentMovie.wikiUrl" title="Wikipedia"></iframe>
@@ -165,8 +171,8 @@
                 <i class="bi bi-search"></i>
               </button>
             </div>
-            <p class="col-4"
-              v-for="(tag, index) in data.tags.filter(tag => data.tagName == null || tag.name.startsWith(data.tagName))"
+            <p class="col-auto"
+              v-for="(tag, index) in data.tags.filter(tag => data.tagName == null || tag.name.toLowerCase().startsWith(data.tagName.toLowerCase()))"
               :key="index" @click="loadMoviesByTag(tag)" data-bs-dismiss="modal">
               <span class="tag">{{ tag.name }}</span>
             </p>
@@ -189,7 +195,8 @@ import {
   getSortedMovies,
   searchMovie,
   getTags,
-  searchByTag
+  searchByTag,
+  getTagsByMovie
 } from "@/tools/api-wrapper/UserMovie";
 import { reactive } from "@vue/reactivity";
 import { Modal } from "bootstrap";
@@ -217,6 +224,8 @@ const data = reactive({
     block: "...",
     wikiUrl: "...",
     type: "...",
+    id: 0,
+    tags: []
   },
   query: urlParams.has("query") ? urlParams.get("query") : "",
   isLoading: true,
@@ -344,6 +353,7 @@ function setSortIDAndLoad(event) {
 
 function showMovie(movie) {
   data.currentMovie = movie;
+  loadTagsForMovie();
   var modalElement = document.getElementById("movieModal");
   var modal = new Modal(modalElement);
   modal.show();
@@ -412,23 +422,40 @@ function loadSortedMovies() {
 }
 
 function sendSearch() {
-  searchMovie(data.query.replaceAll(" ", "+"))
-    .then((movies) => {
-      data.movies = movies;
-    })
-    .catch((e) => {
-      console.error(e);
-      alert("Something went wrong! " + e);
-    })
-    .finally(() => {
-      data.isLoading = false;
-    });
+  let looksLikeTag = data.query.split("/").length > 2;
+  if (!looksLikeTag) {
+    searchMovie(data.query.replaceAll(" ", "+"))
+      .then((movies) => {
+        data.movies = movies;
+      })
+      .catch((e) => {
+        console.error(e);
+        alert("Something went wrong! " + e);
+      })
+      .finally(() => {
+        data.isLoading = false;
+      });
+  }
 }
 
 function loadMoviesByTag(tag) {
-  data.query = "Ergebnisse für Tag " + tag.name;
   searchByTag(tag.id).then(movies => {
     data.movies = movies;
+    // Setting query -> no slide sync
+    if (movies.length == 1) {
+      data.query = movies[0].name;
+    } else if (movies.length > 1) {
+      data.query = "";
+      for (let i = 0; i < movies.length; i++) {
+        data.query += movies[i].name
+        if (i != movies.length - 1) {
+          data.query += " / ";
+        }
+      }
+    }
+    else {
+      data.query = "Tag=" + tag.name;
+    }
   }).catch((e) => {
     console.error(e);
     alert("Something went wrong! " + e);
@@ -436,6 +463,13 @@ function loadMoviesByTag(tag) {
     .finally(() => {
       data.isLoading = false;
     });
+}
+
+function loadTagsForMovie() {
+  data.currentMovie.tags = [{ name: "no", id: 0 }];
+  getTagsByMovie(data.currentMovie.id).then(tags => {
+    data.currentMovie.tags = tags;
+  })
 }
 </script>
 
@@ -492,6 +526,10 @@ select.desktop {
 }
 
 .modal-body>.row>.col-4 {
+  padding: 5px;
+}
+
+.tag-wrapper {
   padding: 5px;
 }
 
