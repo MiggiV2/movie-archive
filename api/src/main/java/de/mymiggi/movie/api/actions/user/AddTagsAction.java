@@ -33,6 +33,7 @@ public class AddTagsAction
 
 	private void addTag(String tag, MovieEntity movieEntity)
 	{
+		tag = tag.toLowerCase();
 		if (tag.startsWith("• "))
 		{
 			tag = tag.replace("• ", "");
