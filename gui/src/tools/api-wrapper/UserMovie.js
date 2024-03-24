@@ -37,11 +37,45 @@ export function searchMovie(query) {
     });
 }
 
-
-
 export function getSortedMovies(page, sortID) {
     var sort = getSorteByID(sortID);
     return fetch(HOST + "user/sorted-movies/by-" + sort.sortType + "?page=" + page + "&desc=" + sort.desc, {
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + getCookie("accessToken")
+        },
+    }).then(response => {
+        if (response.status == 200) {
+            return response.json();
+        }
+        if (response.ok) {
+            return [];
+        }
+        console.error(response);
+        return new Error("Can't load movies!");
+    });
+}
+
+export function getTags() {
+    return fetch(HOST + "user/tags", {
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + getCookie("accessToken")
+        },
+    }).then(response => {
+        if (response.status == 200) {
+            return response.json();
+        }
+        if (response.ok) {
+            return [];
+        }
+        console.error(response);
+        return new Error("Can't load movies!");
+    });
+}
+
+export function searchByTag(tagId) {
+    return fetch(HOST + "user/tags/" + tagId, {
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + getCookie("accessToken")

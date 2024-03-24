@@ -3,37 +3,22 @@
   <div id="search-input" class="container">
     <form @submit="search" onsubmit="return false">
       <div class="input-group mb-3">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Welchen Film suche Sie?"
-          aria-label="Welchen Film suche Sie?"
-          aria-describedby="button-addon2"
-          v-model="data.query"
-          @input="search"
-        />
-        <span class="input-group-text desktop" id="basic-addon1"
-          >Sortierung</span
-        >
-        <select
-          @change="setSortIDAndLoad($event)"
-          class="form-select desktop"
-          aria-label="Default select example"
-        >
+        <input type="text" class="form-control" placeholder="Welchen Film suche Sie?"
+          aria-label="Welchen Film suche Sie?" aria-describedby="button-addon2" v-model="data.query" @input="search" />
+        <button class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#tagModal">
+          Tags
+          <i class="bi bi-tag"></i>
+        </button>
+        <select @change="setSortIDAndLoad($event)" class="form-select desktop" aria-label="Default select example">
           <option value="0" selected>Keine Sortierung</option>
           <option value="1">Alphapethisch \/</option>
           <option value="2">Alphapethisch /\</option>
           <option value="3">Jahr \/</option>
           <option value="4">Jahr /\</option>
+          <option value="5">Relevanz</option>
         </select>
-        <button
-          class="btn btn-primary mobile"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#collapseMenu"
-          aria-expanded="false"
-          aria-controls="collapseMenu"
-        >
+        <button class="btn btn-primary mobile" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMenu"
+          aria-expanded="false" aria-controls="collapseMenu">
           Sortieren <i class="bi bi-wrench"></i>
         </button>
       </div>
@@ -42,11 +27,7 @@
   <!--mobile-sort-content-->
   <div class="container collapse" id="collapseMenu">
     <div class="card card-body">
-      <select
-        @change="setSortIDAndLoad($event)"
-        class="form-select"
-        aria-label="Default select example"
-      >
+      <select @change="setSortIDAndLoad($event)" class="form-select" aria-label="Default select example">
         <option value="0" selected>Keine Sortierung</option>
         <option value="1">Alphapethisch \/</option>
         <option value="2">Alphapethisch /\</option>
@@ -57,12 +38,7 @@
   </div>
   <!-- movies -->
   <div id="movies" class="container">
-    <div
-      class="box box-movie"
-      v-for="(movie, index) in data.movies"
-      :key="index"
-      @click="showMovie(movie)"
-    >
+    <div class="box box-movie" v-for="(movie, index) in data.movies" :key="index" @click="showMovie(movie)">
       <h2>{{ movie.name }}</h2>
       <p>Aus dem Jahre {{ movie.year }}</p>
     </div>
@@ -75,30 +51,17 @@
   </div>
   <!-- 404 -->
   <div v-else-if="data.movies.length == 0" class="container">
-    <div class="box">
-      <h2>Leider keine Filme mit diesem Namen gefunden!</h2>
-    </div>
+    <h2>Leider keine Filme mit diesem Namen gefunden!</h2>
   </div>
   <!-- Modal-->
-  <div
-    class="modal fade"
-    id="movieModal"
-    tabindex="-1"
-    aria-labelledby="movieModalLabel"
-    aria-hidden="true"
-  >
+  <div class="modal fade" id="movieModal" tabindex="-1" aria-labelledby="movieModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="movieModalLabel">
             Film - {{ data.currentMovie.name }}
           </h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <!-- Modal-Body -->
@@ -109,39 +72,21 @@
               <p>Aus dem Jahre {{ data.currentMovie.year }}</p>
               <p>Type: {{ data.currentMovie.type }}</p>
               <p class="wikis">
-                <a
-                  class="btn btn-primary"
-                  v-if="allowIframe(data.currentMovie.wikiUrl)"
-                  :href="data.currentMovie.wikiUrl"
-                  >Seite auf Wikipedia öffnen</a
-                >
-                <a
-                  class="btn btn-primary"
-                  v-else-if="isVideoBuster(data.currentMovie.wikiUrl)"
-                  :href="data.currentMovie.wikiUrl"
-                >
+                <a class="btn btn-primary" v-if="allowIframe(data.currentMovie.wikiUrl)"
+                  :href="data.currentMovie.wikiUrl">Seite auf Wikipedia öffnen</a>
+                <a class="btn btn-primary" v-else-if="isVideoBuster(data.currentMovie.wikiUrl)"
+                  :href="data.currentMovie.wikiUrl">
                   VideoBuster Link
                 </a>
               </p>
               <p class="youtube-search">
-                <a
-                  class="btn btn-primary"
-                  :href="
-                    'https://www.youtube.com/results?search_query=Trailer ' +
-                    data.currentMovie.name
-                  "
-                  >Auf Youtube suchen <i class="bi bi-youtube"></i
-                ></a>
+                <a class="btn btn-primary" :href="'https://www.youtube.com/results?search_query=Trailer ' +
+      data.currentMovie.name
+      ">Auf Youtube suchen <i class="bi bi-youtube"></i></a>
               </p>
             </div>
-            <div
-              v-if="allowIframe(data.currentMovie.wikiUrl)"
-              class="col-10 desktop"
-            >
-              <iframe
-                :src="data.currentMovie.wikiUrl"
-                title="Wikipedia"
-              ></iframe>
+            <div v-if="allowIframe(data.currentMovie.wikiUrl)" class="col-10 desktop">
+              <iframe :src="data.currentMovie.wikiUrl" title="Wikipedia"></iframe>
             </div>
             <div v-else class="col-10">
               <h2>Leider kein Wikipedia Artikel verzeichnet!</h2>
@@ -149,29 +94,15 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button
-            v-if="user.isAdmin"
-            type="button"
-            class="btn btn-danger"
-            data-bs-target="#deleteModal"
-            data-bs-toggle="modal"
-          >
+          <button v-if="user.isAdmin" type="button" class="btn btn-danger" data-bs-target="#deleteModal"
+            data-bs-toggle="modal">
             <i class="bi bi-trash3"></i> Löschen
           </button>
-          <button
-            v-if="user.isAdmin"
-            @click="showUpdateModal()"
-            type="button"
-            class="btn btn-primary"
-            data-bs-dismiss="modal"
-          >
+          <button v-if="user.isAdmin" @click="showUpdateModal()" type="button" class="btn btn-primary"
+            data-bs-dismiss="modal">
             <i class="bi bi-pencil"></i> Update
           </button>
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
             Schließen
           </button>
         </div>
@@ -180,23 +111,12 @@
   </div>
   <UpdateModal :movie="data.currentMovie" />
   <!-- Delete-Confirm Modal -->
-  <div
-    class="modal fade"
-    id="deleteModal"
-    tabindex="-1"
-    aria-labelledby="deleteModallLabel"
-    aria-hidden="true"
-  >
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModallLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="deleteModalLabel">Bist du sicher?</h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div v-if="!data.delete.hasResponed">
@@ -211,42 +131,55 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button
-            v-if="!data.delete.hasResponed"
-            type="button"
-            class="btn btn-secondary"
-            data-bs-target="#movieModal"
-            data-bs-toggle="modal"
-          >
+          <button v-if="!data.delete.hasResponed" type="button" class="btn btn-secondary" data-bs-target="#movieModal"
+            data-bs-toggle="modal">
             Abbrechen
           </button>
-          <button
-            v-if="!data.delete.hasResponed"
-            type="button"
-            class="btn btn-primary"
-            @click="sendDelete()"
-          >
-            <div
-              v-if="data.delete.isSending"
-              class="spinner-border spinner-border-sm"
-              role="status"
-            >
+          <button v-if="!data.delete.hasResponed" type="button" class="btn btn-primary" @click="sendDelete()">
+            <div v-if="data.delete.isSending" class="spinner-border spinner-border-sm" role="status">
               <span class="visually-hidden">Loading...</span>
             </div>
             Ja, sicher
           </button>
-          <button
-            v-else
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
+          <button v-else type="button" class="btn btn-secondary" data-bs-dismiss="modal">
             Schließen
           </button>
         </div>
       </div>
     </div>
   </div>
+  <!-- Tag-Modal -->
+  <div class="modal fade" id="tagModal" tabindex="-1" aria-labelledby="tagModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="tagModalLabel">Suche einen Film mit folgendem Tag / Schlagwort</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" placeholder="Nach welchen Tag suchen Sie?"
+                aria-label="Nach welchen Tag suchen Sie?" aria-describedby="tag-button" v-model="data.tagName">
+              <button class="btn btn-outline-dark" type="button" id="tag-button">
+                <i class="bi bi-search"></i>
+              </button>
+            </div>
+            <p class="col-4"
+              v-for="(tag, index) in data.tags.filter(tag => data.tagName == null || tag.name.startsWith(data.tagName))"
+              :key="index" @click="loadMoviesByTag(tag)" data-bs-dismiss="modal">
+              <span class="tag">{{ tag.name }}</span>
+            </p>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Schließen</button>
+          <button type="button" class="btn btn-primary">Suchen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </template>
 
 <script setup>
@@ -255,6 +188,8 @@ import {
   getMovies,
   getSortedMovies,
   searchMovie,
+  getTags,
+  searchByTag
 } from "@/tools/api-wrapper/UserMovie";
 import { reactive } from "@vue/reactivity";
 import { Modal } from "bootstrap";
@@ -273,6 +208,8 @@ const user = reactive({
 
 const data = reactive({
   movies: [],
+  tags: [],
+  tagName: null,
   currentMovie: {
     name: "...",
     year: 0,
@@ -333,6 +270,9 @@ function load() {
     getMoviePageCount().then((count) => {
       data.maxPageCount = count;
     });
+    getTags().then(tags => {
+      data.tags = tags;
+    })
   });
 }
 
@@ -396,7 +336,10 @@ function loadMovies() {
 function setSortIDAndLoad(event) {
   data.sortID = event.target.value;
   data.currentPage = 0;
-  loadMovies();
+  let isRelevanz = data.sortID == 5 //Default in search
+  if (!isRelevanz) {
+    loadMovies();
+  }
 }
 
 function showMovie(movie) {
@@ -481,6 +424,19 @@ function sendSearch() {
       data.isLoading = false;
     });
 }
+
+function loadMoviesByTag(tag) {
+  data.query = "Ergebnisse für Tag " + tag.name;
+  searchByTag(tag.id).then(movies => {
+    data.movies = movies;
+  }).catch((e) => {
+    console.error(e);
+    alert("Something went wrong! " + e);
+  })
+    .finally(() => {
+      data.isLoading = false;
+    });
+}
 </script>
 
 <style scoped>
@@ -488,27 +444,62 @@ function sendSearch() {
   margin-top: 3rem;
   max-width: 70rem;
 }
+
 #search-input input {
   background: unset;
   color: white;
 }
+
+#search-input select {
+  color: white;
+  background: transparent;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
 #movies {
   margin-bottom: 6rem;
 }
+
 iframe {
   width: 100%;
   height: 40rem;
 }
+
 .modal-xl {
   max-width: 97vw;
 }
+
+div.container>h2 {
+  text-align: center;
+}
+
 .col h2 {
   text-align: center;
 }
+
 div.col-10 h2 {
   text-align: center;
 }
+
 select.desktop {
   max-width: 11rem;
+}
+
+#search-input ::placeholder {
+  color: white;
+  opacity: 0.9;
+}
+
+.modal-body>.row>.col-4 {
+  padding: 5px;
+}
+
+.tag {
+  color: white;
+  background-color: rgb(0, 102, 255);
+  padding: 7px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 </style>
