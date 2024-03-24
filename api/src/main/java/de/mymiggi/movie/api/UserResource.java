@@ -106,14 +106,14 @@ public class UserResource
 
 	@GET
 	@Path("tags")
-	public List<TagEntity> list_tags()
+	public List<TagEntity> listTags()
 	{
 		return TagEntity.listAll(Sort.by("name"));
 	}
 
 	@GET
 	@Path("tags/{id}")
-	public List<MovieEntity> list_tagged_movies(@PathParam("id") Long tagId)
+	public List<MovieEntity> listTaggedMovies(@PathParam("id") Long tagId)
 	{
 		TagEntity tag = TagEntity.findById(tagId);
 		if (tag == null)
@@ -122,5 +122,18 @@ public class UserResource
 		}
 		List<TagMovieRelation> relations = TagMovieRelation.find("tag", tag).list();
 		return relations.stream().map(TagMovieRelation::getMovie).toList();
+	}
+
+	@GET
+	@Path("tags/by-movie/{id}")
+	public List<TagEntity> listTagsForMovie(@PathParam("id") Long movieId)
+	{
+		MovieEntity movieEntity = MovieEntity.findById(movieId);
+		if (movieEntity == null)
+		{
+			throw new NotFoundException("No movie found!");
+		}
+		List<TagMovieRelation> relations = TagMovieRelation.find("movie", movieEntity).list();
+		return relations.stream().map(TagMovieRelation::getTag).toList();
 	}
 }
