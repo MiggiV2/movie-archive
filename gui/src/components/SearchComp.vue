@@ -9,8 +9,9 @@
           Tags
           <i class="bi bi-tag desktop"></i>
         </button>
-        <select @change="setSortIDAndLoad($event)" class="form-select desktop" aria-label="Default select example">
-          <option value="0" selected>Keine Sortierung</option>
+        <select @change="setSortIDAndLoad($event)" class="form-select desktop" aria-label="Default select example"
+          v-model="data.sortID">
+          <option value="0">Keine Sortierung</option>
           <option value="1">Alphapethisch \/</option>
           <option value="2">Alphapethisch /\</option>
           <option value="3">Jahr \/</option>
@@ -28,7 +29,7 @@
   <div class="container collapse" id="collapseMenu">
     <div class="card card-body">
       <select @change="setSortIDAndLoad($event)" class="form-select" aria-label="Default select example">
-        <option value="0" selected>Keine Sortierung</option>
+        <option value="0">Keine Sortierung</option>
         <option value="1">Alphapethisch \/</option>
         <option value="2">Alphapethisch /\</option>
         <option value="3">Jahr \/</option>
@@ -55,7 +56,7 @@
   </div>
   <!-- Modal-->
   <div class="modal fade" id="movieModal" tabindex="-1" aria-labelledby="movieModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="movieModalLabel">
@@ -66,6 +67,7 @@
         <div class="modal-body">
           <!-- Modal-Body -->
           <div class="row">
+            <!--Data-->
             <div class="col">
               <p>{{ data.currentMovie.name }}</p>
               <p>Zu finden in {{ data.currentMovie.block }}</p>
@@ -73,44 +75,55 @@
               <p>Type: {{ data.currentMovie.type }}</p>
               <p class="wikis">
                 <a class="btn btn-outline-primary" v-if="allowIframe(data.currentMovie.wikiUrl)"
-                  :href="data.currentMovie.wikiUrl">Seite auf Wikipedia öffnen</a>
+                  :href="data.currentMovie.wikiUrl">Wikipedia Seite öffnen</a>
                 <a class="btn btn-outline-primary" v-else-if="isVideoBuster(data.currentMovie.wikiUrl)"
                   :href="data.currentMovie.wikiUrl">
                   VideoBuster Link
                 </a>
               </p>
               <p class="youtube-search">
-                <a class="btn btn-danger" :href="'https://www.youtube.com/results?search_query=Trailer ' +
-      data.currentMovie.name
-      ">Auf Youtube suchen <i class="bi bi-youtube"></i></a>
+                <a class="btn btn-danger"
+                  :href="'https://www.youtube.com/results?search_query=Trailer ' + data.currentMovie.name">
+                  Auf Youtube suchen <i class="bi bi-youtube"></i>
+                </a>
               </p>
-              <p>Tags:</p>
-              <div class="row">
-                <div class="col-auto tag-wrapper" v-for="tag in data.currentMovie.tags" :key="tag.name" @click="loadMoviesByTag(tag)" data-bs-dismiss="modal">
-                  <p class="tag">{{ tag.name }}</p>
-                </div>
+            </div>
+            <!--Poster-->
+            <div class="col desktop" v-if="data.currentMovie.omdbData != undefined">
+              <img v-if="data.currentMovie.omdbData.Poster != undefined" :src="data.currentMovie.omdbData.Poster"
+                alt="Movie Poster">
+              <div v-else>
+                <p>Keine Poster gefunden...</p>
+                <img src="/img/default-poster.png" alt="Default Poster from https://pixabay.com/vectors/android-sci-fi-retro-poster-7479380/" width="300" height="420">
               </div>
             </div>
-            <div v-if="allowIframe(data.currentMovie.wikiUrl)" class="col-10 desktop">
-              <iframe :src="data.currentMovie.wikiUrl" title="Wikipedia"></iframe>
-            </div>
-            <div v-else class="col-10">
-              <h2>Leider kein Wikipedia Artikel verzeichnet!</h2>
+          </div>
+          <!--Tags-->
+          <div class="row justify-content-center">
+            <div class="col-auto tag-wrapper" v-for="tag in data.currentMovie.tags" :key="tag.name"
+              @click="loadMoviesByTag(tag)" data-bs-dismiss="modal">
+              <p class="tag">{{ tag.name }}</p>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button v-if="user.isAdmin" type="button" class="btn btn-danger" data-bs-target="#deleteModal"
-            data-bs-toggle="modal">
-            <i class="bi bi-trash3"></i> Löschen
-          </button>
-          <button v-if="user.isAdmin" @click="showUpdateModal()" type="button" class="btn btn-primary"
-            data-bs-dismiss="modal">
-            <i class="bi bi-pencil"></i> Update
-          </button>
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-            Schließen
-          </button>
+          <div class="row">
+            <div class="col">
+              <button v-if="user.isAdmin" type="button" class="btn btn-danger" data-bs-target="#deleteModal"
+                data-bs-toggle="modal">
+                <i class="bi bi-trash3"></i> Löschen
+              </button>
+            </div>
+            <div class="col-auto">
+              <button v-if="user.isAdmin" @click="showUpdateModal()" type="button" class="btn btn-primary"
+                data-bs-dismiss="modal">
+                <i class="bi bi-pencil"></i> Update
+              </button>
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                Schließen
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -190,6 +203,7 @@
 
 <script setup>
 import { checkTokenAndRun } from "@/tools/Auth";
+import { getPostUrl } from "@/tools/api-wrapper/omdbapi";
 import {
   getMovies,
   getSortedMovies,
@@ -225,14 +239,17 @@ const data = reactive({
     wikiUrl: "...",
     type: "...",
     id: 0,
-    tags: []
+    tags: [],
+    omdbData: {
+      Poster: ""
+    }
   },
   query: urlParams.has("query") ? urlParams.get("query") : "",
   isLoading: true,
   lastSearch: 0,
   currentPage: 0,
   maxPageCount: 0,
-  sortID: 0,
+  sortID: "3",
   delete: {
     isSending: false,
     hasResponed: false,
@@ -316,13 +333,17 @@ function startSearch() {
     if (urlParams.has("query")) {
       window.location = "/search";
     } else {
+      data.sortID = "3";
       data.currentPage = 0;
       checkTokenAndRun(() => {
         loadMovies();
       });
+      console.log(data.sortID);
+      console.log(typeof data.sortID)
     }
   } else {
     data.isLoading = true;
+    data.sortID = "5";
     checkTokenAndRun(() => {
       sendSearch();
     });
@@ -345,15 +366,18 @@ function loadMovies() {
 function setSortIDAndLoad(event) {
   data.sortID = event.target.value;
   data.currentPage = 0;
-  let isRelevanz = data.sortID == 5 //Default in search
+  let isRelevanz = data.sortID == 5 //Default in search  
   if (!isRelevanz) {
-    loadMovies();
+    checkTokenAndRun(() => {
+      loadMovies();
+    });
   }
 }
 
 function showMovie(movie) {
   data.currentMovie = movie;
   loadTagsForMovie();
+  loadPoster(movie);
   var modalElement = document.getElementById("movieModal");
   var modal = new Modal(modalElement);
   modal.show();
@@ -438,38 +462,57 @@ function sendSearch() {
   }
 }
 
+function loadPoster(movie) {
+  let cacheKey = movie.year + "-" + movie.name;
+  if (localStorage.getItem(cacheKey)) {
+    data.currentMovie.omdbData = JSON.parse(localStorage.getItem(cacheKey));
+  }
+  else {
+    getPostUrl(movie).then(omdbData => {
+      data.currentMovie.omdbData = omdbData;
+      if (omdbData.Response != "False") {
+        localStorage.setItem(cacheKey, JSON.stringify(omdbData));
+      }
+    });
+  }
+}
+
 function loadMoviesByTag(tag) {
-  searchByTag(tag.id).then(movies => {
-    data.movies = movies;
-    // Setting query -> no slide sync
-    if (movies.length == 1) {
-      data.query = movies[0].name;
-    } else if (movies.length > 1) {
-      data.query = "";
-      for (let i = 0; i < movies.length; i++) {
-        data.query += movies[i].name
-        if (i != movies.length - 1) {
-          data.query += " / ";
+  checkTokenAndRun(() => {
+    searchByTag(tag.id).then(movies => {
+      data.movies = movies;
+      // Setting query -> no slide sync
+      if (movies.length == 1) {
+        data.query = movies[0].name;
+      } else if (movies.length > 1) {
+        data.query = "";
+        for (let i = 0; i < movies.length; i++) {
+          data.query += movies[i].name
+          if (i != movies.length - 1) {
+            data.query += " / ";
+          }
         }
       }
-    }
-    else {
-      data.query = "Tag=" + tag.name;
-    }
-  }).catch((e) => {
-    console.error(e);
-    alert("Something went wrong! " + e);
+      else {
+        data.query = "Tag=" + tag.name;
+      }
+    }).catch((e) => {
+      console.error(e);
+      alert("Something went wrong! " + e);
+    })
+      .finally(() => {
+        data.isLoading = false;
+      });
   })
-    .finally(() => {
-      data.isLoading = false;
-    });
 }
 
 function loadTagsForMovie() {
   data.currentMovie.tags = [{ name: "no", id: 0 }];
-  getTagsByMovie(data.currentMovie.id).then(tags => {
-    data.currentMovie.tags = tags;
-  })
+  checkTokenAndRun(() => {
+    getTagsByMovie(data.currentMovie.id).then(tags => {
+      data.currentMovie.tags = tags;
+    })
+  });
 }
 </script>
 
@@ -531,6 +574,26 @@ select.desktop {
 
 .tag-wrapper {
   padding: 5px;
+}
+
+.modal-body {
+  text-align: center;
+}
+
+.modal-body>.row~.row.justify-content-center {
+  margin-top: 2rem;
+}
+
+.wikis {
+  margin-top: 13rem;
+}
+
+.modal-footer>.row {
+  width: 100%;
+}
+
+.modal-footer  button {
+  margin-left: 1rem;
 }
 
 .tag {
