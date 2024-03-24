@@ -11,7 +11,7 @@ node {
       sh "docker push $ROOT_IMAGE-gui && docker push $ROOT_IMAGE-gui:build-$BUILD_ID"
     }    
   }
-  withCredentials([string(credentialsId: 'webhook-homepage', variable: 'WEBHOOK')]) {    
+  withCredentials([string(credentialsId: 'webhook-moviearchive', variable: 'WEBHOOK')]) {    
     stage ('Deploy GUI') {
       sh '''
         curl -v -X POST $WEBHOOK
