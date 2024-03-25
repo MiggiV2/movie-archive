@@ -1,13 +1,14 @@
 <template>
   <!-- log -->
-  <div class="container">
-    <h2 class="box">Admin Audit Log</h2>
-    <div class="box log" v-for="(item, index) in data.log" :key="index">
-      <p>{{ item.userName }}: {{ item.message }}</p>
+  <div class="container box">
+    <h2>Admin Audit Log</h2>
+    <div class="log" v-for="(item, index) in data.log" :key="index">
+      <p>{{ item.userName }}</p>
+      <p>{{ item.message }}</p>
       <small>{{ item.date.substring(0, 19) }}</small>
     </div>
-    <div class="container box" v-if="!data.isLoading && data.log.length == 0">
-      <h2>No logs found!</h2>
+    <div class="log" v-if="!data.isLoading && data.log.length == 0">
+      <p>No logs yet...</p>
     </div>
   </div>
   <!-- spinner -->
@@ -70,7 +71,11 @@ function loadLog() {
 
 <style scoped>
 .log {
-  text-align: left;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+}
+.log p, .log small {
+  margin: 5px;
 }
 .container {
   margin-bottom: 6rem;

@@ -11,12 +11,11 @@
         </button>
         <select @change="setSortIDAndLoad($event)" class="form-select desktop" aria-label="Default select example"
           v-model="data.sortID">
-          <option value="0">Keine Sortierung</option>
           <option value="1">Alphapethisch \/</option>
           <option value="2">Alphapethisch /\</option>
           <option value="3">Jahr \/</option>
           <option value="4">Jahr /\</option>
-          <option value="5">Relevanz</option>
+          <option value="5" disabled>Relevanz</option>
         </select>
         <button class="btn btn-outline-light mobile" type="button" data-bs-toggle="collapse"
           data-bs-target="#collapseMenu" aria-expanded="false" aria-controls="collapseMenu">
@@ -38,16 +37,27 @@
     </div>
   </div>
   <!-- movies -->
-  <div id="movies" class="container">
+  <div class="container">
     <div class="box box-movie" v-for="(movie, index) in data.movies" :key="index" @click="showMovie(movie)">
       <h2>{{ movie.name }}</h2>
       <p>Aus dem Jahre {{ movie.year }}</p>
     </div>
   </div>
-  <!-- spinner -->
-  <div v-if="data.isLoading" class="d-flex justify-content-center">
-    <div class="spinner-border" role="status">
-      <span class="visually-hidden">Loading...</span>
+  <!-- placeholder -->
+  <div v-if="data.isLoading" class="container">
+    <div v-for="index in 10" :key="index">
+      <div class="box box-movie placeholder-glow">
+        <h2><span class="placeholder col-4"></span></h2>
+        <p><span class="placeholder col-2"></span> <span class="placeholder col-1"></span></p>
+      </div>
+      <div class="box box-movie placeholder-glow">
+        <h2><span class="placeholder col-2"></span></h2>
+        <p><span class="placeholder col-2"></span> <span class="placeholder col-1"></span></p>
+      </div>
+      <div class="box box-movie placeholder-glow">
+        <h2><span class="placeholder col-3"></span></h2>
+        <p><span class="placeholder col-2"></span> <span class="placeholder col-1"></span></p>
+      </div>
     </div>
   </div>
   <!-- 404 -->
@@ -94,15 +104,17 @@
                 alt="Movie Poster">
               <div v-else>
                 <p>Keine Poster gefunden...</p>
-                <img src="/img/default-poster.png" alt="Default Poster from https://pixabay.com/vectors/android-sci-fi-retro-poster-7479380/" width="300" height="420">
+                <img src="/img/default-poster.png"
+                  alt="Default Poster from https://pixabay.com/vectors/android-sci-fi-retro-poster-7479380/" width="300"
+                  height="420">
               </div>
             </div>
           </div>
           <hr>
           <!--Tags-->
           <div class="row justify-content-center">
-            <div class="col-auto" v-for="tag in data.currentMovie.tags" :key="tag.name"
-              @click="loadMoviesByTag(tag)" data-bs-dismiss="modal">
+            <div class="col-auto" v-for="tag in data.currentMovie.tags" :key="tag.name" @click="loadMoviesByTag(tag)"
+              data-bs-dismiss="modal">
               <p class="tag-outline">#{{ tag.name }}</p>
             </div>
           </div>
@@ -206,7 +218,6 @@
 import { checkTokenAndRun } from "@/tools/Auth";
 import { getPostUrl } from "@/tools/api-wrapper/omdbapi";
 import {
-  getMovies,
   getSortedMovies,
   searchMovie,
   getTags,
@@ -353,15 +364,9 @@ function startSearch() {
 }
 
 function loadMovies() {
-  if (data.sortID == 0) {
-    checkTokenAndRun(() => {
-      loadUnsortedMovies();
-    });
-  } else {
-    checkTokenAndRun(() => {
-      loadSortedMovies();
-    });
-  }
+  checkTokenAndRun(() => {
+    loadSortedMovies();
+  });
 }
 
 function setSortIDAndLoad(event) {
@@ -407,24 +412,6 @@ function sendDelete() {
         window.location =
           data.query.length > 0 ? "/search?query=" + data.query : "/search";
       }, 2500);
-    });
-}
-
-function loadUnsortedMovies() {
-  data.isLoading = true;
-  getMovies(data.currentPage)
-    .then((movies) => {
-      if (data.currentPage == 0) {
-        data.movies = [];
-      }
-      data.movies = data.movies.concat(movies);
-    })
-    .catch((e) => {
-      console.error(e);
-      alert("Something went wrong! " + e);
-    })
-    .finally(() => {
-      data.isLoading = false;
     });
 }
 
@@ -535,10 +522,6 @@ function loadTagsForMovie() {
   border-bottom-right-radius: 5px;
 }
 
-#movies {
-  margin-bottom: 6rem;
-}
-
 iframe {
   width: 100%;
   height: 40rem;
@@ -578,12 +561,12 @@ select.desktop {
   font-size: 1.2rem;
 }
 
-#movieModal .modal-body h4{
+#movieModal .modal-body h4 {
   margin-top: 0.8rem;
   margin-bottom: 1.2rem;
 }
 
-#movieModal .modal-body > hr {
+#movieModal .modal-body>hr {
   margin-top: 3rem;
 }
 
@@ -603,7 +586,6 @@ select.desktop {
   cursor: pointer;
 }
 
-
 .wikis {
   margin-top: 11rem;
 }
@@ -612,7 +594,7 @@ select.desktop {
   width: 100%;
 }
 
-.modal-footer  button {
+.modal-footer button {
   margin-left: 1rem;
 }
 
@@ -623,6 +605,4 @@ select.desktop {
   border-radius: 5px;
   cursor: pointer;
 }
-
-
 </style>
