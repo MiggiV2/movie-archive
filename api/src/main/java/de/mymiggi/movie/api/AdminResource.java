@@ -4,6 +4,7 @@ import de.mymiggi.movie.api.actions.admin.AddMovieAction;
 import de.mymiggi.movie.api.actions.admin.DeleteMovieAction;
 import de.mymiggi.movie.api.actions.admin.UpdateMovieAction;
 import de.mymiggi.movie.api.actions.auditlog.GetAuditLogAction;
+import de.mymiggi.movie.api.actions.user.AddTagsAction;
 import de.mymiggi.movie.api.entity.KeycloakUser;
 import de.mymiggi.movie.api.entity.config.DefaultPage;
 import de.mymiggi.movie.api.entity.db.AuditLogEntity;
@@ -19,6 +20,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
@@ -38,10 +40,12 @@ public class AdminResource
 	UpdateMovieAction updateMovieAction;
 	DeleteMovieAction deleteMovieAction;
 	GetAuditLogAction getAuditLogAction;
+	AddTagsAction addTagsAction;
 
 	@Inject
 	public AdminResource(SecurityIdentity identity, DefaultPage defaultPage, AddMovieAction addMovieAction,
-		UpdateMovieAction updateMovieAction, DeleteMovieAction deleteMovieAction, GetAuditLogAction getAuditLogAction)
+		UpdateMovieAction updateMovieAction, DeleteMovieAction deleteMovieAction, GetAuditLogAction getAuditLogAction,
+		AddTagsAction addTagsAction)
 	{
 		this.identity = identity;
 		this.defaultPage = defaultPage;
@@ -49,6 +53,7 @@ public class AdminResource
 		this.updateMovieAction = updateMovieAction;
 		this.deleteMovieAction = deleteMovieAction;
 		this.getAuditLogAction = getAuditLogAction;
+		this.addTagsAction = addTagsAction;
 	}
 
 	@POST
@@ -87,5 +92,13 @@ public class AdminResource
 	public long getAuditLogPageCount()
 	{
 		return getAuditLogAction.run(defaultPage);
+	}
+
+	@POST
+	@Path("tag-movie/{movie-id}")
+	@Transactional
+	public void addTag(@PathParam("movie-id") Long movieId, String[] tags)
+	{
+		addTagsAction.run(movieId, tags);
 	}
 }

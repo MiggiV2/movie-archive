@@ -1,6 +1,5 @@
 package de.mymiggi.movie.api;
 
-import de.mymiggi.movie.api.actions.user.AddTagsAction;
 import de.mymiggi.movie.api.actions.user.GetMovieByIDAction;
 import de.mymiggi.movie.api.actions.user.GetMoviesAction;
 import de.mymiggi.movie.api.actions.user.GetSortedMoviesAction;
@@ -13,11 +12,9 @@ import de.mymiggi.movie.api.service.SyncService;
 import io.quarkus.panache.common.Sort;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -39,11 +36,10 @@ public class UserResource
 	GetMoviesAction getMoviesAction;
 	GetMovieByIDAction getMovieByIDAction;
 	SearchAction searchAction;
-	AddTagsAction addTagsAction;
 
 	@Inject
 	public UserResource(DefaultPage defaultPage, SyncService syncService, GetSortedMoviesAction sortedMoviesAction,
-		GetMoviesAction getMoviesAction, GetMovieByIDAction getMovieByIDAction, SearchAction searchAction, AddTagsAction addTagsAction)
+		GetMoviesAction getMoviesAction, GetMovieByIDAction getMovieByIDAction, SearchAction searchAction)
 	{
 		this.defaultPage = defaultPage;
 		this.syncService = syncService;
@@ -51,7 +47,6 @@ public class UserResource
 		this.getMoviesAction = getMoviesAction;
 		this.getMovieByIDAction = getMovieByIDAction;
 		this.searchAction = searchAction;
-		this.addTagsAction = addTagsAction;
 	}
 
 	@GET
@@ -94,14 +89,6 @@ public class UserResource
 	public Map<Long, String> getHashMap()
 	{
 		return syncService.getHashMap();
-	}
-
-	@POST
-	@Path("tag-movie/{movie-id}")
-	@Transactional
-	public void addTag(@PathParam("movie-id") Long movieId, String[] tags)
-	{
-		addTagsAction.run(movieId, tags);
 	}
 
 	@GET

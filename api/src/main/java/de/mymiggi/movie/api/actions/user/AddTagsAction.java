@@ -26,35 +26,16 @@ public class AddTagsAction
 		}
 		for (String tag : tags)
 		{
-			addTag(tag, movieEntity);
+			if (!tag.isBlank())
+			{
+				addTag(tag, movieEntity);
+			}
 		}
 		LOG.info("Done");
 	}
 
 	private void addTag(String tag, MovieEntity movieEntity)
 	{
-		if (tag.startsWith("• "))
-		{
-			tag = tag.replace("• ", "");
-		}
-		if (tag.startsWith("* "))
-		{
-			tag = tag.replace("* ", "");
-		}
-		if (tag.startsWith("\"") && tag.endsWith("\""))
-		{
-			tag = tag.replace("\"", "");
-		}
-		if (tag.startsWith("'") && tag.endsWith("'"))
-		{
-			tag = tag.replace("'", "");
-		}
-		tag = tag.trim();
-		if (tag.isBlank())
-		{
-			return;
-		}
-
 		Optional<TagEntity> tagOpt = TagEntity.find("name", tag).firstResultOptional();
 		TagEntity tagEntity = tagOpt.orElse(new TagEntity(tag, LocalDateTime.now()));
 		if (!tagEntity.isPersistent())
@@ -62,7 +43,6 @@ public class AddTagsAction
 			LOG.infof("Saved new Tag: %s", tag);
 			tagEntity.persist();
 		}
-
 		TagMovieRelation relation = new TagMovieRelation(movieEntity, tagEntity);
 		relation.persist();
 	}
