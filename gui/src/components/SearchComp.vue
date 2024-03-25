@@ -61,9 +61,11 @@
     </div>
   </div>
   <!-- 404 -->
-  <div v-else-if="data.movies.length == 0" class="container">
+  <div v-else-if="data.movies.length == 0" class="container mt-5">
     <h2>Leider keine Filme mit diesem Namen gefunden :(</h2>
   </div>
+  <!--Spacer-->
+  <div class="my-5 py-5"></div>
   <!-- Modal-->
   <div class="modal fade" id="movieModal" tabindex="-1" aria-labelledby="movieModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
