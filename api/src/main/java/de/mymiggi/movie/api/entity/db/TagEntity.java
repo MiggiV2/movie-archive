@@ -1,14 +1,21 @@
 package de.mymiggi.movie.api.entity.db;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 
 import java.time.LocalDateTime;
 
 @Entity
-public class TagEntity extends PanacheEntity
+public class TagEntity extends PanacheEntityBase
 {
+	@Id
+	@SequenceGenerator(name = "tagSequence", sequenceName = "tag_id_seq", initialValue = 12)
+	@GeneratedValue(generator = "tagSequence")
+	public Long id;
 	private String name;
 	@JsonIgnore
 	private LocalDateTime created;
