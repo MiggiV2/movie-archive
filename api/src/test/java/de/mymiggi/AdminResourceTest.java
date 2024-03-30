@@ -2,6 +2,8 @@ package de.mymiggi;
 
 import de.mymiggi.movie.api.AdminResource;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
+import de.mymiggi.movie.api.entity.db.TagEntity;
+import de.mymiggi.movie.api.entity.db.TagMovieRelation;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -45,6 +47,33 @@ public class AdminResourceTest
 		assertEquals(entity.name, movie.name);
 		assertEquals(entity.id, movie.id);
 		assertNotEquals(movie.block, "Block 7");
+	}
+
+	@Test
+	public void testTagsUpdate()
+	{
+		String[] tags = { "Action", "Mystery", "Test-Tag" };
+		long movieId = 5;
+
+		// Check count of tags before
+		MovieEntity movieEntity = MovieEntity.findById(movieId);
+		long savedTags = TagMovieRelation.find("movie", movieEntity).count();
+		assertEquals(6, savedTags);
+
+		// Updates
+		given()
+			.when()
+			.contentType(ContentType.JSON)
+			.body(tags)
+			.post("tag-movie/" + movieId)
+			.then()
+			.statusCode(204);
+
+		// Check count of tags - after
+		savedTags = TagMovieRelation.find("movie", movieEntity).count();
+		long existingTags = TagEntity.count();
+		assertEquals(3, savedTags);
+		assertEquals(11, existingTags);
 	}
 
 	private MovieEntity testAdd(long moviesBefore)
