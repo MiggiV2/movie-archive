@@ -918,3 +918,36 @@ INSERT INTO movieEntity(id, year, name, uuid, block, wikiUrl, type)
 VALUES (362, 2009, 'Zweiohrküken', 'Z2', 'Block 12', 'https://de.wikipedia.org/wiki/Zweiohrk%C3%BCken', 'BD');
 INSERT INTO movieEntity(id, year, name, uuid, block, wikiUrl, type)
 VALUES (363, 2017, 'Zwischen zwei Leben', 'Z6', 'Block 12', 'https://de.wikipedia.org/wiki/Zwischen_zwei_Leben', 'BD');
+
+INSERT INTO public.tagentity (created, id, name)
+VALUES ('2024-03-23 17:13:24.909338', 1, 'Action'),
+       ('2024-03-23 17:13:24.921627', 2, 'Disaster'),
+       ('2024-03-23 17:13:24.923859', 3, 'Fantasy'),
+       ('2024-03-23 17:13:24.925662', 4, 'Romance'),
+       ('2024-03-23 17:13:24.92738', 5, 'Sci-Fi'),
+       ('2024-03-23 17:13:24.929349', 6, 'Thriller'),
+       ('2024-03-23 17:13:24.93127', 7, 'Adventure'),
+       ('2024-03-23 17:13:24.932995', 8, 'Animation'),
+       ('2024-03-23 17:13:24.934532', 9, 'Mystery'),
+       ('2024-03-23 17:13:24.936504', 10, 'Horror'),
+       ('2024-03-23 17:13:24.939969', 11, 'Survival');
+
+INSERT INTO public.tagmovierelation (id, movie_id, tag_id)
+VALUES (1, 1, 1),
+       (2, 1, 2),
+       (3, 1, 3),
+       (4, 1, 4),
+       (5, 1, 5),
+       (6, 1, 6),
+       (7, 1, 7),
+       (8, 1, 8),
+       (9, 1, 9),
+       (10, 1, 10);
+
+INSERT INTO public.tagmovierelation (id, movie_id, tag_id)
+VALUES (11, 5, 6),
+       (12, 5, 7),
+       (13, 5, 8),
+       (14, 5, 9),
+       (15, 5, 10),
+       (16, 5, 11);
