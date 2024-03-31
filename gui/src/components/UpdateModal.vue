@@ -47,28 +47,41 @@
             </div>
           </div>
           <div class="mb-3 row">
-            <label for="movie-name" class="col-sm-3 col-form-label"
+            <label for="movie-block" class="col-sm-3 col-form-label"
               >Film Block</label
             >
             <div class="col-sm-9">
               <input
                 type="text"
                 class="form-control"
-                id="movie-name"
+                id="movie-block"
                 v-model="data.movie.block"
               />
             </div>
           </div>
           <div class="mb-3 row">
-            <label for="movie-name" class="col-sm-3 col-form-label"
+            <label for="movie-wiki" class="col-sm-3 col-form-label"
               >Wikipedia URL</label
             >
             <div class="col-sm-9">
               <input
                 type="text"
                 class="form-control"
-                id="movie-name"
+                id="movie-wiki"
                 v-model="data.movie.wikiUrl"
+              />
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="movie-originalname" class="col-sm-3 col-form-label"
+              >Originaltitel</label
+            >
+            <div class="col-sm-9">
+              <input
+                type="text"
+                class="form-control"
+                id="movie-originalname"
+                v-model="data.movie.originalName"
               />
             </div>
           </div>

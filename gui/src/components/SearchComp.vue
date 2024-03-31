@@ -82,6 +82,11 @@
             <!--Data-->
             <div class="col">
               <h4>{{ data.currentMovie.name }}</h4>
+              <!--Poster_Mobile-->
+              <div class="mobile" v-if="data.currentMovie.omdbData != undefined">
+                <img v-if="data.currentMovie.omdbData.Poster != undefined" :src="data.currentMovie.omdbData.Poster"
+                  alt="Movie Poster">
+              </div>
               <p>Zu finden in {{ data.currentMovie.block }}</p>
               <p>Aus dem Jahre {{ data.currentMovie.year }}</p>
               <p>Type: {{ data.currentMovie.type }}</p>
@@ -100,7 +105,7 @@
                 </a>
               </p>
             </div>
-            <!--Poster-->
+            <!--Poster_Desktop-->
             <div class="col desktop" v-if="data.currentMovie.omdbData != undefined">
               <img v-if="data.currentMovie.omdbData.Poster != undefined" :src="data.currentMovie.omdbData.Poster"
                 alt="Movie Poster">
@@ -112,7 +117,7 @@
               </div>
             </div>
           </div>
-          <hr>
+          <hr v-if="data.currentMovie.tags.length > 0">
           <!--Tags-->
           <div class="row justify-content-center">
             <div class="col-auto" v-for="tag in data.currentMovie.tags" :key="tag.name" @click="loadMoviesByTag(tag)"
@@ -126,13 +131,13 @@
             <div class="col">
               <button v-if="user.isAdmin" type="button" class="btn btn-outline-danger" data-bs-target="#deleteModal"
                 data-bs-toggle="modal">
-                <i class="bi bi-trash3"></i> Löschen
+                <i class="bi bi-trash3"></i> <span class="desktop">Löschen</span>
               </button>
             </div>
             <div class="col-auto">
               <button v-if="user.isAdmin" @click="showUpdateModal()" type="button" class="btn btn-outline-primary"
                 data-bs-dismiss="modal">
-                <i class="bi bi-pencil"></i> Update
+                <i class="bi bi-pencil"></i> <span class="desktop">Update</span>
               </button>
               <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
                 Schließen
@@ -606,5 +611,16 @@ select.desktop {
   padding: 7px;
   border-radius: 5px;
   cursor: pointer;
+}
+
+/** Molbile */
+@media (max-width: 768px) {
+  .wikis {
+    margin-top: 2rem;
+  }
+
+  .mobile > img {
+    margin-bottom: 2rem;
+  }
 }
 </style>
