@@ -149,76 +149,8 @@
     </div>
   </div>
   <UpdateModal :movie="data.currentMovie" />
-  <!-- Delete-Confirm Modal -->
-  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModallLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="deleteModalLabel">Bist du sicher?</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div v-if="!data.delete.hasResponed">
-            Du bist dabei den Film '{{ data.currentMovie.name }}' zu entfernen!
-          </div>
-          <div v-else-if="data.delete.wasSuccessfull">
-            Film '{{ data.currentMovie.name }}' wurde erfolglreich entfernt!
-          </div>
-          <div v-else>
-            Leider ist etwas schief gelaufen! Versuchen Sie es bitte später
-            erneut. Vilen Dank für das Verständniss.
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button v-if="!data.delete.hasResponed" type="button" class="btn btn-secondary" data-bs-target="#movieModal"
-            data-bs-toggle="modal">
-            Abbrechen
-          </button>
-          <button v-if="!data.delete.hasResponed" type="button" class="btn btn-primary" @click="sendDelete()">
-            <div v-if="data.delete.isSending" class="spinner-border spinner-border-sm" role="status">
-              <span class="visually-hidden">Loading...</span>
-            </div>
-            Ja, sicher
-          </button>
-          <button v-else type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-            Schließen
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Tag-Modal -->
-  <div class="modal fade" id="tagModal" tabindex="-1" aria-labelledby="tagModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="tagModalLabel">Suche einen Film mit folgendem Tag / Schlagwort</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="row">
-            <div class="input-group mb-3">
-              <input type="text" class="form-control" placeholder="Nach welchen Tag suchen Sie?"
-                aria-label="Nach welchen Tag suchen Sie?" aria-describedby="tag-button" v-model="data.tagName">
-              <button class="btn btn-outline-dark" type="button" id="tag-button">
-                <i class="bi bi-search"></i>
-              </button>
-            </div>
-            <p class="col-auto"
-              v-for="(tag, index) in data.tags.filter(tag => data.tagName == null || tag.name.toLowerCase().startsWith(data.tagName.toLowerCase()))"
-              :key="index" @click="loadMoviesByTag(tag)" data-bs-dismiss="modal">
-              <span class="tag">{{ tag.name }}</span>
-            </p>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Schließen</button>
-          <button type="button" class="btn btn-primary">Suchen</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  <DeleteModal :movie="data.currentMovie"/>
+  <TagModal @tag-selected="loadMoviesByTag"/>
 </template>
 
 <script setup>
@@ -227,7 +159,6 @@ import { getPostUrl } from "@/tools/api-wrapper/omdbapi";
 import {
   getSortedMovies,
   searchMovie,
-  getTags,
   searchByTag,
   getTagsByMovie
 } from "@/tools/api-wrapper/UserMovie";
@@ -235,10 +166,11 @@ import { reactive } from "@vue/reactivity";
 import { Modal } from "bootstrap";
 import { wikiWhiteList, videoBusterList } from "@/tools/SearchList";
 import { getMoviePageCount } from "@/tools/api-wrapper/PubMovie";
-import UpdateModal from "@/components/UpdateModal.vue";
-import { deleteMovie } from "@/tools/api-wrapper/AdminMovie";
 import { isAdmin } from "@/tools/User";
 import { getCookie } from "@/tools/Cookies";
+import UpdateModal from "@/components/UpdateModal.vue";
+import DeleteModal from "@/components/DeleteModal.vue";
+import TagModal from "@/components/TagModal.vue";
 
 var urlParams = new URLSearchParams(window.location.search);
 
@@ -248,8 +180,6 @@ const user = reactive({
 
 const data = reactive({
   movies: [],
-  tags: [],
-  tagName: null,
   currentMovie: {
     name: "...",
     year: 0,
@@ -269,11 +199,6 @@ const data = reactive({
   currentPage: 0,
   maxPageCount: 0,
   sortID: "3",
-  delete: {
-    isSending: false,
-    hasResponed: false,
-    wasSuccessfull: false,
-  },
 });
 
 start();
@@ -315,9 +240,6 @@ function load() {
     getMoviePageCount().then((count) => {
       data.maxPageCount = count;
     });
-    getTags().then(tags => {
-      data.tags = tags;
-    })
   });
 }
 
@@ -400,26 +322,6 @@ function showUpdateModal() {
   var modalElement = document.getElementById("updateModal");
   var modal = new Modal(modalElement);
   modal.show();
-}
-
-function sendDelete() {
-  data.delete.isSending = true;
-  deleteMovie(data.currentMovie)
-    .then(() => {
-      data.delete.wasSuccessfull = true;
-    })
-    .catch((e) => {
-      console.error(e);
-      data.delete.wasSuccessfull = false;
-    })
-    .finally(() => {
-      data.delete.isSending = false;
-      data.delete.hasResponed = true;
-      setTimeout(() => {
-        window.location =
-          data.query.length > 0 ? "/search?query=" + data.query : "/search";
-      }, 2500);
-    });
 }
 
 function loadSortedMovies() {

@@ -1,88 +1,42 @@
 <template>
-  <div
-    class="modal fade"
-    id="updateModal"
-    tabindex="-1"
-    aria-labelledby="updateModalLabel"
-    aria-hidden="true"
-  >
+  <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="updateModalLabel">
             Update {{ props.movie.name }}
           </h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="mb-3 row">
-            <label for="movie-name" class="col-sm-3 col-form-label"
-              >Film Name</label
-            >
+            <label for="movie-name" class="col-sm-3 col-form-label">Film Name</label>
             <div class="col-sm-9">
-              <input
-                type="text"
-                class="form-control"
-                id="movie-name"
-                v-model="data.movie.name"
-              />
+              <input type="text" class="form-control" id="movie-name" v-model="data.movie.name" />
             </div>
           </div>
           <div class="mb-3 row">
-            <label for="movie-year" class="col-sm-3 col-form-label"
-              >Jahr des Films</label
-            >
+            <label for="movie-year" class="col-sm-3 col-form-label">Jahr des Films</label>
             <div class="col-sm-9">
-              <input
-                type="text"
-                class="form-control"
-                id="movie-year"
-                v-model="data.movie.year"
-              />
+              <input type="text" class="form-control" id="movie-year" v-model="data.movie.year" />
             </div>
           </div>
           <div class="mb-3 row">
-            <label for="movie-block" class="col-sm-3 col-form-label"
-              >Film Block</label
-            >
+            <label for="movie-block" class="col-sm-3 col-form-label">Film Block</label>
             <div class="col-sm-9">
-              <input
-                type="text"
-                class="form-control"
-                id="movie-block"
-                v-model="data.movie.block"
-              />
+              <input type="text" class="form-control" id="movie-block" v-model="data.movie.block" />
             </div>
           </div>
           <div class="mb-3 row">
-            <label for="movie-wiki" class="col-sm-3 col-form-label"
-              >Wikipedia URL</label
-            >
+            <label for="movie-wiki" class="col-sm-3 col-form-label">Wikipedia URL</label>
             <div class="col-sm-9">
-              <input
-                type="text"
-                class="form-control"
-                id="movie-wiki"
-                v-model="data.movie.wikiUrl"
-              />
+              <input type="text" class="form-control" id="movie-wiki" v-model="data.movie.wikiUrl" />
             </div>
           </div>
           <div class="mb-3 row">
-            <label for="movie-originalname" class="col-sm-3 col-form-label"
-              >Originaltitel</label
-            >
+            <label for="movie-originalname" class="col-sm-3 col-form-label">Originaltitel</label>
             <div class="col-sm-9">
-              <input
-                type="text"
-                class="form-control"
-                id="movie-originalname"
-                v-model="data.movie.originalName"
-              />
+              <input type="text" class="form-control" id="movie-originalname" v-model="data.movie.originalName" />
             </div>
           </div>
           <strong v-if="data.failed && data.message != null">
@@ -90,12 +44,7 @@
           </strong>
         </div>
         <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-            @click="showMovieModal()"
-          >
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="showMovieModal()">
             Abbrechen
           </button>
           <button type="button" class="btn btn-primary" @click="update()">
@@ -115,6 +64,7 @@ const { reactive } = require("@vue/reactivity");
 import { updateMovie } from "@/tools/api-wrapper/AdminMovie";
 import { checkTokenAndRun } from "@/tools/Auth";
 import { Modal } from "bootstrap";
+import { onMounted } from "vue";
 // eslint-disable-next-line
 const props = defineProps({
   movie: {},
@@ -125,9 +75,9 @@ var data = reactive({
   message: null,
 });
 
-setTimeout(() => {
+onMounted(() => {
   setHandler();
-}, 100);
+});
 
 function setHandler() {
   var myModal = document.getElementById("updateModal");
