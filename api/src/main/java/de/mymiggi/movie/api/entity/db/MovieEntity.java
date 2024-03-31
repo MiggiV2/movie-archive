@@ -1,16 +1,15 @@
 package de.mymiggi.movie.api.entity.db;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Entity
 public class MovieEntity extends PanacheEntityBase
@@ -21,6 +20,8 @@ public class MovieEntity extends PanacheEntityBase
 	public String block;
 	public String wikiUrl;
 	public String type;
+	public String originalName;
+
 	@Id
 	@SequenceGenerator(name = "movieSequence", sequenceName = "movie_id_seq", initialValue = 364)
 	@GeneratedValue(generator = "movieSequence")
