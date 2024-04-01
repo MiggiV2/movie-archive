@@ -12,13 +12,13 @@ This project does not store any video files! Only the information about movies y
 
 ## Vue.JS frontend:
 Search:
-![search_page](./assets/Screenshot%202023-07-19%20at%2011-06-42%20MovieArchive%20Suche.png)
+![search_page](./assets/Screenshot%202024-04-01%20at%2008-06-03%20MovieArchive%20Suche.avif)
 
 Movie Information:
-![movie_information](./assets/Screenshot%202023-07-19%20at%2011-06-54%20MovieArchive%20Suche.png)
+![movie_information](./assets/Screenshot%202024-04-01%20at%2008-06-17%20MovieArchive%20Suche.avif)
 
 Admin Log:
-![admin_log](./assets/Screenshot%202023-07-19%20at%2011-11-38%20MovieArchive%20Auditlog.png)
+![admin_log](./assets/Screenshot%202024-04-01%20at%2008-06-32%20MovieArchive%20Auditlog.avif)
 
 ## Quarkus backend:
 This RestAPI handles all movie data.  
