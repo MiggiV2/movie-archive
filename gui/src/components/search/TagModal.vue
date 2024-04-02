@@ -57,3 +57,12 @@ function sendSelectedTag(tag) {
     emit('tagSelected', tag)
 }
 </script>
+
+<style scoped>
+.tag {
+  color: white;
+  background-color: rgb(0, 102, 255);
+  padding: 7px;
+  border-radius: 5px;
+  cursor: pointer;
+}</style>

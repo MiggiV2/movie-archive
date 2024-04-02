@@ -8,10 +8,10 @@
                 </div>
                 <div class="modal-body">
                     <div v-if="!data.delete.hasResponed">
-                        Du bist dabei den Film '{{ data.movie.name }}' zu entfernen!
+                        Du bist dabei den Film '{{ props.movie.name }}' zu entfernen!
                     </div>
                     <div v-else-if="data.delete.wasSuccessfull">
-                        Film '{{ data.movie.name }}' wurde erfolglreich entfernt!
+                        Film '{{ props.movie.name }}' wurde erfolglreich entfernt!
                     </div>
                     <div v-else>
                         Leider ist etwas schief gelaufen! Versuchen Sie es bitte später
@@ -41,13 +41,11 @@
 <script setup>
 const { reactive } = require("@vue/reactivity");
 import { deleteMovie } from "@/tools/api-wrapper/AdminMovie";
-import { onMounted } from "vue";
 // eslint-disable-next-line
 const props = defineProps({
     movie: {},
 });
 var data = reactive({
-    movie: props.movie,
     delete: {
         isSending: false,
         hasResponed: false,
@@ -55,22 +53,9 @@ var data = reactive({
     },
 });
 
-onMounted(() => {
-    setHandler();
-})
-
-function setHandler() {
-  var myModal = document.getElementById("deleteModal");
-  // eslint-disable-next-line
-  myModal.addEventListener("show.bs.modal", function (_) {
-    data.movie = props.movie;
-  });
-}
-
-
 function sendDelete() {
     data.delete.isSending = true;
-    deleteMovie(data.movie)
+    deleteMovie(props.movie)
         .then(() => {
             data.delete.wasSuccessfull = true;
         })
