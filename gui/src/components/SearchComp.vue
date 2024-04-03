@@ -66,7 +66,7 @@
   </div>
   <!--Spacer-->
   <div class="my-5 py-5"></div>
-  <MovieModal :movie="data.currentMovie" />
+  <MovieModal @tag-selected="loadMoviesByTag" :movie="data.currentMovie" />
   <UpdateModal :movie="data.currentMovie" />
   <DeleteModal :movie="data.currentMovie" />
   <TagModal @tag-selected="loadMoviesByTag" />

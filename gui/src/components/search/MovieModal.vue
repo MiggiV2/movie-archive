@@ -54,7 +54,7 @@
                     <!--Tags-->
                     <div class="row justify-content-center">
                         <div class="col-auto" v-for="tag in props.movie.tags" :key="tag.name"
-                            @click="loadMoviesByTag(tag)" data-bs-dismiss="modal">
+                            @click="sendTagSelectedEvent(tag)" data-bs-dismiss="modal">
                             <p class="tag-outline">#{{ tag.name }}</p>
                         </div>
                     </div>
@@ -89,6 +89,9 @@ import { wikiWhiteList, videoBusterList } from "@/tools/SearchList";
 import { Modal } from "bootstrap";
 
 // eslint-disable-next-line
+const emit = defineEmits(['tagSelected'])
+
+// eslint-disable-next-line
 const props = defineProps({
     movie: {}
 });
@@ -108,6 +111,11 @@ function showUpdateModal() {
     var modal = new Modal(modalElement);
     modal.show();
 }
+
+function sendTagSelectedEvent(tag) {
+    emit('tagSelected', tag);
+}
+
 
 function startURLWith(url, domainArray) {
     for (let index = 0; index < domainArray.length; index++) {
