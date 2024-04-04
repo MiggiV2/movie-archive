@@ -3,7 +3,7 @@ node {
   withEnv(['ROOT_IMAGE= gitea.familyhainz.de/miggi/movie']) {
     stage('Test API') {
       dir("api") {
-        sh './mvnw clean test'
+        sh './mvnw test'
       }
     }
     stage('Build GUI') {
@@ -11,6 +11,7 @@ node {
         dir("gui") {
           sh 'cp $CONFIG .env'
           sh "docker build . -t $ROOT_IMAGE-gui -t $ROOT_IMAGE-gui:build-$BUILD_ID"
+          sh "rm .env"
         }
       }
     }
