@@ -1,12 +1,14 @@
 import { setCookieInSec, getCookie, setCookie, setCookieSeasson } from "@/tools/Cookies";
-import { AUTH_HOST, HOST } from "@/main";
 import { v4 as uuidv4 } from "uuid";
 import { getUser } from "@/tools/User";
 
 var authURL;
 var logoutURL;
 var redirectURI = window.location.protocol.replace(":", "%3A") + "%2F%2F" + window.location.host;
-var clientID = "backend-service";
+// Config
+const CLIENT_ID = process.env.VUE_APP_AUTH_CLIENT_ID;
+const HOST = process.env.VUE_APP_API_HOST;
+const AUTH_HOST = process.env.VUE_APP_AUTH_HOST;
 
 setTimeout(() => {
     authURL = AUTH_HOST +
@@ -18,7 +20,7 @@ setTimeout(() => {
     logoutURL = AUTH_HOST +
         "realms/quarkus/protocol/openid-connect/logout" +
         "?post_logout_redirect_ur=" + redirectURI +
-        "&client_id=" + clientID;
+        "&client_id=" + CLIENT_ID;
 }, 100)
 
 export function openLogin() {

@@ -32,12 +32,11 @@
 </template>
 
 <script setup>
-import { Owner } from "@/main";
 import { getCookie } from "@/tools/Cookies";
 import { reactive } from "@vue/reactivity";
 import { getMovieCount } from "@/tools/api-wrapper/PubMovie";
 
-var owner = Owner;
+var owner = process.env.VUE_APP_OWNER;
 var user = reactive({
   login: getCookie("refreshToken"),
   movies: 0,

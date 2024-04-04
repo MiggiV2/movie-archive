@@ -1,4 +1,4 @@
-import { OMDB_KEY } from "@/main";
+const OMDB_KEY = process.env.VUE_APP_OMDB_KEY;
 
 export function getPostUrl(movie) {
     let movieName = movie.originalName ? movie.originalName : movie.name;

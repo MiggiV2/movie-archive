@@ -1,5 +1,6 @@
-import { HOST } from "@/main";
 import { getCookie } from "@/tools/Cookies";
+
+const HOST = process.env.VUE_APP_API_HOST;
 
 export function getMovies(page) {
     return fetch(HOST + "user/get-movies?page=" + page, {

@@ -1,4 +1,4 @@
-import { HOST } from "@/main";
+const HOST = process.env.VUE_APP_API_HOST;
 
 export function getMovieCount() {
     return fetch(HOST + "public/movie-count", {
