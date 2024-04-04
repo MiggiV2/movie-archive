@@ -7,8 +7,11 @@ node {
       }
     }
     stage('Build GUI') {
-      dir("gui") {
-        sh "docker build . -t $ROOT_IMAGE-gui -t $ROOT_IMAGE-gui:build-$BUILD_ID"
+      withCredentials([file(credentialsId: 'movie-archive-env-file', variable: 'CONFIG')]) {
+        dir("gui") {
+          sh 'cp $CONFIG .env'
+          sh "docker build . -t $ROOT_IMAGE-gui -t $ROOT_IMAGE-gui:build-$BUILD_ID"
+        }
       }
     }
     stage ('Push and clean') {
