@@ -1,6 +1,6 @@
 node {
   git branch: 'main', url: 'https://gitea.familyhainz.de/Miggi/movie-archive.git'
-  withEnv(['ROOT_IMAGE= gitea.familyhainz.de/miggi/movie']) {
+  withEnv(['ROOT_IMAGE=code.mymiggi.de/miggi/movie']) {
     stage('Test API') {
       dir("api") {
         sh './mvnw test'
