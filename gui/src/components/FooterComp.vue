@@ -14,7 +14,7 @@
         </a>
       </div>
       <div class="col-auto">
-        <a href="https://gitea.familyhainz.de/Miggi">
+        <a href="https://code.mymiggi.de/Miggi">
           Gitea <i class="bi bi-git"></i>
         </a>
       </div>
