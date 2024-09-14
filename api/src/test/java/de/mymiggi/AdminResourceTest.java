@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 public class AdminResourceTest
 {
 	@Test
-	public void testAddAndDelete()
+	void testAddAndDelete()
 	{
 		long moviesBefore = MovieEntity.count();
 		MovieEntity movie = testAdd(moviesBefore);
@@ -29,7 +29,7 @@ public class AdminResourceTest
 	}
 
 	@Test
-	public void testUpdate()
+	void testUpdate()
 	{
 		MovieEntity entity = new MovieEntity(2015, "Maggie", "Block 8",
 			"https://de.wikipedia.org/wiki/Maggie_(2015)", "BD");
@@ -50,7 +50,7 @@ public class AdminResourceTest
 	}
 
 	@Test
-	public void testTagsUpdate()
+	void testTagsUpdate()
 	{
 		String[] tags = { "Action", "Mystery", "Test-Tag" };
 		long movieId = 5;

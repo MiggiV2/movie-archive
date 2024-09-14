@@ -26,7 +26,7 @@ public class UserResourceTest
 	DefaultPage defaultPage;
 
 	@Test
-	public void testGetMovieListByPage()
+	void testGetMovieListByPage()
 	{
 		Response response = given().when()
 			.queryParam("page", 0)
@@ -38,7 +38,7 @@ public class UserResourceTest
 	}
 
 	@Test
-	public void testGetMovieListByID()
+	void testGetMovieListByID()
 	{
 		Response response = given().when()
 			.queryParam("id", 19)
@@ -57,7 +57,7 @@ public class UserResourceTest
 	}
 
 	@Test
-	public void testGetNameSortedMovies()
+	void testGetNameSortedMovies()
 	{
 		long[] sortedIDs = { 62, 63, 64, 65, 66, 67, 68, 70, 69, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83,
 			85, 87, 84, 86, 88, 89, 90, 91 };
@@ -72,7 +72,7 @@ public class UserResourceTest
 	}
 
 	@Test
-	public void testGetNameSortedMoviesDesc()
+	void testGetNameSortedMoviesDesc()
 	{
 		long[] sortedIDs = { 303, 302, 301, 300, 299, 298, 294, 293, 297, 296, 295, 292, 291, 290, 289, 288, 287, 286,
 			285, 284, 283, 275, 274, 276, 278, 281, 273, 279, 277, 272 };
@@ -87,7 +87,7 @@ public class UserResourceTest
 	}
 
 	@Test
-	public void testGetYearSortedMovies()
+	void testGetYearSortedMovies()
 	{
 		Response response = given().when()
 			.queryParam("page", 2)
@@ -110,7 +110,7 @@ public class UserResourceTest
 	}
 
 	@Test
-	public void testGetYearSortedMoviesDesc()
+	void testGetYearSortedMoviesDesc()
 	{
 		Response response = given().when()
 			.queryParam("page", 2)
@@ -133,7 +133,7 @@ public class UserResourceTest
 	}
 
 	@Test
-	public void testSearchMovie()
+	void testSearchMovie()
 	{
 		long[] sortedIDs = { 324, 282, 270, 271, 280, 272, 277, 279, 273, 281, 278, 276, 274, 275 };
 
@@ -146,7 +146,7 @@ public class UserResourceTest
 	}
 
 	@Test
-	public void testSearchMovieLowerCase()
+	void testSearchMovieLowerCase()
 	{
 		long[] sortedIDs = { 324, 282, 270, 271, 280, 272, 277, 279, 273, 281, 278, 276, 274, 275 };
 
@@ -159,7 +159,7 @@ public class UserResourceTest
 	}
 
 	@Test
-	public void testSearchMovieMoreWords()
+	void testSearchMovieMoreWords()
 	{
 		long[] sortedIDs = { 273, 278 };
 
@@ -172,7 +172,7 @@ public class UserResourceTest
 	}
 
 	@Test
-	public void testSync()
+	void testSync()
 	{
 		Response response = given().when().get("sync");
 
