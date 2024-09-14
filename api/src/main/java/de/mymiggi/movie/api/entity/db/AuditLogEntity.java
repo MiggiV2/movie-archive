@@ -1,12 +1,11 @@
 package de.mymiggi.movie.api.entity.db;
 
-import java.time.LocalDateTime;
-
-import jakarta.persistence.Entity;
-
 import de.mymiggi.movie.api.actions.auditlog.AbstractAuditLogAction;
 import de.mymiggi.movie.api.entity.KeycloakUser;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.persistence.Entity;
+
+import java.time.LocalDateTime;
 
 @Entity
 public class AuditLogEntity extends PanacheEntity
@@ -19,14 +18,6 @@ public class AuditLogEntity extends PanacheEntity
 
 	public AuditLogEntity()
 	{
-	}
-
-	public AuditLogEntity(KeycloakUser user, AbstractAuditLogAction action, String message)
-	{
-		this.userName = user.getUserName();
-		this.auditLogType = action.getLogType().toString();
-		this.message = message;
-		this.date = LocalDateTime.now();
 	}
 
 	public AuditLogEntity(KeycloakUser user, AbstractAuditLogAction action, String message, MovieEntity movieEntity)

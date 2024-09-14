@@ -89,6 +89,7 @@ public class AdminResource
 
 	@GET
 	@Path("auditlog-page-count")
+	// returns 0 for first page
 	public long getAuditLogPageCount()
 	{
 		return getAuditLogAction.run(defaultPage);

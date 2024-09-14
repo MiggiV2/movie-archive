@@ -26,6 +26,13 @@ public class GetAuditLogAction
 
 	public long run(DefaultPage defaultPage)
 	{
-		return Math.ceilDiv(AuditLogEntity.count(), defaultPage.Size()) - 1;
+		long count = AuditLogEntity.count();
+		long size = defaultPage.Size();
+		long ceilDiv = Math.ceilDiv(count, size);
+		if (ceilDiv == 0)
+		{
+			return 0;
+		}
+		return ceilDiv - 1;
 	}
 }
