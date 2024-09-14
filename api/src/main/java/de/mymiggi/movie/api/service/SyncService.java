@@ -1,17 +1,15 @@
 package de.mymiggi.movie.api.service;
 
+import de.mymiggi.movie.api.entity.db.MovieEntity;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.xml.bind.DatatypeConverter;
+import org.jboss.logging.Logger;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.xml.bind.DatatypeConverter;
-
-import org.jboss.logging.Logger;
-
-import de.mymiggi.movie.api.entity.db.MovieEntity;
 
 @ApplicationScoped
 public class SyncService
