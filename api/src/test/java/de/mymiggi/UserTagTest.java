@@ -1,6 +1,7 @@
 package de.mymiggi;
 
 import de.mymiggi.movie.api.UserResource;
+import de.mymiggi.movie.api.entity.db.MovieEntity;
 import de.mymiggi.movie.api.entity.db.TagEntity;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -18,7 +19,7 @@ public class UserTagTest
 {
 
 	@Test
-	public void testTagsSuccessful()
+	void testTagsSuccessful()
 	{
 		long movieId = 1;
 		Response response = given().when()
@@ -41,7 +42,7 @@ public class UserTagTest
 	}
 
 	@Test
-	public void testTagsEmpty()
+	void testTagsEmpty()
 	{
 		long movieId = 2;
 		Response response = given().when()
@@ -50,5 +51,28 @@ public class UserTagTest
 		response.then().statusCode(200);
 		TagEntity[] tags = response.body().as(TagEntity[].class);
 		assertEquals(0, tags.length);
+	}
+
+	@Test
+	void testTagList()
+	{
+		Response response = given().when().get("tags");
+
+		response.then().statusCode(200);
+		TagEntity[] tags = response.body().as(TagEntity[].class);
+
+		assertEquals(11, tags.length);
+	}
+
+	@Test
+	void testMoviesByTag()
+	{
+		long tagId = 1;
+		Response response = given().when()
+			.get("tags/" + tagId);
+
+		response.then().statusCode(200);
+		MovieEntity[] movies = response.body().as(MovieEntity[].class);
+		assertEquals(2, movies.length);
 	}
 }

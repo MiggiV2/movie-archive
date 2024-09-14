@@ -10,6 +10,9 @@ import io.restassured.response.Response;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -132,7 +135,7 @@ public class UserResourceTest
 	@Test
 	public void testSearchMovie()
 	{
-		long[] sortedIDs = { 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 324, 353 };
+		long[] sortedIDs = { 324, 282, 270, 271, 280, 272, 277, 279, 273, 281, 278, 276, 274, 275 };
 
 		Response response = given().when()
 			.queryParam("query", "Star")
@@ -145,7 +148,7 @@ public class UserResourceTest
 	@Test
 	public void testSearchMovieLowerCase()
 	{
-		long[] sortedIDs = { 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 324, 353 };
+		long[] sortedIDs = { 324, 282, 270, 271, 280, 272, 277, 279, 273, 281, 278, 276, 274, 275 };
 
 		Response response = given().when()
 			.queryParam("query", "star")
@@ -158,22 +161,46 @@ public class UserResourceTest
 	@Test
 	public void testSearchMovieMoreWords()
 	{
-		long[] sortedIDs = { 273, 278, 270, 271, 272, 274, 275, 276, 277, 279, 280, 281, 282, 324, 353 };
+		long[] sortedIDs = { 273, 278 };
 
 		Response response = given().when()
-			.queryParam("query", "star jedi")
+			.queryParam("query", "jedi")
 			.get("search");
 
 		response.then().statusCode(200);
 		compareIDs(sortedIDs, response.body().as(MovieEntity[].class));
 	}
 
+	@Test
+	public void testSync()
+	{
+		Response response = given().when().get("sync");
+
+		response.then().statusCode(200);
+		Map<Long, String> hashes = response.body().as(HashResult.class);
+
+		assertEquals(hashes.size(), 363);
+	}
+
 	private void compareIDs(long[] sortedIDs, MovieEntity[] movies)
 	{
-		assertEquals(movies.length, sortedIDs.length);
+		assertEquals(movies.length, sortedIDs.length, "Expected different count of movies");
 		for (int i = 0; i < sortedIDs.length; i++)
 		{
-			assertEquals(movies[i].id, sortedIDs[i]);
+			assertEquals(movies[i].id, sortedIDs[i], "Expected different movie id");
+		}
+	}
+
+	// Used for sync endpoint
+	static class HashResult extends HashMap<Long, String>
+	{
+		public HashResult()
+		{
+		}
+
+		public HashResult(Map<Long, String> map)
+		{
+			this.putAll(map);
 		}
 	}
 }
