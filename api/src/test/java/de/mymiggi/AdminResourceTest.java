@@ -1,6 +1,9 @@
 package de.mymiggi;
 
 import de.mymiggi.movie.api.AdminResource;
+import de.mymiggi.movie.api.actions.admin.AddMovieAction;
+import de.mymiggi.movie.api.entity.KeycloakUser;
+import de.mymiggi.movie.api.entity.db.AuditLogEntity;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import de.mymiggi.movie.api.entity.db.TagEntity;
 import de.mymiggi.movie.api.entity.db.TagMovieRelation;
@@ -9,9 +12,11 @@ import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
@@ -76,6 +81,48 @@ public class AdminResourceTest
 		assertEquals(11, existingTags);
 	}
 
+	@Test
+	@Transactional
+	void test0AuditLogPageCount()
+	{
+		AuditLogEntity.deleteAll();
+
+		given()
+			.when()
+			.get("auditlog-page-count")
+			.then()
+			.statusCode(200)
+			.body(is("0"));
+	}
+
+	@Test
+	@Transactional
+	void testAuditLogPageCount()
+	{
+		createDummyLog();
+
+		given()
+			.when()
+			.get("auditlog-page-count")
+			.then()
+			.statusCode(200)
+			.body(is("0"));
+	}
+
+	@Test
+	@Transactional
+	void testAuditLogPage()
+	{
+		createDummyLog();
+
+		given()
+			.when()
+			.queryParam("page", "0")
+			.get("auditlog")
+			.then()
+			.statusCode(200);
+	}
+
 	private MovieEntity testAdd(long moviesBefore)
 	{
 		MovieEntity entity = new MovieEntity(2077, "Cyberpunk 2077", "Block1",
@@ -105,5 +152,13 @@ public class AdminResourceTest
 
 		delResponse.then().statusCode(204);
 		assertEquals(moviesBefore, MovieEntity.count());
+	}
+
+	private void createDummyLog()
+	{
+		MovieEntity movie = new MovieEntity();
+		movie.id = 0L;
+		AuditLogEntity auditLog = new AuditLogEntity(new KeycloakUser(), new AddMovieAction(), "Added movie", movie);
+		auditLog.persist();
 	}
 }

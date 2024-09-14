@@ -180,6 +180,10 @@ public class UserResourceTest
 		Map<Long, String> hashes = response.body().as(HashResult.class);
 
 		assertEquals(hashes.size(), 363);
+		for (Long id : hashes.keySet())
+		{
+			assertEquals(hashes.get(id).length(), 32);
+		}
 	}
 
 	private void compareIDs(long[] sortedIDs, MovieEntity[] movies)
