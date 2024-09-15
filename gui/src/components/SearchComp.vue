@@ -61,7 +61,7 @@
     </div>
   </div>
   <!-- 404 -->
-  <div v-else-if="data.movies.length == 0" class="container mt-5">
+  <div v-else-if="data.movies.length == 0" class="container mt-5 text-center">
     <h2>Leider keine Filme mit diesem Namen gefunden :(</h2>
   </div>
   <!--Spacer-->
@@ -133,10 +133,13 @@ function start() {
 }
 
 window.onscroll = function () {
-  var scrollPosition =
+  var scrollPosition = 
     document.documentElement.scrollTop || document.body.scrollTop;
+  var viewportHeight = window.innerHeight;
+  var scrollThreshold = viewportHeight * 2; // Set threshold to be twice the viewport height
+
   if (
-    document.body.scrollHeight - scrollPosition < 1200 &&
+    document.body.scrollHeight - scrollPosition - viewportHeight < scrollThreshold &&
     data.currentPage < data.maxPageCount &&
     !data.isLoading &&
     data.query.replace(/\s+/g, "").length == 0
