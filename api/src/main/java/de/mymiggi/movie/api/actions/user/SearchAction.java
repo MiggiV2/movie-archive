@@ -4,7 +4,7 @@ import de.mymiggi.movie.api.entity.db.MovieEntity;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.BadRequestException;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @ApplicationScoped
@@ -21,16 +21,39 @@ public class SearchAction
 
 	private List<MovieEntity> search(String query)
 	{
-		List<MovieEntity> results = MovieEntity.find("name ILIKE ?1 ORDER BY name", query + "%").list();
+		String sqlQuery = "name ILIKE ?1 ORDER BY name";
+		List<MovieEntity> results = MovieEntity.find(sqlQuery, query + "%").list();
 		if (!results.isEmpty())
 		{
 			return results;
 		}
-		results = MovieEntity.find("name ILIKE ?1 ORDER BY name", "%" + query + "%").list();
+		results = MovieEntity.find(sqlQuery, "%" + query + "%").list();
 		if (!results.isEmpty())
 		{
 			return results;
 		}
-		return new ArrayList<>();
+		return findMoviesContainingWords(query);
+	}
+
+	public List<MovieEntity> findMoviesContainingWords(String query)
+	{
+		String[] words = query.split("\\s+");
+		StringBuilder sb = new StringBuilder();
+
+		for (int i = 0; i < words.length; i++)
+		{
+			if (i > 0)
+			{
+				sb.append(" AND ");
+			}
+
+			sb.append("name ILIKE ?").append(i + 1);
+		}
+
+		String sqlQuery = sb.toString();
+		Object[] args = Arrays.stream(words)
+			.map(w -> "%" + w.toLowerCase() + "%")
+			.toArray();
+		return MovieEntity.find(sqlQuery, args).list();
 	}
 }

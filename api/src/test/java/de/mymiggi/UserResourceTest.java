@@ -11,6 +11,7 @@ import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
@@ -164,11 +165,26 @@ public class UserResourceTest
 		long[] sortedIDs = { 273, 278 };
 
 		Response response = given().when()
-			.queryParam("query", "jedi")
+			.queryParam("query", "Star Jedi")
 			.get("search");
 
 		response.then().statusCode(200);
-		compareIDs(sortedIDs, response.body().as(MovieEntity[].class));
+		MovieEntity[] movies = response.body().as(MovieEntity[].class);
+		compareIDs(sortedIDs, movies);
+	}
+
+	@Test
+	void testSearchMovieMoreWords2()
+	{
+		long[] sortedIDs = { 178, 185, 186 };
+
+		Response response = given().when()
+			.queryParam("query", "Bond Gold")
+			.get("search");
+
+		response.then().statusCode(200);
+		MovieEntity[] movies = response.body().as(MovieEntity[].class);
+		compareIDs(sortedIDs, movies);
 	}
 
 	@Test
@@ -184,6 +200,13 @@ public class UserResourceTest
 		{
 			assertEquals(hashes.get(id).length(), 32);
 		}
+	}
+
+	@Test
+	void slq()
+	{
+		List<MovieEntity> movies = MovieEntity.find("name ILIKE ?1 AND name ILIKE ?2", "%Star%", "%Jedi%").list();
+		assertEquals(movies.size(), 2);
 	}
 
 	private void compareIDs(long[] sortedIDs, MovieEntity[] movies)
