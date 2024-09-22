@@ -20,6 +20,8 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue';
+
 const {
   getAuditLog,
   getAuditLogPageCount,
@@ -42,14 +44,14 @@ window.onscroll = function () {
     data.page < data.maxPage &&
     !data.isLoading
   ) {
-    if (window.location.pathname == "/audit-log") {
-      data.page ++;
+    if (window.location.pathname === "/audit-log") {
+      data.page++;
       loadLog();
     }
   }
 };
 
-checkTokenAndRun(() => {
+onMounted(() => {
   loadLog();
   getAuditLogPageCount().then((count) => {
     data.maxPage = count;
@@ -74,9 +76,12 @@ function loadLog() {
   margin-top: 3rem;
   margin-bottom: 1rem;
 }
-.log p, .log small {
+
+.log p,
+.log small {
   margin: 5px;
 }
+
 .container {
   margin-bottom: 6rem;
 }

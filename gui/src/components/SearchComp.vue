@@ -90,6 +90,7 @@ import UpdateModal from "@/components/search/UpdateModal.vue";
 import DeleteModal from "@/components/search/DeleteModal.vue";
 import TagModal from "@/components/search/TagModal.vue";
 import MovieModal from "@/components/search/MovieModal.vue";
+import { onMounted } from "vue";
 
 var urlParams = new URLSearchParams(window.location.search);
 
@@ -120,20 +121,14 @@ const data = reactive({
   sortID: "3",
 });
 
-start();
-
-function start() {
-  if (!getCookie("accessToken")) {
-    setTimeout(() => {
-      start();
-    }, 10);
-  } else {
+onMounted(() => {
+  if (getCookie("accessToken")) {
     load();
   }
-}
+});
 
 window.onscroll = function () {
-  var scrollPosition = 
+  var scrollPosition =
     document.documentElement.scrollTop || document.body.scrollTop;
   var viewportHeight = window.innerHeight;
   var scrollThreshold = viewportHeight * 2; // Set threshold to be twice the viewport height

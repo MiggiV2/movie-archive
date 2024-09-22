@@ -132,6 +132,7 @@ import { setCustomValidation } from "@/tools/BS5Helper";
 import { addMovie } from "@/tools/api-wrapper/AdminMovie";
 import { Toast } from "bootstrap";
 import { checkTokenAndRun } from "@/tools/Auth";
+import { onMounted } from "vue";
 
 const movie = reactive({
   name: undefined,
@@ -147,9 +148,9 @@ const status = reactive({
   message: undefined,
 });
 
-setTimeout(() => {
+onMounted(() => {
   setCustomValidation();
-}, 200);
+});
 
 function save() {
   var form = document.getElementById("add-form");

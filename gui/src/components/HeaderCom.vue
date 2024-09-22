@@ -138,6 +138,7 @@ import { reactive } from "@vue/reactivity";
 import { Modal, Toast } from "bootstrap";
 import { getRandomMotto } from "@/tools/Motto";
 import UserModal from "@/components/UserModal.vue";
+import { onMounted } from "vue";
 
 var user = reactive({
   simpleName: "",
@@ -146,18 +147,21 @@ var user = reactive({
   motto: "",
 });
 
-if (getCookie("refreshToken")) {
-  checkTokenAndRun(() => {
-    user.simpleName = getUsersSimpleName();
-    user.fullName = getUserName();
-    user.isAdmin = isAdmin();
-    user.motto = getRandomMotto(user);
-    if (getCookie("login-toast") != "showed") {
-      showToast();
-      console.log(getRandomMotto(user));
-    }
-  });
-}
+onMounted(() => {
+  if (getCookie("refreshToken")) {
+    checkTokenAndRun(() => {
+      user.simpleName = getUsersSimpleName();
+      user.fullName = getUserName();
+      user.isAdmin = isAdmin();
+      user.motto = getRandomMotto(user);
+      if (getCookie("login-toast") != "showed") {
+        showToast();
+        console.log(getRandomMotto(user));
+      }
+    });
+  }
+});
+
 function showToast() {
   setTimeout(() => {
     var toastLiveExample = document.getElementById("liveToast");
