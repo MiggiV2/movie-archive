@@ -15,7 +15,7 @@
       </div>
       <div class="col-auto">
         <a href="https://code.mymiggi.de/Miggi">
-          Gitea <i class="bi bi-git"></i>
+          Forgejo <i class="bi bi-git"></i>
         </a>
       </div>
     </div>

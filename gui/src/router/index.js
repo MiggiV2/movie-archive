@@ -46,8 +46,8 @@ const router = createRouter({
     routes
 })
 
-router.beforeEach(async (guard) => {
-    const isCallback = guard.path.endsWith('auth') || guard.path.endsWith('logout');
+router.beforeEach(async (guard) => {    
+    const isCallback = guard.path.endsWith('auth') || guard.path.endsWith('logout') || guard.path.endsWith('');
     if (isCallback) return;
 
     if (!getCookie("accessToken") && !getCookie("refreshToken")) {
