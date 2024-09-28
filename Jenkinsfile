@@ -1,5 +1,5 @@
 node {
-  git branch: 'main', url: 'https://gitea.familyhainz.de/Miggi/movie-archive.git'
+  git branch: 'main', url: 'https://code.mymiggi.de/Miggi/movie-archive.git'
   withEnv(['ROOT_IMAGE=code.mymiggi.de/miggi/movie']) {
     stage('Test API') {
       dir("api") {
