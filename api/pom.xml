@@ -167,4 +167,10 @@
             </properties>
         </profile>
     </profiles>
+    <scm>
+        <developerConnection>scm:git:ssh://git@code.mymiggi.de:2222/Miggi/movie-archive.git</developerConnection>
+        <connection>scm:git:ssh://git@code.mymiggi.de:2222/Miggi/movie-archive.git</connection>
+        <url>https://code.mymiggi.de/Miggi/movie-archive</url>
+        <tag>api-1.2.10</tag>
+    </scm>
 </project>
