@@ -85,7 +85,6 @@ import { reactive } from "@vue/reactivity";
 import { Modal } from "bootstrap";
 import { getMoviePageCount } from "@/tools/api-wrapper/PubMovie";
 import { isAdmin } from "@/tools/User";
-import { getCookie } from "@/tools/Cookies";
 import UpdateModal from "@/components/search/UpdateModal.vue";
 import DeleteModal from "@/components/search/DeleteModal.vue";
 import TagModal from "@/components/search/TagModal.vue";
@@ -122,29 +121,33 @@ const data = reactive({
 });
 
 onMounted(() => {
-  if (getCookie("accessToken")) {
     load();
-  }
 });
 
-window.onscroll = function () {
-  var scrollPosition =
-    document.documentElement.scrollTop || document.body.scrollTop;
-  var viewportHeight = window.innerHeight;
-  var scrollThreshold = viewportHeight * 2; // Set threshold to be twice the viewport height
 
-  if (
-    document.body.scrollHeight - scrollPosition - viewportHeight < scrollThreshold &&
-    data.currentPage < data.maxPageCount &&
-    !data.isLoading &&
-    data.query.replace(/\s+/g, "").length == 0
-  ) {
-    if (window.location.pathname == "/search") {
+function handleScroll() {
+  const showAllMovies = window.location.pathname == "/search" 
+  && data.query.replace(/\s+/g, "").length == 0;
+  if(!showAllMovies) {
+    return;
+  }
+
+  const pixelCountForTigger = window.innerHeight * 0.8;  
+  // Check if the user has scrolled to the bottom of the page
+  if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - pixelCountForTigger) {
+    // If there are more pages to load
+    if (data.currentPage < data.maxPageCount) {
+      // Increment the current page and load more movies
       data.currentPage++;
       loadMovies();
+    } else {
+      console.log("No more pages to load.");
     }
   }
-};
+}
+
+// Attach the scroll event listener to the window
+window.addEventListener('scroll', handleScroll);
 
 function load() {
   user.isAdmin = isAdmin();

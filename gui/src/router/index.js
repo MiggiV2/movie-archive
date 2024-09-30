@@ -53,7 +53,7 @@ router.beforeEach(async (guard) => {
     if (!getCookie("accessToken") && !getCookie("refreshToken")) {
         openLogin();
     } else if (!getCookie("accessToken")) {
-        refreshToken();
+        await refreshToken();
     }
 })
 
