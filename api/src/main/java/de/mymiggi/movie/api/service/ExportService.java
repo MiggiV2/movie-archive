@@ -1,6 +1,7 @@
 package de.mymiggi.movie.api.service;
 
 import de.mymiggi.movie.api.entity.db.MovieEntity;
+import io.quarkus.cache.CacheResult;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.security.UnauthorizedException;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -18,7 +19,8 @@ public class ExportService
 	private static final int LIST_SIZE_LIMIT = 100;
 	private static final Logger LOG = LoggerFactory.getLogger(ExportService.class);
 
-	public static String movieToCSV(MovieEntity movie)
+	// visible for testing
+	protected static String movieToCSV(MovieEntity movie)
 	{
 		return String.format("%d,\"%s\",%s,%s,\"%s\",%s,\"%s\"", movie.year, movie.name, movie.uuid,
 			movie.block, movie.wikiUrl, movie.type, movie.originalName);
@@ -48,6 +50,13 @@ public class ExportService
 			}
 			SESSIONS.remove(session);
 		}
+		return buildCSV();
+	}
+
+	@CacheResult(cacheName = "export-csv")
+	// visible for Quarkus
+	protected String buildCSV()
+	{
 		StringBuilder sb = new StringBuilder();
 		sb.append("year,name,uuid,block,wikiUrl,type,originalName\n");
 		for (PanacheEntityBase entity : getAllMovies())
