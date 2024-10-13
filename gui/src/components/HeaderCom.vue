@@ -67,8 +67,8 @@
       <div class="card card-body">
         <hr id="menu-hr" />
         <div class="row">
-          <div class="col-6">
-            <router-link to="/search"><i class="bi bi-search"></i> Suchen</router-link>
+          <div class="col-6" @click="startExport()">
+            <i class="bi bi-arrow-down-circle"></i> Export
           </div>
           <div class="col-6" @click="showUserModal()">
             {{ user.simpleName }} <i class="bi bi-person-circle"></i>
