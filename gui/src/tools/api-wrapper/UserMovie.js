@@ -112,6 +112,21 @@ export function getTagsByMovie(movieId) {
     });
 }
 
+export function getExportSession() {
+    return fetch(HOST + "user/export/session", {
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + getCookie("accessToken")
+        },
+    }).then(response => {
+        if (response.status == 200) {
+            return response.text();
+        }
+        console.error(response);
+        return new Error("Can't load movies!");
+    });
+}
+
 function getSorteByID(id) {
     var sort = {
         sortType: "",

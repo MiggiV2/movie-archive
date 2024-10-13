@@ -25,3 +25,7 @@ export function getMoviePageCount() {
         console.error("Can't load movie page count!");
     });
 }
+
+export function DownloadExport(session) {
+    window.open(HOST + "public/export/csv/" + session + "/export-movies.csv");
+}
