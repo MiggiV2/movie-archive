@@ -8,6 +8,7 @@ import de.mymiggi.movie.api.entity.config.DefaultPage;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import de.mymiggi.movie.api.entity.db.TagEntity;
 import de.mymiggi.movie.api.entity.db.TagMovieRelation;
+import de.mymiggi.movie.api.service.ExportService;
 import de.mymiggi.movie.api.service.SyncService;
 import io.quarkus.panache.common.Sort;
 import jakarta.annotation.security.RolesAllowed;
@@ -36,10 +37,11 @@ public class UserResource
 	GetMoviesAction getMoviesAction;
 	GetMovieByIDAction getMovieByIDAction;
 	SearchAction searchAction;
+	ExportService exportService;
 
 	@Inject
 	public UserResource(DefaultPage defaultPage, SyncService syncService, GetSortedMoviesAction sortedMoviesAction,
-		GetMoviesAction getMoviesAction, GetMovieByIDAction getMovieByIDAction, SearchAction searchAction)
+		GetMoviesAction getMoviesAction, GetMovieByIDAction getMovieByIDAction, SearchAction searchAction, ExportService exportService)
 	{
 		this.defaultPage = defaultPage;
 		this.syncService = syncService;
@@ -47,6 +49,7 @@ public class UserResource
 		this.getMoviesAction = getMoviesAction;
 		this.getMovieByIDAction = getMovieByIDAction;
 		this.searchAction = searchAction;
+		this.exportService = exportService;
 	}
 
 	@GET
@@ -122,5 +125,13 @@ public class UserResource
 		}
 		List<TagMovieRelation> relations = TagMovieRelation.find("movie", movieEntity).list();
 		return relations.stream().map(TagMovieRelation::getTag).toList();
+	}
+
+	@GET
+	@Path("export/session")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getExportOneTimeSession()
+	{
+		return exportService.createOneTimeSession();
 	}
 }

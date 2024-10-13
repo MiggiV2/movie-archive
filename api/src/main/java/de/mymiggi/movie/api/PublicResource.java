@@ -5,12 +5,14 @@ import de.mymiggi.movie.api.entity.config.DefaultPage;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import de.mymiggi.movie.api.entity.oauth.KeycloakTokens;
 import de.mymiggi.movie.api.entity.oauth.TokenRequest;
+import de.mymiggi.movie.api.service.ExportService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
@@ -22,12 +24,14 @@ public class PublicResource
 {
 	DefaultPage defaultPage;
 	ExchangeAction exchangeAction;
+	ExportService exportService;
 
 	@Inject
-	public PublicResource(DefaultPage defaultPage, ExchangeAction exchangeAction)
+	public PublicResource(DefaultPage defaultPage, ExchangeAction exchangeAction, ExportService exportService)
 	{
 		this.defaultPage = defaultPage;
 		this.exchangeAction = exchangeAction;
+		this.exportService = exportService;
 	}
 
 	@GET
@@ -58,5 +62,13 @@ public class PublicResource
 	public KeycloakTokens exchangeRefresh(TokenRequest tokenRequest)
 	{
 		return exchangeAction.runRefresh(tokenRequest);
+	}
+
+	@GET
+	@Path("export/csv/{session}/export-movies.csv")
+	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	public String exportMoviesInCSV(@PathParam("session") String session)
+	{
+		return exportService.getMovieCSV(session);
 	}
 }
