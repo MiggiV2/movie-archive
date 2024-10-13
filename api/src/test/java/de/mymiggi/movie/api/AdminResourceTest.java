@@ -1,6 +1,5 @@
-package de.mymiggi;
+package de.mymiggi.movie.api;
 
-import de.mymiggi.movie.api.AdminResource;
 import de.mymiggi.movie.api.actions.admin.AddMovieAction;
 import de.mymiggi.movie.api.entity.KeycloakUser;
 import de.mymiggi.movie.api.entity.db.AuditLogEntity;

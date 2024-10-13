@@ -1,4 +1,4 @@
-package de.mymiggi;
+package de.mymiggi.movie.api;
 
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 

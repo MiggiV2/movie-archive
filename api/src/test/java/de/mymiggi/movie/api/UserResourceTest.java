@@ -1,6 +1,5 @@
-package de.mymiggi;
+package de.mymiggi.movie.api;
 
-import de.mymiggi.movie.api.UserResource;
 import de.mymiggi.movie.api.entity.config.DefaultPage;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import io.quarkus.test.common.http.TestHTTPEndpoint;

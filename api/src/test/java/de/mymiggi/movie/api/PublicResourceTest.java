@@ -1,6 +1,5 @@
-package de.mymiggi;
+package de.mymiggi.movie.api;
 
-import de.mymiggi.movie.api.PublicResource;
 import de.mymiggi.movie.api.entity.oauth.TokenRequest;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
