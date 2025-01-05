@@ -1,7 +1,6 @@
 package de.mymiggi.movie.api.entity.db;
 
 import de.mymiggi.movie.api.actions.auditlog.AbstractAuditLogAction;
-import de.mymiggi.movie.api.entity.KeycloakUser;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Entity;
 
@@ -20,9 +19,9 @@ public class AuditLogEntity extends PanacheEntity
 	{
 	}
 
-	public AuditLogEntity(KeycloakUser user, AbstractAuditLogAction action, String message, MovieEntity movieEntity)
+	public AuditLogEntity(String username, AbstractAuditLogAction action, String message, MovieEntity movieEntity)
 	{
-		this.userName = user.getUserName();
+		this.userName = username;
 		this.auditLogType = action.getLogType().toString();
 		this.message = message;
 		this.movieEntityID = movieEntity.id;

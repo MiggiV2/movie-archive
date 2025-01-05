@@ -3,15 +3,19 @@ package de.mymiggi.movie.api.actions.admin;
 import de.mymiggi.movie.api.actions.auditlog.AbstractAuditLogAction;
 import de.mymiggi.movie.api.actions.auditlog.SaveAuditLogAction;
 import de.mymiggi.movie.api.entity.AuditLogType;
-import de.mymiggi.movie.api.entity.KeycloakUser;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
+import io.quarkus.oidc.UserInfo;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
 
 @ApplicationScoped
 public class AddMovieAction extends AbstractAuditLogAction
 {
-	public MovieEntity run(MovieEntity movieEntity, KeycloakUser user)
+	@Inject
+	UserInfo userInfo;
+
+	public MovieEntity run(MovieEntity movieEntity)
 	{
 		if (movieEntity == null)
 		{
@@ -24,7 +28,7 @@ public class AddMovieAction extends AbstractAuditLogAction
 		String firstLetter = String.valueOf(movieEntity.name.charAt(0));
 		movieEntity.uuid = firstLetter + MovieEntity.startWith(firstLetter).size();
 		movieEntity.persist();
-		new SaveAuditLogAction().run(user, this, String.format("Added movie '%s'", movieEntity.name), movieEntity);
+		new SaveAuditLogAction().run(userInfo, this, String.format("Added movie '%s'", movieEntity.name), movieEntity);
 		return movieEntity;
 	}
 

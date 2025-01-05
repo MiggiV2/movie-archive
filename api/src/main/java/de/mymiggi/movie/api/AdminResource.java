@@ -5,11 +5,8 @@ import de.mymiggi.movie.api.actions.admin.DeleteMovieAction;
 import de.mymiggi.movie.api.actions.admin.UpdateMovieAction;
 import de.mymiggi.movie.api.actions.auditlog.GetAuditLogAction;
 import de.mymiggi.movie.api.actions.user.AddTagsAction;
-import de.mymiggi.movie.api.entity.KeycloakUser;
-import de.mymiggi.movie.api.entity.config.DefaultPage;
 import de.mymiggi.movie.api.entity.db.AuditLogEntity;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
-import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -28,14 +25,12 @@ import jakarta.ws.rs.core.MediaType;
 import java.util.List;
 
 @Path("movie-archive/admin")
-@RolesAllowed("admin")
+@RolesAllowed("movie_admins@sso.mymiggi.de")
 @ApplicationScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class AdminResource
 {
-	SecurityIdentity identity;
-	DefaultPage defaultPage;
 	AddMovieAction addMovieAction;
 	UpdateMovieAction updateMovieAction;
 	DeleteMovieAction deleteMovieAction;
@@ -43,12 +38,9 @@ public class AdminResource
 	AddTagsAction addTagsAction;
 
 	@Inject
-	public AdminResource(SecurityIdentity identity, DefaultPage defaultPage, AddMovieAction addMovieAction,
-		UpdateMovieAction updateMovieAction, DeleteMovieAction deleteMovieAction, GetAuditLogAction getAuditLogAction,
-		AddTagsAction addTagsAction)
+	public AdminResource(AddMovieAction addMovieAction, UpdateMovieAction updateMovieAction,
+		DeleteMovieAction deleteMovieAction, GetAuditLogAction getAuditLogAction, AddTagsAction addTagsAction)
 	{
-		this.identity = identity;
-		this.defaultPage = defaultPage;
 		this.addMovieAction = addMovieAction;
 		this.updateMovieAction = updateMovieAction;
 		this.deleteMovieAction = deleteMovieAction;
@@ -61,7 +53,7 @@ public class AdminResource
 	@Transactional
 	public MovieEntity addMovie(MovieEntity movieEntity)
 	{
-		return addMovieAction.run(movieEntity, new KeycloakUser(identity));
+		return addMovieAction.run(movieEntity);
 	}
 
 	@PUT
@@ -69,7 +61,7 @@ public class AdminResource
 	@Transactional
 	public MovieEntity updateMovieById(MovieEntity movieEntity)
 	{
-		return updateMovieAction.run(movieEntity, new KeycloakUser(identity));
+		return updateMovieAction.run(movieEntity);
 	}
 
 	@DELETE
@@ -77,14 +69,14 @@ public class AdminResource
 	@Transactional
 	public void deleteMovieByID(@QueryParam("id") Long id)
 	{
-		deleteMovieAction.run(id, new KeycloakUser(identity));
+		deleteMovieAction.run(id);
 	}
 
 	@GET
 	@Path("auditlog")
 	public List<AuditLogEntity> getAuditLog(@QueryParam("page") int page)
 	{
-		return getAuditLogAction.run(page, defaultPage);
+		return getAuditLogAction.run(page);
 	}
 
 	@GET
@@ -92,7 +84,7 @@ public class AdminResource
 	// returns 0 for first page
 	public long getAuditLogPageCount()
 	{
-		return getAuditLogAction.run(defaultPage);
+		return getAuditLogAction.run();
 	}
 
 	@POST

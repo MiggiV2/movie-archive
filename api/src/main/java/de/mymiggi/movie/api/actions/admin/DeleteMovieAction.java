@@ -3,9 +3,10 @@ package de.mymiggi.movie.api.actions.admin;
 import de.mymiggi.movie.api.actions.auditlog.AbstractAuditLogAction;
 import de.mymiggi.movie.api.actions.auditlog.SaveAuditLogAction;
 import de.mymiggi.movie.api.entity.AuditLogType;
-import de.mymiggi.movie.api.entity.KeycloakUser;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
+import io.quarkus.oidc.UserInfo;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
 
 import java.util.Optional;
@@ -13,7 +14,11 @@ import java.util.Optional;
 @ApplicationScoped
 public class DeleteMovieAction extends AbstractAuditLogAction
 {
-	public void run(Long id, KeycloakUser user)
+
+	@Inject
+	UserInfo userInfo;
+
+	public void run(Long id)
 	{
 		if (id == null)
 		{
@@ -26,7 +31,7 @@ public class DeleteMovieAction extends AbstractAuditLogAction
 		}
 		movieEntity.ifPresent(movie -> {
 			movie.delete();
-			new SaveAuditLogAction().run(user, this, String.format("Removed movie '%s'", movie.name), movie);
+			new SaveAuditLogAction().run(userInfo, this, String.format("Removed movie '%s'", movie.name), movie);
 		});
 	}
 

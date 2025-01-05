@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 @Path("movie-archive/user")
-@RolesAllowed({ "user", "admin" })
+@RolesAllowed("movie_group@sso.mymiggi.de")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class UserResource

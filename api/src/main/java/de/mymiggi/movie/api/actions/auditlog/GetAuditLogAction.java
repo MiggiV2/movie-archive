@@ -6,6 +6,7 @@ import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,10 @@ import java.util.List;
 @ApplicationScoped
 public class GetAuditLogAction
 {
-	public List<AuditLogEntity> run(int page, DefaultPage defaultPage)
+	@Inject
+	DefaultPage defaultPage;
+
+	public List<AuditLogEntity> run(int page)
 	{
 		PanacheQuery<AuditLogEntity> movieArchive = AuditLogEntity.findAll(Sort.descending("date"));
 		movieArchive.page(Page.ofSize(defaultPage.Size()));
@@ -24,7 +28,7 @@ public class GetAuditLogAction
 		return movieArchive.page(page, defaultPage.Size()).list();
 	}
 
-	public long run(DefaultPage defaultPage)
+	public long run()
 	{
 		long count = AuditLogEntity.count();
 		long size = defaultPage.Size();

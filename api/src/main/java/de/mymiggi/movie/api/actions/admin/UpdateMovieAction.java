@@ -3,9 +3,10 @@ package de.mymiggi.movie.api.actions.admin;
 import de.mymiggi.movie.api.actions.auditlog.AbstractAuditLogAction;
 import de.mymiggi.movie.api.actions.auditlog.SaveAuditLogAction;
 import de.mymiggi.movie.api.entity.AuditLogType;
-import de.mymiggi.movie.api.entity.KeycloakUser;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
+import io.quarkus.oidc.UserInfo;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 
@@ -15,7 +16,10 @@ import java.util.Optional;
 @ApplicationScoped
 public class UpdateMovieAction extends AbstractAuditLogAction
 {
-	public MovieEntity run(MovieEntity movieEntity, KeycloakUser user)
+	@Inject
+	UserInfo userInfo;
+
+	public MovieEntity run(MovieEntity movieEntity)
 	{
 		if (movieEntity == null)
 		{
@@ -34,7 +38,7 @@ public class UpdateMovieAction extends AbstractAuditLogAction
 			String message = getUpdateMessage(entity, movieEntity);
 			update(entity, movieEntity);
 			entity.persist();
-			new SaveAuditLogAction().run(user, this, message, movieEntity);
+			new SaveAuditLogAction().run(userInfo, this, message, movieEntity);
 		});
 		return movieEntity;
 	}

@@ -1,7 +1,6 @@
 package de.mymiggi.movie.api;
 
 import de.mymiggi.movie.api.actions.admin.AddMovieAction;
-import de.mymiggi.movie.api.entity.KeycloakUser;
 import de.mymiggi.movie.api.entity.db.AuditLogEntity;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import de.mymiggi.movie.api.entity.db.TagEntity;
@@ -157,7 +156,7 @@ public class AdminResourceTest
 	{
 		MovieEntity movie = new MovieEntity();
 		movie.id = 0L;
-		AuditLogEntity auditLog = new AuditLogEntity(new KeycloakUser(), new AddMovieAction(), "Added movie", movie);
+		AuditLogEntity auditLog = new AuditLogEntity("test-user", new AddMovieAction(), "Added movie", movie);
 		auditLog.persist();
 	}
 }
