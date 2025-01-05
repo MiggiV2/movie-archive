@@ -10,7 +10,7 @@ export async function openLogin() {
         "?client_id=" + process.env.VUE_APP_AUTH_CLIENT_ID +
         "&redirect_uri=" + redirectUrl.replace(":", "%3A").replaceAll("/", "%2F") +
         "&response_type=code" +
-        "&scope=openid%20email%20profile&state=" + state;
+        "&scope=openid%20email%20profile%20groups&state=" + state;
     const codeVerifier = generateRandomString(128);
 
     localStorage.setItem("codeVerifier", codeVerifier);
@@ -32,6 +32,9 @@ export function openLogout() {
 
     localStorage.removeItem("name");
     localStorage.removeItem("preferred_username");
+    localStorage.removeItem("email");
+    localStorage.removeItem("email_verified");
+    localStorage.removeItem("is_admin");
 
     window.location = "/";
 }

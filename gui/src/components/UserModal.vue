@@ -4,12 +4,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Nutzer-Infos</h5>
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
-          ></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="row">
@@ -26,11 +21,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
             Close
           </button>
         </div>
@@ -40,6 +31,8 @@
 </template>
 
 <script setup>
+import { onMounted } from "vue";
+
 const { isAdmin, getPreferredUsername, isUserMailVerified } = require("@/tools/User");
 const { reactive } = require("@vue/reactivity");
 
@@ -49,16 +42,12 @@ const data = reactive({
   },
 });
 
-setTimeout(() => {
-  data.user = {
-    email_verified: isUserMailVerified(),
-    preferred_username: getPreferredUsername(),
-    group: 'dummy'
-  };
-  data.user.isAdmin = isAdmin();
+onMounted(() => {
+  data.user.preferred_username = getPreferredUsername();
   data.user.group = isAdmin() ? "Admin" : "Nutzer";
-  data.user.email_verified = data.user.email_verified ? "Ja" : "Nein";
-}, 1500);
+  data.user.isAdmin = isAdmin();
+  data.user.email_verified = isUserMailVerified() ? "Ja" : "Nein";
+});
 </script>
 
 <style scoped>
@@ -66,6 +55,7 @@ img {
   max-width: 5rem;
   margin-right: 1rem;
 }
+
 a {
   text-decoration: unset;
 }

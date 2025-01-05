@@ -2,7 +2,7 @@ import { runRefreshTokenFlow } from "@/tools/Auth";
 import { getCookie } from "@/tools/Cookies";
 
 export function isAdmin() {
-    return true;
+    return localStorage.getItem("is_admin") == "true";
 }
 
 export function getUserName() {
@@ -39,6 +39,8 @@ export async function initUserData() {
         localStorage.setItem("preferred_username", user.preferred_username);
         localStorage.setItem("email", user.email);
         localStorage.setItem("email_verified", user.email_verified);
+        const adminGroup = process.env.VUE_APP_AUTH_ADMIN;
+        localStorage.setItem("is_admin", user.groups.includes(adminGroup));
     }
 }
 
