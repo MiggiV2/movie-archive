@@ -1,72 +1,98 @@
 import { setCookieInSec, getCookie, setCookie, setCookieSeasson } from "@/tools/Cookies";
-import { v4 as uuidv4 } from "uuid";
-import { getUser } from "@/tools/User";
+import { getUserName, initUserData } from "@/tools/User";
 
-var redirectURI = window.location.protocol.replace(":", "%3A") + "%2F%2F" + window.location.host;
+const redirectUrl = window.location.protocol + "//" + window.location.host + "/auth";
 
 export function openLogin() {
+    const state = generateRandomString(42);
     const authURL = process.env.VUE_APP_AUTH_HOST +
-        "realms/quarkus/protocol/openid-connect/auth" +
-        "?client_id=backend-service" +
-        "&redirect_uri=" + redirectURI + "%2Fauth" +
+        "ui/oauth2" +
+        "?client_id=" + process.env.VUE_APP_AUTH_CLIENT_ID +
+        "&redirect_uri=" + redirectUrl.replace(":", "%3A").replaceAll("/", "%2F") +
         "&response_type=code" +
-        "&scope=openid&state=";
-    const uuid = uuidv4();
+        "&scope=openid&state=" + state;
+    const codeVerifier = generateRandomString(128);
 
+    localStorage.setItem("codeVerifier", codeVerifier);
     localStorage.setItem("redirect", window.location.pathname);
-    setCookieSeasson("state", uuid);
-    window.location = authURL + uuid;
+    setCookieSeasson("state", state);
+
+    generateCodeChallenge(codeVerifier)
+        .then(codeChallenge => {
+            window.location = authURL + "&code_challenge_method=S256&code_challenge=" + codeChallenge;
+        });
 }
 
 export function openLogout() {
-    const logoutURL = process.env.VUE_APP_AUTH_HOST +
-        "realms/quarkus/protocol/openid-connect/logout" +
-        "?post_logout_redirect_ur=" + redirectURI +
-        "&client_id=" + process.env.VUE_APP_AUTH_CLIENT_ID;
+    console.log("Logout is not implemented yet!");
+    // const logoutURL = process.env.VUE_APP_AUTH_HOST +
+    //    "realms/quarkus/protocol/openid-connect/logout" +
+    //    "?post_logout_redirect_ur=" + redirectUrl +
+    //    "&client_id=" + process.env.VUE_APP_AUTH_CLIENT_ID;
 
     setCookie("accessToken", "", -1);
     setCookie("refreshToken", "", -1);
     setCookie("login-toast", "", -1);
-    window.location = logoutURL;
+
+    localStorage.removeItem("name");
+    localStorage.removeItem("preferred_username");
+
+    window.location = "/";
 }
 
-export function login(code) {
-    var data = {
-        "code": code
-    };
-    return fetch(process.env.VUE_APP_API_HOST + "public/code-exchange", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-            "Content-Type": "application/json",
-        },
-    })
-        .then((response) => {
-            if (response.status == 200) {
-                return response.json();
-            }
-            alert("Error! " + response.statusText);
-        })
-        .then((tokens) => {
-            if (tokens != null) {
-                setCookieInSec("accessToken", tokens.accessToken, tokens.expiresIn);
-                setCookieInSec("state", "", -1);
-                setCookieInSec(
-                    "refreshToken",
-                    tokens.refreshToken,
-                    tokens.refreshExpiresIn
-                );
-                console.log("Welcome " + getUser().preferred_username + "!");
-                if (localStorage.getItem("redirect") != null) {
-                    window.location = localStorage.getItem("redirect");
-                } else {
-                    window.location = "/";
-                }
-            }
-        }).catch(e => {
-            console.error(e);
-            window.location = "/logout";
+export async function login(code) {
+    const tokens = await exchangeCodeForToken(code);
+    setCookieInSec("accessToken", tokens.access_token, tokens.expires_in);
+    setCookieInSec("state", "", -1);
+    setCookieInSec(
+        "refreshToken",
+        tokens.refresh_token,
+        tokens.expires_in * 300
+    );
+    await initUserData();
+    console.log("Welcome " + getUserName() + "!");
+    const url = localStorage.getItem("redirect");
+    localStorage.removeItem("redirect");
+    localStorage.removeItem("codeVerifier");
+    if (url != null) {
+        window.location = url;
+    } else {
+        window.location = "/";
+    }
+}
+
+async function exchangeCodeForToken(code) {
+    const tokenEndpoint = process.env.VUE_APP_AUTH_HOST + "oauth2/token";
+    const codeVerifier = localStorage.getItem("codeVerifier");
+    const clientId = process.env.VUE_APP_AUTH_CLIENT_ID;
+
+    // Prepare the request body
+    const body = new URLSearchParams();
+    body.append('grant_type', 'authorization_code');
+    body.append('code', code);
+    body.append('redirect_uri', redirectUrl);
+    body.append('client_id', clientId);
+    body.append('code_verifier', codeVerifier);    
+
+    try {
+        const response = await fetch(tokenEndpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: body.toString(),
         });
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
+        const tokenResponse = await response.json();
+        return tokenResponse; // This will contain the access token and possibly a refresh token
+    } catch (error) {
+        console.error('Error exchanging code for token:', error);
+        throw error; // Rethrow the error for further handling if needed
+    }
 }
 
 export function refreshToken() {
@@ -140,4 +166,26 @@ export function getURLHashParams() {
         return res;
     }, {});
     return result;
+}
+
+// PKCE
+// Function to generate a random string (code verifier)
+function generateRandomString(length = 128) {
+    const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+    let codeVerifier = '';
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * charset.length);
+        codeVerifier += charset[randomIndex];
+    }
+    return codeVerifier;
+}
+
+// Function to create a SHA-256 hash of the code verifier and then base64-url encode it
+async function generateCodeChallenge(codeVerifier) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(codeVerifier);
+    const hash = await crypto.subtle.digest('SHA-256', data);
+    const base64String = btoa(String.fromCharCode(...new Uint8Array(hash)));
+    const codeChallenge = base64String.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    return codeChallenge;
 }

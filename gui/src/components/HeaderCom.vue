@@ -10,18 +10,18 @@
       <!--desktop-menu-->
       <div class="col" />
       <div class="col-auto desktop">
-        <h4 v-if="user.simpleName.length > 0 && user.isAdmin">
+        <h4 v-if="user.simpleName != null && user.isAdmin">
           <router-link to="/add"><i class="bi bi-plus-circle"></i> Neuer Film</router-link>
         </h4>
       </div>
       <div class="col-auto desktop">
-        <h4 v-if="user.simpleName.length > 0">
+        <h4 v-if="user.simpleName != null">
           <router-link to="/search"><i class="bi bi-search"></i> Suchen</router-link>
         </h4>
       </div>
       <!--UserName/Login-->
       <div class="col-auto desktop">
-        <h4 class="dropdown" v-if="user.simpleName.length > 0">
+        <h4 class="dropdown" v-if="user.simpleName != null">
           <div class="dropdown">
             <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
               aria-expanded="false">
@@ -52,7 +52,7 @@
       </div>
       <!--mobile-menu-->
       <div class="col-auto mobile">
-        <h2 v-if="user.simpleName.length > 0">
+        <h2 v-if="user.simpleName != null">
           <a data-bs-toggle="collapse" href="#mobileMenu" role="button" aria-expanded="false"
             aria-controls="mobileMenu">
             <i class="bi bi-list"></i>
@@ -104,7 +104,7 @@
 <script setup>
 import { getCookie, setCookieSeasson } from "@/tools/Cookies";
 import { getUserName, getUsersSimpleName, isAdmin } from "@/tools/User";
-import { checkTokenAndRun, openLogin, openLogout } from "@/tools/Auth";
+import { openLogin, openLogout } from "@/tools/Auth";
 import { reactive } from "@vue/reactivity";
 import { Modal, Toast } from "bootstrap";
 import { getRandomMotto } from "@/tools/Motto";
@@ -114,24 +114,22 @@ import { getExportSession } from "@/tools/api-wrapper/UserMovie";
 import { DownloadExport } from "@/tools/api-wrapper/PubMovie";
 
 var user = reactive({
-  simpleName: "",
-  fullName: "",
+  simpleName: null,
+  fullName: null,
   isAdmin: false,
   motto: "",
 });
 
 onMounted(() => {
   if (getCookie("refreshToken")) {
-    checkTokenAndRun(() => {
-      user.simpleName = getUsersSimpleName();
-      user.fullName = getUserName();
-      user.isAdmin = isAdmin();
-      user.motto = getRandomMotto(user);
-      if (getCookie("login-toast") != "showed") {
-        showToast();
-        console.log(getRandomMotto(user));
-      }
-    });
+    user.simpleName = getUsersSimpleName();
+    user.fullName = getUserName();
+    user.isAdmin = isAdmin();
+    user.motto = getRandomMotto(user);
+    if (getCookie("login-toast") != "showed") {
+      showToast();
+      console.log(getRandomMotto(user));
+    }
   }
 });
 

@@ -31,7 +31,7 @@ if (code == null || code.length < 10) {
     titleWarning();
     showWarning.status = true;
   } else {
-    login(code);
+    login(code);    
   }
 }
 

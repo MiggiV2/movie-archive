@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-const { getUser, isAdmin } = require("@/tools/User");
+const { isAdmin, getPreferredUsername } = require("@/tools/User");
 const { reactive } = require("@vue/reactivity");
 
 const data = reactive({
@@ -50,7 +50,11 @@ const data = reactive({
 });
 
 setTimeout(() => {
-  data.user = getUser();
+  data.user = {
+    email_verified: true,
+    preferred_username: getPreferredUsername(),
+    group: 'dummy'
+  };
   data.user.isAdmin = isAdmin();
   data.user.group = isAdmin() ? "Admin" : "Nutzer";
   data.user.email_verified = data.user.email_verified ? "Ja" : "Nein";
