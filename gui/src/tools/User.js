@@ -1,4 +1,4 @@
-import { refreshToken } from "@/tools/Auth";
+import { runRefreshTokenFlow } from "@/tools/Auth";
 import { getCookie } from "@/tools/Cookies";
 
 export function isAdmin() {
@@ -6,22 +6,30 @@ export function isAdmin() {
 }
 
 export function getUserName() {
-    return localStorage.getItem("name") ;
+    return localStorage.getItem("name");
 }
 
 export function getUsersSimpleName() {
-    return localStorage.getItem("name") 
+    return localStorage.getItem("name")
 }
 
 export function getPreferredUsername() {
-    return localStorage.getItem("preferred_username") ;
+    return localStorage.getItem("preferred_username");
+}
+
+export function getUserEMail() {
+    return localStorage.getItem("email");
+}
+
+export function isUserMailVerified() {
+    return localStorage.getItem("email_verified");
 }
 
 export async function initUserData() {
     if (localStorage.getItem("name") == null) {
         if (!getCookie("accessToken")) {
             if (getCookie("refreshToken")) {
-                refreshToken();
+                runRefreshTokenFlow();
             } else {
                 return {};
             }
@@ -29,6 +37,8 @@ export async function initUserData() {
         const user = await getUserInfo();
         localStorage.setItem("name", user.name);
         localStorage.setItem("preferred_username", user.preferred_username);
+        localStorage.setItem("email", user.email);
+        localStorage.setItem("email_verified", user.email_verified);
     }
 }
 

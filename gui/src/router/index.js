@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import HomePage from '@/views/HomePageView';
 
-import { openLogin, refreshToken } from '@/tools/Auth';
+import { openLogin, runRefreshTokenFlow } from '@/tools/Auth';
 import { getCookie } from '@/tools/Cookies';
 
 const routes = [{
@@ -53,7 +53,7 @@ router.beforeEach(async (guard) => {
     if (!getCookie("accessToken") && !getCookie("refreshToken")) {
         openLogin();
     } else if (!getCookie("accessToken")) {
-        await refreshToken();
+        await runRefreshTokenFlow();
     }
 })
 

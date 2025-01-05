@@ -12,7 +12,7 @@ import Footer from "@/components/FooterComp.vue";
 document.title = 'MovieArchive | Bitte warten...';
 
 import {reactive} from "@vue/reactivity";
-import {setCookieInSec} from "@/tools/Cookies";
+import { openLogout } from "@/tools/Auth";
 
 var timer = reactive({
   time: 3
@@ -26,9 +26,7 @@ function decreaseTimer() {
     if(timer.time > 0) {
       decreaseTimer();
     } else {
-      setCookieInSec("refreshToken", "", -1);
-      setCookieInSec("accessToken", "", -1);
-      setCookieInSec("login-toast", "", -1);
+      openLogout();
       window.location = "/";
       }
   },1000);

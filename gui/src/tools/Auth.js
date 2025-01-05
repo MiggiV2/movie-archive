@@ -3,14 +3,14 @@ import { getUserName, initUserData } from "@/tools/User";
 
 const redirectUrl = window.location.protocol + "//" + window.location.host + "/auth";
 
-export function openLogin() {
+export async function openLogin() {
+    const config = await fetchOpenIdConnectDiscovery();
     const state = generateRandomString(42);
-    const authURL = process.env.VUE_APP_AUTH_HOST +
-        "ui/oauth2" +
+    const authURL = config.authorization_endpoint +
         "?client_id=" + process.env.VUE_APP_AUTH_CLIENT_ID +
         "&redirect_uri=" + redirectUrl.replace(":", "%3A").replaceAll("/", "%2F") +
         "&response_type=code" +
-        "&scope=openid&state=" + state;
+        "&scope=openid%20email%20profile&state=" + state;
     const codeVerifier = generateRandomString(128);
 
     localStorage.setItem("codeVerifier", codeVerifier);
@@ -25,10 +25,6 @@ export function openLogin() {
 
 export function openLogout() {
     console.log("Logout is not implemented yet!");
-    // const logoutURL = process.env.VUE_APP_AUTH_HOST +
-    //    "realms/quarkus/protocol/openid-connect/logout" +
-    //    "?post_logout_redirect_ur=" + redirectUrl +
-    //    "&client_id=" + process.env.VUE_APP_AUTH_CLIENT_ID;
 
     setCookie("accessToken", "", -1);
     setCookie("refreshToken", "", -1);
@@ -61,8 +57,33 @@ export async function login(code) {
     }
 }
 
+async function fetchOpenIdConnectDiscovery() {
+    const config = localStorage.getItem("OpenIdConnectDiscovery");
+    if (config) {
+        return JSON.parse(config);
+    }
+
+    const url = process.env.VUE_APP_AUTH_HOST + "/.well-known/openid-configuration";
+    try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
+        const discoveryResponse = await response.json();
+        localStorage.setItem("OpenIdConnectDiscovery", JSON.stringify(discoveryResponse));
+        return discoveryResponse; // This will contain the access token and possibly a refresh token
+
+    } catch (error) {
+        console.error('Error fetching OpenID Connect Discovery 1.0:', error);
+        throw error; // Rethrow the error for further handling if needed
+    }
+}
+
 async function exchangeCodeForToken(code) {
-    const tokenEndpoint = process.env.VUE_APP_AUTH_HOST + "oauth2/token";
+    const config = await fetchOpenIdConnectDiscovery();
+    const tokenEndpoint = config.token_endpoint;
     const codeVerifier = localStorage.getItem("codeVerifier");
     const clientId = process.env.VUE_APP_AUTH_CLIENT_ID;
 
@@ -72,7 +93,7 @@ async function exchangeCodeForToken(code) {
     body.append('code', code);
     body.append('redirect_uri', redirectUrl);
     body.append('client_id', clientId);
-    body.append('code_verifier', codeVerifier);    
+    body.append('code_verifier', codeVerifier);
 
     try {
         const response = await fetch(tokenEndpoint, {
@@ -95,45 +116,46 @@ async function exchangeCodeForToken(code) {
     }
 }
 
-export function refreshToken() {
-    var data = {
-        "refreshToken": getCookie("refreshToken")
-    };
-    return fetch(process.env.VUE_APP_API_HOST + "public/refresh-exchange", {
-        method: "POST",
-        credentails: "same-origin",
-        mode: "cors",
-        body: JSON.stringify(data),
-        headers: {
-            "Content-Type": "application/json",
-        },
-    })
-        .then((response) => {
-            if (response.status === 200) {
-                return response.json();
-            }
-            if (response.status === 400) {
-                window.location = "/logout";
-            } else if (getCookie("error-showed") !== "yes") {
-                setCookieInSec("error-showed", "yes", 2);
-                alert("Oopps! Something went wrong! " + response.statusText);
-            }
-        })
-        .then((tokens) => {
-            if (tokens != null) {
-                setCookieInSec("accessToken", tokens.accessToken, tokens.expiresIn);
-                setCookieInSec(
-                    "refreshToken",
-                    tokens.refreshToken,
-                    tokens.refreshExpiresIn
-                );
-            }
+export async function runRefreshTokenFlow() {
+    const refreshToken = getCookie("refreshToken")
+    const config = await fetchOpenIdConnectDiscovery();
+    const tokenEndpoint = config.token_endpoint;
+
+    const params = new URLSearchParams();
+    params.append('grant_type', 'refresh_token');
+    params.append('refresh_token', refreshToken);
+    params.append('client_id', process.env.VUE_APP_AUTH_CLIENT_ID); // Replace with your actual client ID
+
+    try {
+        const response = await fetch(tokenEndpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: params.toString(),
         });
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
+        const tokens = await response.json();
+        setCookieInSec("accessToken", tokens.access_token, tokens.expires_in);
+        setCookieInSec(
+            "refreshToken",
+            tokens.refresh_token,
+            tokens.expires_in * 300
+        );
+        return tokens; // This will contain the new access token and possibly a new refresh token
+    } catch (error) {
+        console.error('Failed to refresh access token:', error);
+        throw error; // Rethrow the error for further handling if needed
+    }
 }
 
 export function checkToken() {
     if (getCookie("refreshToken") && !getCookie("accessToken")) {
-        refreshToken();
+        runRefreshTokenFlow();
     }
 }
 
@@ -145,7 +167,7 @@ export function checkTokenAndRun(callBack) {
             console.log("nope - " + typeof callBack);
         }
     } else if (getCookie("refreshToken")) {
-        refreshToken().then(() => {
+        runRefreshTokenFlow().then(() => {
             if (typeof callBack == "function") {
                 callBack();
             } else {

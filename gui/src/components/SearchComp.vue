@@ -121,25 +121,27 @@ const data = reactive({
 });
 
 onMounted(() => {
-    load();
+  load();
 });
 
 
 function handleScroll() {
-  const showAllMovies = window.location.pathname == "/search" 
-  && data.query.replace(/\s+/g, "").length == 0;
-  if(!showAllMovies) {
+  const showAllMovies = window.location.pathname == "/search"
+    && data.query.replace(/\s+/g, "").length == 0;
+  if (!showAllMovies) {
     return;
   }
 
-  const pixelCountForTigger = window.innerHeight * 0.8;  
+  const pixelCountForTigger = window.innerHeight * 0.8;
   // Check if the user has scrolled to the bottom of the page
   if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - pixelCountForTigger) {
     // If there are more pages to load
     if (data.currentPage < data.maxPageCount) {
       // Increment the current page and load more movies
       data.currentPage++;
-      loadMovies();
+      checkTokenAndRun(() => {
+        loadMovies();
+      });
     } else {
       console.log("No more pages to load.");
     }
@@ -195,9 +197,7 @@ function startSearch() {
 }
 
 function loadMovies() {
-  checkTokenAndRun(() => {
     loadSortedMovies();
-  });
 }
 
 function setSortIDAndLoad(event) {
