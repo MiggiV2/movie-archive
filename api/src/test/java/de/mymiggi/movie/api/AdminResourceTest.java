@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @QuarkusTest
 @TestHTTPEndpoint(AdminResource.class)
-@TestSecurity(user = "admin", roles = "admin")
+@TestSecurity(user = "admin", roles = "movie_admins@sso.mymiggi.de")
 public class AdminResourceTest
 {
 	@Test

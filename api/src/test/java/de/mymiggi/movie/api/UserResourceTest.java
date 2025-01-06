@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @QuarkusTest
 @TestHTTPEndpoint(UserResource.class)
-@TestSecurity(user = "test", roles = "user")
+@TestSecurity(user = "test", roles = "movie_group@sso.mymiggi.de")
 public class UserResourceTest
 {
 	@Inject

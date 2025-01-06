@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
 @TestHTTPEndpoint(UserResource.class)
-@TestSecurity(user = "test", roles = "admin")
+@TestSecurity(user = "test", roles = "movie_group@sso.mymiggi.de")
 public class UserTagTest
 {
 
