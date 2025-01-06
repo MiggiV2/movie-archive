@@ -26,7 +26,6 @@ const {
   getAuditLog,
   getAuditLogPageCount,
 } = require("@/tools/api-wrapper/AdminMovie");
-const { checkTokenAndRun } = require("@/tools/Auth");
 const { reactive } = require("@vue/reactivity");
 
 const data = reactive({
@@ -53,21 +52,20 @@ window.onscroll = function () {
 
 onMounted(() => {
   loadLog();
-  getAuditLogPageCount().then((count) => {
-    data.maxPage = count;
-  });
 });
 
-function loadLog() {
-  checkTokenAndRun(() => {
-    getAuditLog(data.page)
-      .then((log) => {
-        data.log = data.log.concat(log);
-      })
-      .finally(() => {
-        data.isLoading = false;
-      });
-  });
+async function loadLog() {
+  await getAuditLog(data.page)
+    .then((log) => {
+      data.log = data.log.concat(log);
+    })
+    .finally(() => {
+      data.isLoading = false;
+    });
+  await getAuditLogPageCount()
+    .then((count) => {
+      data.maxPage = count;
+    });
 }
 </script>
 

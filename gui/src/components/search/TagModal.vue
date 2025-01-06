@@ -35,8 +35,6 @@
 <script setup>
 const { reactive } = require("@vue/reactivity");
 import { getTags } from "@/tools/api-wrapper/UserMovie";
-import { checkTokenAndRun } from "@/tools/Auth";
-import { onMounted } from "vue";
 // eslint-disable-next-line
 const emit = defineEmits(['tagSelected'])
 
@@ -45,13 +43,16 @@ var data = reactive({
     tagName: null,
 });
 
-onMounted(() => {
-    checkTokenAndRun(() => {
-        getTags().then(tags => {
-            data.tags = tags;
-        });
-    })
+// eslint-disable-next-line
+defineExpose({
+    loadTags
 })
+
+async function loadTags() {
+    await getTags().then(tags => {
+        data.tags = tags;
+    });
+}
 
 function sendSelectedTag(tag) {
     emit('tagSelected', tag)
@@ -60,9 +61,10 @@ function sendSelectedTag(tag) {
 
 <style scoped>
 .tag {
-  color: white;
-  background-color: rgb(0, 102, 255);
-  padding: 7px;
-  border-radius: 5px;
-  cursor: pointer;
-}</style>
+    color: white;
+    background-color: rgb(0, 102, 255);
+    padding: 7px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+</style>

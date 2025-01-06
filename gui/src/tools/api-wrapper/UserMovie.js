@@ -1,8 +1,10 @@
 import { getCookie } from "@/tools/Cookies";
+import { checkToken } from "@/tools/Auth";
 
 const HOST = process.env.VUE_APP_API_HOST;
 
-export function getMovies(page) {
+export async function getMovies(page) {
+    await checkToken();
     return fetch(HOST + "user/get-movies?page=" + page, {
         headers: {
             "Content-Type": "application/json",
@@ -20,7 +22,8 @@ export function getMovies(page) {
     });
 }
 
-export function searchMovie(query) {
+export async function searchMovie(query) {
+    await checkToken();
     return fetch(HOST + "user/search?query=" + query, {
         headers: {
             "Content-Type": "application/json",
@@ -38,7 +41,8 @@ export function searchMovie(query) {
     });
 }
 
-export function getSortedMovies(page, sortID) {
+export async function getSortedMovies(page, sortID) {
+    await checkToken();
     var sort = getSorteByID(sortID);
     return fetch(HOST + "user/sorted-movies/by-" + sort.sortType + "?page=" + page + "&desc=" + sort.desc, {
         headers: {
@@ -57,7 +61,8 @@ export function getSortedMovies(page, sortID) {
     });
 }
 
-export function getTags() {
+export async function getTags() {
+    await checkToken();
     return fetch(HOST + "user/tags", {
         headers: {
             "Content-Type": "application/json",
@@ -75,7 +80,8 @@ export function getTags() {
     });
 }
 
-export function searchByTag(tagId) {
+export async function searchByTag(tagId) {
+    await checkToken();
     return fetch(HOST + "user/tags/" + tagId, {
         headers: {
             "Content-Type": "application/json",
@@ -94,7 +100,8 @@ export function searchByTag(tagId) {
 }
 
 
-export function getTagsByMovie(movieId) {
+export async function getTagsByMovie(movieId) {
+    await checkToken();
     return fetch(HOST + "user/tags/by-movie/" + movieId, {
         headers: {
             "Content-Type": "application/json",
@@ -112,7 +119,8 @@ export function getTagsByMovie(movieId) {
     });
 }
 
-export function getExportSession() {
+export async function getExportSession() {
+    await checkToken();
     return fetch(HOST + "user/export/session", {
         headers: {
             "Content-Type": "application/json",

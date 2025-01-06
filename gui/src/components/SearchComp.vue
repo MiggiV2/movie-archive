@@ -69,11 +69,10 @@
   <MovieModal @tag-selected="loadMoviesByTag" :movie="data.currentMovie" />
   <UpdateModal :movie="data.currentMovie" />
   <DeleteModal :movie="data.currentMovie" />
-  <TagModal @tag-selected="loadMoviesByTag" />
+  <TagModal @tag-selected="loadMoviesByTag" ref="tagModalRef" />
 </template>
 
 <script setup>
-import { checkTokenAndRun } from "@/tools/Auth";
 import { getPostUrl } from "@/tools/api-wrapper/omdbapi";
 import {
   getSortedMovies,
@@ -81,7 +80,7 @@ import {
   searchByTag,
   getTagsByMovie
 } from "@/tools/api-wrapper/UserMovie";
-import { reactive } from "@vue/reactivity";
+import { reactive, ref } from "@vue/reactivity";
 import { Modal } from "bootstrap";
 import { getMoviePageCount } from "@/tools/api-wrapper/PubMovie";
 import { isAdmin } from "@/tools/User";
@@ -119,13 +118,13 @@ const data = reactive({
   maxPageCount: 0,
   sortID: "3",
 });
+const tagModalRef = ref(null);
 
 onMounted(() => {
   load();
 });
 
-
-function handleScroll() {
+async function handleScroll() {
   const showAllMovies = window.location.pathname == "/search"
     && data.query.replace(/\s+/g, "").length == 0;
   if (!showAllMovies) {
@@ -139,9 +138,7 @@ function handleScroll() {
     if (data.currentPage < data.maxPageCount) {
       // Increment the current page and load more movies
       data.currentPage++;
-      checkTokenAndRun(() => {
-        loadMovies();
-      });
+      await loadSortedMovies();
     } else {
       console.log("No more pages to load.");
     }
@@ -151,78 +148,69 @@ function handleScroll() {
 // Attach the scroll event listener to the window
 window.addEventListener('scroll', handleScroll);
 
-function load() {
+async function load() {
   user.isAdmin = isAdmin();
-  checkTokenAndRun(() => {
-    if (data.query.length == 0) {
-      loadMovies();
-    } else {
-      startSearch();
-    }
-    getMoviePageCount().then((count) => {
-      data.maxPageCount = count;
-    });
+  if (data.query.length == 0) {
+    await loadSortedMovies();
+  } else {
+    await startSearch();
+  }
+  tagModalRef.value.loadTags();
+  getMoviePageCount().then((count) => {
+    data.maxPageCount = count;
   });
 }
 
+// called by vue.js input / form
 function search() {
   setTimeout(() => {
     if (data.lastSearch + 500 < new Date().getTime()) {
+      // proably okay not to use await here
       startSearch();
     }
   }, 500);
 }
 
-function startSearch() {
+async function startSearch() {
   if (data.query.replace(/\s+/g, "").length == 0) {
     if (urlParams.has("query")) {
       window.location = "/search";
     } else {
       data.sortID = "3";
       data.currentPage = 0;
-      checkTokenAndRun(() => {
-        loadMovies();
-      });
+      await loadSortedMovies();
       console.log(data.sortID);
       console.log(typeof data.sortID)
     }
   } else {
     data.isLoading = true;
     data.sortID = "5";
-    checkTokenAndRun(() => {
-      sendSearch();
-    });
+    await sendSearch();
   }
   data.lastSearch = new Date().getTime();
 }
 
-function loadMovies() {
-    loadSortedMovies();
-}
-
-function setSortIDAndLoad(event) {
+async function setSortIDAndLoad(event) {
   data.sortID = event.target.value;
   data.currentPage = 0;
   let isRelevanz = data.sortID == 5 //Default in search  
   if (!isRelevanz) {
-    checkTokenAndRun(() => {
-      loadMovies();
-    });
+    await loadSortedMovies();
   }
 }
 
-function showMovie(movie) {
+async function showMovie(movie) {
   data.currentMovie = movie;
-  loadTagsForMovie();
+  await loadTagsForMovie();
   loadPoster(movie);
   var modalElement = document.getElementById("movieModal");
   var modal = new Modal(modalElement);
   modal.show();
 }
 
-function loadSortedMovies() {
+async function loadSortedMovies() {
   data.isLoading = true;
-  getSortedMovies(data.currentPage, data.sortID)
+  await getSortedMovies(data.currentPage, data.sortID)
     .then((movies) => {
       if (data.currentPage == 0) {
         data.movies = [];
@@ -238,10 +226,10 @@ function loadSortedMovies() {
     });
 }
 
-function sendSearch() {
+async function sendSearch() {
   let looksLikeTag = data.query.split("/").length > 2;
   if (!looksLikeTag) {
-    searchMovie(data.query.replaceAll(" ", "+"))
+    await searchMovie(data.query.replaceAll(" ", "+"))
       .then((movies) => {
         data.movies = movies;
       })
@@ -270,42 +258,38 @@ function loadPoster(movie) {
   }
 }
 
-function loadMoviesByTag(tag) {
-  checkTokenAndRun(() => {
-    searchByTag(tag.id).then(movies => {
-      data.movies = movies;
-      // Setting query -> no slide sync
-      if (movies.length == 1) {
-        data.query = movies[0].name;
-      } else if (movies.length > 1) {
-        data.query = "";
-        for (let i = 0; i < movies.length; i++) {
-          data.query += movies[i].name
-          if (i != movies.length - 1) {
-            data.query += " / ";
-          }
+async function loadMoviesByTag(tag) {
+  await searchByTag(tag.id).then(movies => {
+    data.movies = movies;
+    // Setting query -> no slide sync
+    if (movies.length == 1) {
+      data.query = movies[0].name;
+    } else if (movies.length > 1) {
+      data.query = "";
+      for (let i = 0; i < movies.length; i++) {
+        data.query += movies[i].name
+        if (i != movies.length - 1) {
+          data.query += " / ";
         }
       }
-      else {
-        data.query = "Tag=" + tag.name;
-      }
-    }).catch((e) => {
-      console.error(e);
-      alert("Something went wrong! " + e);
-    })
-      .finally(() => {
-        data.isLoading = false;
-      });
+    }
+    else {
+      data.query = "Tag=" + tag.name;
+    }
+  }).catch((e) => {
+    console.error(e);
+    alert("Something went wrong! " + e);
   })
+    .finally(() => {
+      data.isLoading = false;
+    });
 }
 
-function loadTagsForMovie() {
+async function loadTagsForMovie() {
   data.currentMovie.tags = [{ name: "no", id: 0 }];
-  checkTokenAndRun(() => {
-    getTagsByMovie(data.currentMovie.id).then(tags => {
-      data.currentMovie.tags = tags;
-    })
-  });
+  await getTagsByMovie(data.currentMovie.id).then(tags => {
+    data.currentMovie.tags = tags;
+  })
 }
 </script>
 

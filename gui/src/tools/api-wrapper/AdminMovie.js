@@ -1,8 +1,10 @@
 import { getCookie } from "@/tools/Cookies";
+import { checkToken } from "@/tools/Auth";
 
 const HOST = process.env.VUE_APP_API_HOST;
 
-export function addMovie(movie) {
+export async function addMovie(movie) {
+    await checkToken();
     return fetch(HOST + "admin/add-movie", {
         body: JSON.stringify(movie),
         method: "POST",
@@ -25,7 +27,8 @@ export function addMovie(movie) {
     });
 }
 
-export function updateMovie(movie) {
+export async function updateMovie(movie) {
+    await checkToken();
     return fetch(HOST + "admin/update-movie", {
         body: JSON.stringify(movie),
         method: "PUT",
@@ -52,7 +55,8 @@ export function updateMovie(movie) {
 }
 
 
-export function deleteMovie(movie) {
+export async function deleteMovie(movie) {
+    await checkToken();
     return fetch(HOST + "admin/delete-movie?id=" + movie.id, {
         body: JSON.stringify(movie),
         method: "DELETE",
@@ -75,7 +79,8 @@ export function deleteMovie(movie) {
     });
 }
 
-export function getAuditLog(page) {
+export async function getAuditLog(page) {
+    await checkToken();
     return fetch(HOST + "admin/auditlog?page=" + page, {
         headers: {
             "Content-Type": "application/json",
@@ -99,7 +104,8 @@ export function getAuditLog(page) {
     });
 }
 
-export function getAuditLogPageCount() {
+export async function getAuditLogPageCount() {
+    await checkToken();
     return fetch(HOST + "admin/auditlog-page-count", {
         headers: {
             "Content-Type": "application/json",

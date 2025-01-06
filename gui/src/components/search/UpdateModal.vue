@@ -62,7 +62,6 @@
 <script setup>
 const { reactive } = require("@vue/reactivity");
 import { updateMovie } from "@/tools/api-wrapper/AdminMovie";
-import { checkTokenAndRun } from "@/tools/Auth";
 import { Modal } from "bootstrap";
 import { onMounted } from "vue";
 // eslint-disable-next-line
@@ -87,18 +86,16 @@ function setHandler() {
   });
 }
 
-function update() {
-  checkTokenAndRun(() => {
-    updateMovie(data.movie)
-      .then(() => {
-        data.failed = false;
-        data.message = "Film gespeicher!";
-      })
-      .catch((e) => {
-        data.message = e;
-        data.failed = true;
-      });
-  });
+async function update() {
+  await updateMovie(data.movie)
+    .then(() => {
+      data.failed = false;
+      data.message = "Film gespeicher!";
+    })
+    .catch((e) => {
+      data.message = e;
+      data.failed = true;
+    });
 }
 
 function showMovieModal() {

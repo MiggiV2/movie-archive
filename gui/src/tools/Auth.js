@@ -156,9 +156,9 @@ export async function runRefreshTokenFlow() {
     }
 }
 
-export function checkToken() {
+export async function checkToken() {
     if (getCookie("refreshToken") && !getCookie("accessToken")) {
-        runRefreshTokenFlow();
+        await runRefreshTokenFlow();
     }
 }
 
