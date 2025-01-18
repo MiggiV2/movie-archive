@@ -2,6 +2,7 @@ package de.mymiggi.movie.api;
 
 import de.mymiggi.movie.api.actions.admin.AddMovieAction;
 import de.mymiggi.movie.api.actions.admin.DeleteMovieAction;
+import de.mymiggi.movie.api.actions.admin.UpdateBlocksAction;
 import de.mymiggi.movie.api.actions.admin.UpdateMovieAction;
 import de.mymiggi.movie.api.actions.auditlog.GetAuditLogAction;
 import de.mymiggi.movie.api.actions.user.AddTagsAction;
@@ -31,21 +32,25 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 public class AdminResource
 {
-	AddMovieAction addMovieAction;
-	UpdateMovieAction updateMovieAction;
-	DeleteMovieAction deleteMovieAction;
-	GetAuditLogAction getAuditLogAction;
-	AddTagsAction addTagsAction;
+	private final AddMovieAction addMovieAction;
+	private final UpdateMovieAction updateMovieAction;
+	private final DeleteMovieAction deleteMovieAction;
+	private final GetAuditLogAction getAuditLogAction;
+	private final AddTagsAction addTagsAction;
+	private final UpdateBlocksAction updateBlocksAction;
 
 	@Inject
 	public AdminResource(AddMovieAction addMovieAction, UpdateMovieAction updateMovieAction,
-		DeleteMovieAction deleteMovieAction, GetAuditLogAction getAuditLogAction, AddTagsAction addTagsAction)
+		DeleteMovieAction deleteMovieAction, GetAuditLogAction getAuditLogAction, AddTagsAction addTagsAction,
+		UpdateBlocksAction updateBlocksAction
+	)
 	{
 		this.addMovieAction = addMovieAction;
 		this.updateMovieAction = updateMovieAction;
 		this.deleteMovieAction = deleteMovieAction;
 		this.getAuditLogAction = getAuditLogAction;
 		this.addTagsAction = addTagsAction;
+		this.updateBlocksAction = updateBlocksAction;
 	}
 
 	@POST
@@ -93,5 +98,13 @@ public class AdminResource
 	public void addTag(@PathParam("movie-id") Long movieId, String[] tags)
 	{
 		addTagsAction.run(movieId, tags);
+	}
+
+	@POST
+	@Path("trigger/block-update")
+	@Transactional
+	public void updateAllBlocks()
+	{
+		updateBlocksAction.updateAllBlocks();
 	}
 }

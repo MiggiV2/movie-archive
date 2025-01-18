@@ -51,7 +51,7 @@ public class UserResourceTest
 		assertEquals(movie.year, 2012);
 		assertEquals(movie.name, "Alien - Prometheus - Dunkle Zeichen");
 		assertEquals(movie.uuid, "A8");
-		assertEquals(movie.block, "Block 1");
+		assertEquals(movie.block, "A1");
 		assertEquals(movie.wikiUrl, "https://de.wikipedia.org/wiki/Prometheus_%E2%80%93_Dunkle_Zeichen");
 		assertEquals(movie.type, "BD");
 	}

@@ -5,6 +5,7 @@ import de.mymiggi.movie.api.entity.db.AuditLogEntity;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import de.mymiggi.movie.api.entity.db.TagEntity;
 import de.mymiggi.movie.api.entity.db.TagMovieRelation;
+import io.quarkus.panache.common.Sort;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -119,6 +120,23 @@ public class AdminResourceTest
 			.get("auditlog")
 			.then()
 			.statusCode(200);
+	}
+
+	@Test
+	void testBlockUpdate()
+	{
+		given()
+			.when()
+			.contentType(ContentType.JSON)
+			.post("trigger/block-update")
+			.then()
+			.statusCode(204);
+
+		MovieEntity lastMovie = MovieEntity.findAll(Sort.descending("name")).firstResult();
+		assertEquals("C3", lastMovie.block);
+
+		MovieEntity firstMovie = MovieEntity.findAll(Sort.ascending("name")).firstResult();
+		assertEquals("A1", firstMovie.block);
 	}
 
 	private MovieEntity testAdd(long moviesBefore)
