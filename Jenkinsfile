@@ -3,7 +3,7 @@ node {
   withEnv(['ROOT_IMAGE=code.mymiggi.de/miggi/movie']) {
     stage('Test API') {
       dir("api") {
-        sh './mvnw test'
+        sh './mvnw test -fae'
       }
     }
     stage('Build GUI') {
