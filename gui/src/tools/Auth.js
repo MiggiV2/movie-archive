@@ -46,7 +46,7 @@ export async function login(code) {
     setCookieInSec(
         "refreshToken",
         tokens.refresh_token,
-        tokens.expires_in * 300
+        tokens.expires_in
     );
     await initUserData();
     console.log("Welcome " + getUserName() + "!");
@@ -147,7 +147,7 @@ export async function runRefreshTokenFlow() {
         setCookieInSec(
             "refreshToken",
             tokens.refresh_token,
-            tokens.expires_in * 300
+            tokens.expires_in
         );
         return tokens; // This will contain the new access token and possibly a new refresh token
     } catch (error) {
