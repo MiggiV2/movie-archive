@@ -3,25 +3,71 @@ package de.mymiggi.movie.api.service;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import de.mymiggi.movie.api.entity.db.MovieMetaData;
 import de.mymiggi.movie.api.entity.metadata.MedaDataResponse;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.narayana.jta.QuarkusTransaction;
+import io.quarkus.runtime.Startup;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
 @ApplicationScoped
 public class MetaDataService
 {
+	private static final Logger log = LoggerFactory.getLogger(MetaDataService.class);
 	@RestClient
 	MetaDataClient metaDataClient;
+
+	@Startup
+	void fillMetaData()
+	{
+		boolean needFill = MovieMetaData.count() == 0 && MovieEntity.count() > 0;
+		if (needFill)
+		{
+			for (PanacheEntityBase entityBase : MovieEntity.listAll())
+			{
+				MovieEntity movieEntity = (MovieEntity)entityBase;
+				Optional<MovieMetaData> metaData = MovieMetaData.find("movieEntity", movieEntity).firstResultOptional();
+				if (metaData.isPresent())
+				{
+					log.info("Skipping {}", movieEntity.name);
+					continue;
+				}
+				try
+				{
+					Thread.sleep(1000);
+				}
+				catch (InterruptedException e)
+				{
+					throw new RuntimeException(e);
+				}
+				System.out.print(".");
+				metaData = getMetaData(movieEntity);
+				try
+				{
+					QuarkusTransaction.begin();
+					metaData.ifPresent(m -> m.persist());
+					QuarkusTransaction.commit();
+				}
+				catch (Exception e)
+				{
+					log.error(e.getMessage());
+				}
+			}
+		}
+	}
 
 	public Optional<MovieMetaData> getMetaData(MovieEntity movie)
 	{
 		MedaDataResponse metaDataResponse = metaDataClient.search(movie.name, movie.year, movie.year + 1);
-		if (metaDataResponse == null || metaDataResponse.titles.isEmpty())
+		if (metaDataResponse.totalCount == 0 || metaDataResponse.titles == null)
 		{
 			return Optional.empty();
 		}
 		MovieMetaData metaData = new MovieMetaData(metaDataResponse.titles.getFirst());
+		metaData.setMovieEntity(movie);
 		return Optional.of(metaData);
 	}
 }

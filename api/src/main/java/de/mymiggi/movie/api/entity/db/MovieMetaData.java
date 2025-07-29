@@ -1,15 +1,18 @@
 package de.mymiggi.movie.api.entity.db;
 
 import de.mymiggi.movie.api.entity.metadata.Title;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.*;
 
 import java.util.List;
 
 @Entity
-public class MovieMetaData
+public class MovieMetaData extends PanacheEntityBase
 {
 	@Id
+	@SequenceGenerator(name = "metaSequence", sequenceName = "meta_id_seq")
+	@GeneratedValue(generator = "metaSequence")
+	public Long id;
 	private String imdbId;
 	private String primaryImage;
 	private int year;
@@ -17,17 +20,21 @@ public class MovieMetaData
 	private List<String> genres;
 	private double rating;
 
+	@OneToOne
+	private MovieEntity movieEntity;
+
 	public MovieMetaData(Title title)
 	{
 		this.imdbId = title.id;
-		this.primaryImage = title.primaryImage.url;
+		this.primaryImage = title.primaryImage == null ? null : title.primaryImage.url;
 		this.year = title.startYear;
 		this.runtime = title.runtimeSeconds;
 		this.genres = title.genres;
-		this.rating = title.rating.aggregateRating;
+		this.rating = title.rating == null ? 0 : title.rating.aggregateRating;
 	}
 
 	// Used by jackson
+
 	public MovieMetaData()
 	{
 	}
@@ -90,5 +97,15 @@ public class MovieMetaData
 	public void setRating(double rating)
 	{
 		this.rating = rating;
+	}
+
+	public MovieEntity getMovieEntity()
+	{
+		return movieEntity;
+	}
+
+	public void setMovieEntity(MovieEntity movieEntity)
+	{
+		this.movieEntity = movieEntity;
 	}
 }
