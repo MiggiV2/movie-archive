@@ -6,6 +6,7 @@ import de.mymiggi.movie.api.entity.metadata.MedaDataResponse;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.runtime.Startup;
+import io.quarkus.runtime.configuration.ConfigUtils;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.slf4j.Logger;
@@ -23,7 +24,8 @@ public class MetaDataService
 	@Startup
 	void fillMetaData()
 	{
-		boolean needFill = MovieMetaData.count() == 0 && MovieEntity.count() > 0;
+		boolean isTest = ConfigUtils.getProfiles().contains("test");
+		boolean needFill = MovieMetaData.count() == 0 && MovieEntity.count() > 0 && !isTest;
 		if (needFill)
 		{
 			for (PanacheEntityBase entityBase : MovieEntity.listAll())
@@ -44,7 +46,7 @@ public class MetaDataService
 					throw new RuntimeException(e);
 				}
 				System.out.print(".");
-				metaData = getMetaData(movieEntity);
+				metaData = getMetaData(movieEntity, true);
 				try
 				{
 					QuarkusTransaction.begin();
@@ -61,8 +63,19 @@ public class MetaDataService
 
 	public Optional<MovieMetaData> getMetaData(MovieEntity movie)
 	{
-		MedaDataResponse metaDataResponse = metaDataClient.search(movie.name, movie.year, movie.year + 1);
-		if (metaDataResponse.totalCount == 0 || metaDataResponse.titles == null)
+		return getMetaData(movie, false);
+	}
+
+	public Optional<MovieMetaData> getMetaData(MovieEntity movie, boolean forceSimpleSearch)
+	{
+		MedaDataResponse metaDataResponse = forceSimpleSearch ? null : metaDataClient.advancedSearch(movie.name, movie.year, movie.year + 1);
+		boolean isEmpty = metaDataResponse == null || metaDataResponse.titles == null;
+		if (isEmpty)
+		{
+			metaDataResponse = metaDataClient.search(movie.name, 1);
+		}
+		isEmpty = metaDataResponse.titles == null;
+		if (isEmpty)
 		{
 			return Optional.empty();
 		}

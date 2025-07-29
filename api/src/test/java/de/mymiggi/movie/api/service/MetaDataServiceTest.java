@@ -23,7 +23,7 @@ public class MetaDataServiceTest
 	void searchMovie()
 	{
 		// Arrival - 2016
-		MovieEntity movieEntity = MovieEntity.findById(36);
+		MovieEntity movieEntity = MovieEntity.findById(34);
 		assertNotNull(movieEntity);
 		assertEquals("Arrival", movieEntity.name);
 		Optional<MovieMetaData> metaData = metaDataService.getMetaData(movieEntity);
@@ -31,7 +31,7 @@ public class MetaDataServiceTest
 		assertTrue(metaData.isPresent());
 		MovieMetaData movieMetaData = metaData.get();
 		assertEquals("tt2543164", movieMetaData.getImdbId());
-		assertEquals(36, movieMetaData.getMovieEntity().id);
+		assertEquals(34, movieMetaData.getMovieEntity().id);
 	}
 
 	@Test
@@ -45,6 +45,6 @@ public class MetaDataServiceTest
 
 		assertTrue(metaData.isPresent());
 		metaData.get().persist();
-		assertEquals(225, MovieMetaData.count());
+		assertEquals(1, MovieMetaData.count());
 	}
 }

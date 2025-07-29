@@ -4,6 +4,7 @@ import de.mymiggi.movie.api.actions.user.GetMovieByIDAction;
 import de.mymiggi.movie.api.actions.user.GetMoviesAction;
 import de.mymiggi.movie.api.actions.user.GetSortedMoviesAction;
 import de.mymiggi.movie.api.actions.user.SearchAction;
+import de.mymiggi.movie.api.entity.MoviePreview;
 import de.mymiggi.movie.api.entity.config.DefaultPage;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import de.mymiggi.movie.api.entity.db.TagEntity;
@@ -11,22 +12,16 @@ import de.mymiggi.movie.api.entity.db.TagMovieRelation;
 import de.mymiggi.movie.api.service.ExportService;
 import de.mymiggi.movie.api.service.SyncService;
 import io.quarkus.panache.common.Sort;
-import jakarta.annotation.security.RolesAllowed;
+import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 
 import java.util.List;
 import java.util.Map;
 
+@Authenticated
 @Path("movie-archive/user")
-@RolesAllowed("movie_group@sso.mymiggi.de")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class UserResource
@@ -78,6 +73,20 @@ public class UserResource
 	public List<MovieEntity> getYearSortedMovies(@QueryParam("page") int page, @QueryParam("desc") boolean desc)
 	{
 		return sortedMoviesAction.runByYear(page, desc, defaultPage);
+	}
+
+	@GET
+	@Path("preview-movies/by-name")
+	public List<MoviePreview> previewNameSortedMovies(@QueryParam("page") int page, @QueryParam("desc") boolean desc)
+	{
+		return sortedMoviesAction.previewsByName(page, desc, defaultPage);
+	}
+
+	@GET
+	@Path("preview-movies/by-year")
+	public List<MoviePreview> previewYearSortedMovies(@QueryParam("page") int page, @QueryParam("desc") boolean desc)
+	{
+		return sortedMoviesAction.previewsByYear(page, desc, defaultPage);
 	}
 
 	@GET
@@ -135,3 +144,4 @@ public class UserResource
 		return exportService.createOneTimeSession();
 	}
 }
+

@@ -6,11 +6,14 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-@Path("advancedSearch")
 @RegisterRestClient(baseUri = "https://api.imdbapi.dev/")
 public interface MetaDataClient
 {
 	@GET
-	@Path("titles")
-	MedaDataResponse search(@QueryParam("query") String query, @QueryParam("startYear") int startYear, @QueryParam("endYear") int endYear);
+	@Path("advancedSearch/titles")
+	MedaDataResponse advancedSearch(@QueryParam("query") String query, @QueryParam("startYear") int startYear, @QueryParam("endYear") int endYear);
+
+	@GET
+	@Path("search/titles")
+	MedaDataResponse search(@QueryParam("query") String query, @QueryParam("limit") int limit);
 }

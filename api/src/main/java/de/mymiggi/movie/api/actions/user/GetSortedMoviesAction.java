@@ -1,5 +1,6 @@
 package de.mymiggi.movie.api.actions.user;
 
+import de.mymiggi.movie.api.entity.MoviePreview;
 import de.mymiggi.movie.api.entity.config.DefaultPage;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
@@ -13,19 +14,36 @@ import java.util.List;
 @ApplicationScoped
 public class GetSortedMoviesAction
 {
+	private static PanacheQuery<MovieEntity> getQuery(boolean desc, String columns)
+	{
+		return desc
+			? MovieEntity.findAll(Sort.descending(columns))
+			: MovieEntity.findAll(Sort.ascending(columns));
+	}
+
+	public List<MoviePreview> previewsByYear(int page, boolean desc, DefaultPage defaultPage)
+	{
+		return runByYear(page, desc, defaultPage).stream()
+			.map(GetMoviesAction::enrichMovie)
+			.toList();
+	}
+
+	public List<MoviePreview> previewsByName(int page, boolean desc, DefaultPage defaultPage)
+	{
+		return runByName(page, desc, defaultPage).stream()
+			.map(GetMoviesAction::enrichMovie)
+			.toList();
+	}
+
 	public List<MovieEntity> runByYear(int page, boolean desc, DefaultPage defaultPage)
 	{
-		PanacheQuery<MovieEntity> movieArchive = desc
-			? MovieEntity.findAll(Sort.descending("year"))
-			: MovieEntity.findAll(Sort.ascending("year"));
+		PanacheQuery<MovieEntity> movieArchive = getQuery(desc, "year");
 		return run(movieArchive, page, defaultPage);
 	}
 
 	public List<MovieEntity> runByName(int page, boolean desc, DefaultPage defaultPage)
 	{
-		PanacheQuery<MovieEntity> movieArchive = desc
-			? MovieEntity.findAll(Sort.descending("name"))
-			: MovieEntity.findAll(Sort.ascending("name"));
+		PanacheQuery<MovieEntity> movieArchive = getQuery(desc, "name");
 		return run(movieArchive, page, defaultPage);
 	}
 

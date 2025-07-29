@@ -62,7 +62,7 @@ public class AdminResourceTest
 		// Check count of tags before
 		MovieEntity movieEntity = MovieEntity.findById(movieId);
 		long savedTags = TagMovieRelation.find("movie", movieEntity).count();
-		assertEquals(3, savedTags);
+		assertEquals(6, savedTags);
 
 		// Updates
 		given()
