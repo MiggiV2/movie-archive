@@ -1,6 +1,5 @@
 package de.mymiggi.movie.api;
 
-import de.mymiggi.movie.api.actions.pub.ExchangeAction;
 import de.mymiggi.movie.api.entity.config.DefaultPage;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import de.mymiggi.movie.api.service.ExportService;
@@ -20,14 +19,12 @@ import jakarta.ws.rs.core.MediaType;
 public class PublicResource
 {
 	DefaultPage defaultPage;
-	ExchangeAction exchangeAction;
 	ExportService exportService;
 
 	@Inject
-	public PublicResource(DefaultPage defaultPage, ExchangeAction exchangeAction, ExportService exportService)
+	public PublicResource(DefaultPage defaultPage, ExportService exportService)
 	{
 		this.defaultPage = defaultPage;
-		this.exchangeAction = exchangeAction;
 		this.exportService = exportService;
 	}
 
