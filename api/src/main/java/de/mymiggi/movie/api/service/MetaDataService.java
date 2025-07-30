@@ -2,7 +2,8 @@ package de.mymiggi.movie.api.service;
 
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import de.mymiggi.movie.api.entity.db.MovieMetaData;
-import de.mymiggi.movie.api.entity.metadata.MedaDataResponse;
+import de.mymiggi.movie.api.entity.metadata.MetaDataResponse;
+import de.mymiggi.movie.api.entity.metadata.Title;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.runtime.Startup;
@@ -68,7 +69,7 @@ public class MetaDataService
 
 	public Optional<MovieMetaData> getMetaData(MovieEntity movie, boolean forceSimpleSearch)
 	{
-		MedaDataResponse metaDataResponse = forceSimpleSearch ? null : metaDataClient.advancedSearch(movie.name, movie.year, movie.year + 1);
+		MetaDataResponse metaDataResponse = forceSimpleSearch ? null : metaDataClient.advancedSearch(movie.name, movie.year, movie.year + 1);
 		boolean isEmpty = metaDataResponse == null || metaDataResponse.titles == null;
 		if (isEmpty)
 		{
@@ -82,5 +83,18 @@ public class MetaDataService
 		MovieMetaData metaData = new MovieMetaData(metaDataResponse.titles.getFirst());
 		metaData.setMovieEntity(movie);
 		return Optional.of(metaData);
+	}
+
+	public Optional<Title> getMetaDataById(String id)
+	{
+		try
+		{
+			return Optional.of(this.metaDataClient.getById(id));
+		}
+		catch (Exception e)
+		{
+			log.error("Failed to get meta data by id {}", id, e);
+			return Optional.empty();
+		}
 	}
 }

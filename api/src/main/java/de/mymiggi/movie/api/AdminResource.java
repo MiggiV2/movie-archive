@@ -6,21 +6,14 @@ import de.mymiggi.movie.api.actions.admin.UpdateBlocksAction;
 import de.mymiggi.movie.api.actions.admin.UpdateMovieAction;
 import de.mymiggi.movie.api.actions.auditlog.GetAuditLogAction;
 import de.mymiggi.movie.api.actions.user.AddTagsAction;
+import de.mymiggi.movie.api.entity.DetailedMovie;
 import de.mymiggi.movie.api.entity.db.AuditLogEntity;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
-import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 
 import java.util.List;
@@ -64,7 +57,7 @@ public class AdminResource
 	@PUT
 	@Path("update-movie")
 	@Transactional
-	public MovieEntity updateMovieById(MovieEntity movieEntity)
+	public DetailedMovie updateMovieById(DetailedMovie movieEntity)
 	{
 		return updateMovieAction.run(movieEntity);
 	}

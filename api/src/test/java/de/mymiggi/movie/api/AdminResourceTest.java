@@ -1,10 +1,8 @@
 package de.mymiggi.movie.api;
 
 import de.mymiggi.movie.api.actions.admin.AddMovieAction;
-import de.mymiggi.movie.api.entity.db.AuditLogEntity;
-import de.mymiggi.movie.api.entity.db.MovieEntity;
-import de.mymiggi.movie.api.entity.db.TagEntity;
-import de.mymiggi.movie.api.entity.db.TagMovieRelation;
+import de.mymiggi.movie.api.entity.DetailedMovie;
+import de.mymiggi.movie.api.entity.db.*;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
@@ -17,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @QuarkusTest
 @TestHTTPEndpoint(AdminResource.class)
@@ -38,19 +35,47 @@ public class AdminResourceTest
 		MovieEntity entity = new MovieEntity(2015, "Maggie", "Block 8",
 			"https://de.wikipedia.org/wiki/Maggie_(2015)", "BD");
 		entity.id = 223L;
+		entity.originalName = "Maggie";
+		DetailedMovie detailedMovie = new DetailedMovie(entity, new MovieMetaData());
 
-		Response response = given()
+		given()
 			.when()
 			.contentType(ContentType.JSON)
-			.body(entity)
-			.put("update-movie");
+			.body(detailedMovie)
+			.put("update-movie")
+			.then()
+			.statusCode(200)
+			.body("title", is(entity.name))
+			.body("id", is(entity.id.intValue()))
+			.body("block", is(entity.block))
+			.body("originalName", is(entity.originalName))
+			.body("block", is(entity.block));
+	}
 
-		response.then().statusCode(200);
-		MovieEntity movie = response.body().as(MovieEntity.class);
+	@Test
+	void testUpdateWithMetadata()
+	{
+		MovieEntity entity = new MovieEntity(2015, "Maggie", "Block 8",
+			"https://de.wikipedia.org/wiki/Maggie_(2015)", "BD");
+		entity.id = 223L;
+		entity.originalName = "Maggie";
+		MovieMetaData movieMetaData = new MovieMetaData();
+		movieMetaData.setImdbId("tt1881002");
+		DetailedMovie detailedMovie = new DetailedMovie(entity, movieMetaData);
 
-		assertEquals(entity.name, movie.name);
-		assertEquals(entity.id, movie.id);
-		assertNotEquals("Block 7", movie.block);
+		given()
+			.when()
+			.contentType(ContentType.JSON)
+			.body(detailedMovie)
+			.put("update-movie")
+			.then()
+			.statusCode(200)
+			.body("title", is(entity.name))
+			.body("id", is(entity.id.intValue()))
+			.body("block", is(entity.block))
+			.body("originalName", is(entity.originalName))
+			.body("block", is(entity.block))
+			.body("runtime", is(5700));
 	}
 
 	@Test

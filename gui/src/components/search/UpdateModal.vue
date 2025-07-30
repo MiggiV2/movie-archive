@@ -12,7 +12,7 @@
           <div class="mb-3 row">
             <label for="movie-name" class="col-sm-3 col-form-label">Film Name</label>
             <div class="col-sm-9">
-              <input type="text" class="form-control" id="movie-name" v-model="data.movie.name" />
+              <input type="text" class="form-control" id="movie-name" v-model="data.movie.title" />
             </div>
           </div>
           <div class="mb-3 row">
@@ -37,6 +37,15 @@
             <label for="movie-originalname" class="col-sm-3 col-form-label">Originaltitel</label>
             <div class="col-sm-9">
               <input type="text" class="form-control" id="movie-originalname" v-model="data.movie.originalName" />
+            </div>
+          </div>
+          <div class="mb-3 row">
+            <label for="movie-originalname" class="col-sm-3 col-form-label">External ID (IMDB ID)</label>
+            <div class="col-sm-9">
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" id="movie-originalname" v-model="data.movie.externalId">
+                <button @click="openImdbTab()" class="btn btn-outline-secondary" type="button" id="button-addon2">Suchen</button>
+              </div>
             </div>
           </div>
           <strong v-if="data.failed && data.message != null">
@@ -88,14 +97,20 @@ function setHandler() {
 
 async function update() {
   await updateMovie(data.movie)
-    .then(() => {
+    .then((updated_movie) => {
       data.failed = false;
       data.message = "Film gespeicher!";
+      data.movie = updated_movie;
     })
     .catch((e) => {
       data.message = e;
       data.failed = true;
     });
+}
+
+function openImdbTab() {
+  const url = "https://www.imdb.com/find/?s=tt&q="+ data.movie.title + " " + data.movie.year;
+  window.open(url);
 }
 
 function showMovieModal() {

@@ -13,6 +13,8 @@ public class DetailedMovie
 	// Used by Jackson
 	public DetailedMovie()
 	{
+		this.movie = new MovieEntity();
+		this.movieMetaData = new MovieMetaData();
 	}
 
 	public DetailedMovie(MovieEntity movie, MovieMetaData movieMetaData)
@@ -26,9 +28,19 @@ public class DetailedMovie
 		return this.movie.year;
 	}
 
+	public void setYear(int year)
+	{
+		this.movie.year = year;
+	}
+
 	public String getTitle()
 	{
 		return this.movie.name;
+	}
+
+	public void setTitle(String title)
+	{
+		this.movie.name = title;
 	}
 
 	public String getBlock()
@@ -36,9 +48,19 @@ public class DetailedMovie
 		return this.movie.block;
 	}
 
+	public void setBlock(String block)
+	{
+		this.movie.block = block;
+	}
+
 	public String getWikiUrl()
 	{
 		return this.movie.wikiUrl;
+	}
+
+	public void setWikiUrl(String wikiUrl)
+	{
+		this.movie.wikiUrl = wikiUrl;
 	}
 
 	public String getType()
@@ -46,9 +68,19 @@ public class DetailedMovie
 		return this.movie.type;
 	}
 
+	public void setType(String type)
+	{
+		this.movie.type = type;
+	}
+
 	public int getRuntime()
 	{
 		return this.movieMetaData.getRuntime();
+	}
+
+	public void setRuntime(int runtime)
+	{
+		this.movieMetaData.setRuntime(runtime);
 	}
 
 	public List<String> getGenres()
@@ -56,13 +88,58 @@ public class DetailedMovie
 		return this.movieMetaData.getGenres();
 	}
 
+	public void setGenres(List<String> genres)
+	{
+		this.movieMetaData.setGenres(genres);
+	}
+
 	public double getRating()
 	{
 		return this.movieMetaData.getRating();
 	}
 
+	public void setRating(double rating)
+	{
+		this.movieMetaData.setRating(rating);
+	}
+
 	public String getImage()
 	{
 		return this.movieMetaData.getPrimaryImage();
+	}
+
+	public void setImage(String image)
+	{
+		this.movieMetaData.setPrimaryImage(image);
+	}
+
+	public long getId()
+	{
+		return this.movie.id;
+	}
+
+	public void setId(long id)
+	{
+		this.movie.id = id;
+	}
+
+	public String getOriginalName()
+	{
+		return this.movie.originalName;
+	}
+
+	public void setOriginalName(String originalName)
+	{
+		this.movie.originalName = originalName;
+	}
+
+	public String getExternalId()
+	{
+		return this.movieMetaData.getImdbId();
+	}
+
+	public void setExternalId(String externalId)
+	{
+		this.movieMetaData.setImdbId(externalId);
 	}
 }
