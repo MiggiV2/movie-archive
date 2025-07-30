@@ -10,6 +10,11 @@ public class DetailedMovie
 	private MovieEntity movie;
 	private MovieMetaData movieMetaData;
 
+	// Used by Jackson
+	public DetailedMovie()
+	{
+	}
+
 	public DetailedMovie(MovieEntity movie, MovieMetaData movieMetaData)
 	{
 		this.movie = movie;

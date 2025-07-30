@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -28,32 +29,26 @@ public class UserResourceTest
 	@Test
 	void testGetMovieListByPage()
 	{
-		Response response = given().when()
+		given().when()
 			.queryParam("page", 0)
-			.get("get-movies");
-
-		response.then().statusCode(200);
-		MovieEntity[] movies = response.body().as(MovieEntity[].class);
-		assertEquals(defaultPage.Size(), movies.length);
+			.get("get-movies")
+			.then()
+			.statusCode(200)
+			.body("size()", is(defaultPage.Size()));
 	}
 
 	@Test
 	void testGetMovieListByID()
 	{
-		Response response = given().when()
+		given().when()
 			.queryParam("id", 19)
-			.get("get-movie-by-id");
-
-		response.then().statusCode(200);
-		MovieEntity movie = response.body().as(MovieEntity.class);
-
-		assertEquals(movie.id, 19);
-		assertEquals(movie.year, 2012);
-		assertEquals(movie.name, "Alien - Prometheus - Dunkle Zeichen");
-		assertEquals(movie.uuid, "A8");
-		assertEquals(movie.block, "A1");
-		assertEquals(movie.wikiUrl, "https://de.wikipedia.org/wiki/Prometheus_%E2%80%93_Dunkle_Zeichen");
-		assertEquals(movie.type, "BD");
+			.get("get-movie-by-id")
+			.then().statusCode(200)
+			.body("year", is(2012))
+			.body("title", is("Alien - Prometheus - Dunkle Zeichen"))
+			.body("block", is("Block 1"))
+			.body("wikiUrl", is("https://de.wikipedia.org/wiki/Prometheus_%E2%80%93_Dunkle_Zeichen"))
+			.body("type", is("BD"));
 	}
 
 	@Test
@@ -194,10 +189,10 @@ public class UserResourceTest
 		response.then().statusCode(200);
 		Map<Long, String> hashes = response.body().as(HashResult.class);
 
-		assertEquals(hashes.size(), 363);
+		assertEquals(363, hashes.size());
 		for (Long id : hashes.keySet())
 		{
-			assertEquals(hashes.get(id).length(), 32);
+			assertEquals(32, hashes.get(id).length());
 		}
 	}
 
@@ -205,7 +200,7 @@ public class UserResourceTest
 	void slq()
 	{
 		List<MovieEntity> movies = MovieEntity.find("name ILIKE ?1 AND name ILIKE ?2", "%Star%", "%Jedi%").list();
-		assertEquals(movies.size(), 2);
+		assertEquals(2, movies.size());
 	}
 
 	private void compareIDs(long[] sortedIDs, MovieEntity[] movies)

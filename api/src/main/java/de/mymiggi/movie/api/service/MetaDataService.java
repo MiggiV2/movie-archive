@@ -63,7 +63,7 @@ public class MetaDataService
 
 	public Optional<MovieMetaData> getMetaData(MovieEntity movie)
 	{
-		return getMetaData(movie, false);
+		return getMetaData(movie, true);
 	}
 
 	public Optional<MovieMetaData> getMetaData(MovieEntity movie, boolean forceSimpleSearch)
