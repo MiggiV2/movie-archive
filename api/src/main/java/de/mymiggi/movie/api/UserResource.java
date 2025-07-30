@@ -63,20 +63,6 @@ public class UserResource
 	}
 
 	@GET
-	@Path("sorted-movies/by-name")
-	public List<MovieEntity> getNameSortedMovies(@QueryParam("page") int page, @QueryParam("desc") boolean desc)
-	{
-		return sortedMoviesAction.runByName(page, desc, defaultPage);
-	}
-
-	@GET
-	@Path("sorted-movies/by-year")
-	public List<MovieEntity> getYearSortedMovies(@QueryParam("page") int page, @QueryParam("desc") boolean desc)
-	{
-		return sortedMoviesAction.runByYear(page, desc, defaultPage);
-	}
-
-	@GET
 	@Path("preview-movies/by-name")
 	public List<MoviePreview> previewNameSortedMovies(@QueryParam("page") int page, @QueryParam("desc") boolean desc)
 	{
@@ -92,7 +78,7 @@ public class UserResource
 
 	@GET
 	@Path("search")
-	public List<MovieEntity> searchMovie(@QueryParam("query") String query)
+	public List<MoviePreview> searchMovie(@QueryParam("query") String query)
 	{
 		return searchAction.run(query);
 	}

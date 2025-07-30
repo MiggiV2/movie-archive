@@ -1,5 +1,6 @@
 package de.mymiggi.movie.api.actions.user;
 
+import de.mymiggi.movie.api.entity.MoviePreview;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.BadRequestException;
@@ -10,13 +11,15 @@ import java.util.List;
 @ApplicationScoped
 public class SearchAction
 {
-	public List<MovieEntity> run(String query)
+	public List<MoviePreview> run(String query)
 	{
 		if (query == null || query.isBlank())
 		{
 			throw new BadRequestException("You need a search query!");
 		}
-		return search(query);
+		return search(query).stream()
+			.map(GetMoviesAction::enrichMovie)
+			.toList();
 	}
 
 	private List<MovieEntity> search(String query)
@@ -35,7 +38,7 @@ public class SearchAction
 		return findMoviesContainingWords(query);
 	}
 
-	public List<MovieEntity> findMoviesContainingWords(String query)
+	private List<MovieEntity> findMoviesContainingWords(String query)
 	{
 		String[] words = query.split("\\s+");
 		StringBuilder sb = new StringBuilder();

@@ -1,5 +1,6 @@
 package de.mymiggi.movie.api;
 
+import de.mymiggi.movie.api.entity.MoviePreview;
 import de.mymiggi.movie.api.entity.config.DefaultPage;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
@@ -60,10 +61,10 @@ public class UserResourceTest
 		Response response = given().when()
 			.queryParam("page", 2)
 			.queryParam("desc", false)
-			.get("sorted-movies/by-name");
+			.get("preview-movies/by-name");
 
 		response.then().statusCode(200);
-		compareIDs(sortedIDs, response.body().as(MovieEntity[].class));
+		compareIDs(sortedIDs, response.body().as(MoviePreview[].class));
 	}
 
 	@Test
@@ -75,10 +76,10 @@ public class UserResourceTest
 		Response response = given().when()
 			.queryParam("page", 2)
 			.queryParam("desc", true)
-			.get("sorted-movies/by-name");
+			.get("preview-movies/by-name");
 
 		response.then().statusCode(200);
-		compareIDs(sortedIDs, response.body().as(MovieEntity[].class));
+		compareIDs(sortedIDs, response.body().as(MoviePreview[].class));
 	}
 
 	@Test
@@ -87,19 +88,19 @@ public class UserResourceTest
 		Response response = given().when()
 			.queryParam("page", 2)
 			.queryParam("desc", false)
-			.get("sorted-movies/by-year");
+			.get("preview-movies/by-year");
 
 		response.then().statusCode(200);
-		MovieEntity[] movies = response.body().as(MovieEntity[].class);
+		MoviePreview[] movies = response.body().as(MoviePreview[].class);
 		assertEquals(movies.length, defaultPage.Size());
 
-		int lastYear = movies[0].year;
-		for (MovieEntity movie : movies)
+		int lastYear = movies[0].getYear();
+		for (MoviePreview movie : movies)
 		{
-			assertTrue(movie.year >= lastYear);
-			if (movie.year > lastYear)
+			assertTrue(movie.getYear() >= lastYear);
+			if (movie.getYear() > lastYear)
 			{
-				lastYear = movie.year;
+				lastYear = movie.getYear();
 			}
 		}
 	}
@@ -110,19 +111,19 @@ public class UserResourceTest
 		Response response = given().when()
 			.queryParam("page", 2)
 			.queryParam("desc", true)
-			.get("sorted-movies/by-year");
+			.get("preview-movies/by-year");
 
 		response.then().statusCode(200);
-		MovieEntity[] movies = response.body().as(MovieEntity[].class);
+		MoviePreview[] movies = response.body().as(MoviePreview[].class);
 		assertEquals(movies.length, defaultPage.Size());
 
-		int lastYear = movies[0].year;
-		for (MovieEntity movie : movies)
+		int lastYear = movies[0].getYear();
+		for (MoviePreview movie : movies)
 		{
-			assertTrue(movie.year <= lastYear);
-			if (movie.year < lastYear)
+			assertTrue(movie.getYear() <= lastYear);
+			if (movie.getYear() < lastYear)
 			{
-				lastYear = movie.year;
+				lastYear = movie.getYear();
 			}
 		}
 	}
@@ -137,7 +138,7 @@ public class UserResourceTest
 			.get("search");
 
 		response.then().statusCode(200);
-		compareIDs(sortedIDs, response.body().as(MovieEntity[].class));
+		compareIDs(sortedIDs, response.body().as(MoviePreview[].class));
 	}
 
 	@Test
@@ -150,7 +151,7 @@ public class UserResourceTest
 			.get("search");
 
 		response.then().statusCode(200);
-		compareIDs(sortedIDs, response.body().as(MovieEntity[].class));
+		compareIDs(sortedIDs, response.body().as(MoviePreview[].class));
 	}
 
 	@Test
@@ -163,7 +164,7 @@ public class UserResourceTest
 			.get("search");
 
 		response.then().statusCode(200);
-		MovieEntity[] movies = response.body().as(MovieEntity[].class);
+		MoviePreview[] movies = response.body().as(MoviePreview[].class);
 		compareIDs(sortedIDs, movies);
 	}
 
@@ -177,7 +178,7 @@ public class UserResourceTest
 			.get("search");
 
 		response.then().statusCode(200);
-		MovieEntity[] movies = response.body().as(MovieEntity[].class);
+		MoviePreview[] movies = response.body().as(MoviePreview[].class);
 		compareIDs(sortedIDs, movies);
 	}
 
@@ -203,12 +204,12 @@ public class UserResourceTest
 		assertEquals(2, movies.size());
 	}
 
-	private void compareIDs(long[] sortedIDs, MovieEntity[] movies)
+	private void compareIDs(long[] sortedIDs, MoviePreview[] movies)
 	{
 		assertEquals(movies.length, sortedIDs.length, "Expected different count of movies");
 		for (int i = 0; i < sortedIDs.length; i++)
 		{
-			assertEquals(movies[i].id, sortedIDs[i], "Expected different movie id");
+			assertEquals(movies[i].getId(), sortedIDs[i], "Expected different movie id");
 		}
 	}
 

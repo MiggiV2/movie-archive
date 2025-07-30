@@ -20,6 +20,11 @@ public class MoviePreview
 		this.image = movieMetaData.map(MovieMetaData::getPrimaryImage).orElse(null);
 	}
 
+	// Used by jackson
+	public MoviePreview()
+	{
+	}
+
 	public String getTitle()
 	{
 		return title;
