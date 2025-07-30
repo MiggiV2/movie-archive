@@ -13,15 +13,15 @@
                     <div class="row">
                         <!--Data-->
                         <div class="col">
-                            <h4>{{ props.movie.title }}</h4>
+                            <h3 class="mb-4">{{ props.movie.title }}</h3>
                             <!--Poster_Mobile-->
                             <div class="mobile" v-if="props.movie.image != undefined">
                                 <img :src="props.movie.image" alt="Movie Poster">
                             </div>
                             <!--Details-->
-                            <p>Zu finden in {{ props.movie.block }}</p>
-                            <p>Aus dem Jahre {{ props.movie.year }}</p>
-                            <p>Type: {{ props.movie.type }}</p>
+                            <p>{{ props.movie.year }} - {{ props.movie.runtime / 60 }} Minuten</p>
+                            <p>Bewertung: {{ props.movie.rating }} / 10</p>
+                            <p>{{ props.movie.block }}</p>
                             <!--Links-->
                             <p class="wikis">
                                 <a class="btn btn-primary" v-if="allowIframe(props.movie.wikiUrl)"
