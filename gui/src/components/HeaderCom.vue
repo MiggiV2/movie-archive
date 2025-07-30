@@ -3,8 +3,8 @@
     <div class="row align-items-center">
       <div class="col-auto">
         <h2>
-          <router-link to="/" class="link"><i class="bi bi-camera-reels"></i> MovieArchive
-            <i class="bi bi-film"></i></router-link>
+          <router-link to="/" class="link"><i class="bi bi-camera-reels desktop"></i> MovieArchive
+            <i class="bi bi-film desktop"></i></router-link>
         </h2>
       </div>
       <!--desktop-menu-->

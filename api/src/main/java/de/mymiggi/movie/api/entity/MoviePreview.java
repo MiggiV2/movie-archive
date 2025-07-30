@@ -10,11 +10,13 @@ public class MoviePreview
 	private String title;
 	private int year;
 	private String image;
+	private long id;
 
 	public MoviePreview(MovieEntity movieEntity, Optional<MovieMetaData> movieMetaData)
 	{
 		this.title = movieEntity.name;
 		this.year = movieEntity.year;
+		this.id = movieEntity.id;
 		this.image = movieMetaData.map(MovieMetaData::getPrimaryImage).orElse(null);
 	}
 
@@ -46,5 +48,10 @@ public class MoviePreview
 	public void setImage(String image)
 	{
 		this.image = image;
+	}
+
+	public long getId()
+	{
+		return id;
 	}
 }

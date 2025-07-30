@@ -44,7 +44,7 @@ export async function searchMovie(query) {
 export async function getSortedMovies(page, sortID) {
     await checkToken();
     var sort = getSorteByID(sortID);
-    return fetch(HOST + "user/sorted-movies/by-" + sort.sortType + "?page=" + page + "&desc=" + sort.desc, {
+    return fetch(HOST + "user/preview-movies/by-" + sort.sortType + "?page=" + page + "&desc=" + sort.desc, {
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + getCookie("accessToken")

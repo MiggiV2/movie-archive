@@ -5,10 +5,12 @@
       <div class="input-group mb-3">
         <input type="text" class="form-control" placeholder="Welchen Film suche Sie?"
           aria-label="Welchen Film suche Sie?" aria-describedby="button-addon2" v-model="data.query" @input="search" />
+        <!-- Disabled for now
         <button class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#tagModal">
           Tags
           <i class="bi bi-tag desktop"></i>
         </button>
+        -->
         <select @change="setSortIDAndLoad($event)" class="form-select desktop" aria-label="Default select example"
           v-model="data.sortID">
           <option value="1">Alphapethisch \/</option>
@@ -36,33 +38,30 @@
       </select>
     </div>
   </div>
-  <!-- movies -->
-  <div class="container">
-    <div class="box box-movie" v-for="(movie, index) in data.movies" :key="index" @click="showMovie(movie)">
-      <h2>{{ movie.name }}</h2>
-      <p>Aus dem Jahre {{ movie.year }}</p>
-    </div>
-  </div>
   <!-- placeholder -->
   <div v-if="data.isLoading" class="container">
-    <div v-for="index in 10" :key="index">
-      <div class="box box-movie placeholder-glow">
-        <h2><span class="placeholder col-4"></span></h2>
-        <p><span class="placeholder col-2"></span> <span class="placeholder col-1"></span></p>
-      </div>
-      <div class="box box-movie placeholder-glow">
-        <h2><span class="placeholder col-2"></span></h2>
-        <p><span class="placeholder col-2"></span> <span class="placeholder col-1"></span></p>
-      </div>
-      <div class="box box-movie placeholder-glow">
-        <h2><span class="placeholder col-3"></span></h2>
-        <p><span class="placeholder col-2"></span> <span class="placeholder col-1"></span></p>
+    <div class="row">
+      <div v-for="index in 9" :key="index" class="col-xl-4 text-center my-3 placeholder-glow">
+        <h2><span class="placeholder col-6"></span></h2>
+        <span style="height: 600px;" class="placeholder col-12"></span>
+        <p class="mt-2">Aus dem Jahre <span class="placeholder col-2"></span></p>
       </div>
     </div>
   </div>
   <!-- 404 -->
   <div v-else-if="data.movies.length == 0" class="container mt-5 text-center">
     <h2>Leider keine Filme mit diesem Namen gefunden :(</h2>
+  </div>
+  <!-- movies -->
+  <div class="container">
+    <div class="row">
+      <div class="col-xl-4 text-center my-3" v-for="(movie, index) in data.movies" :key="index"
+        @click="showMovie(movie)">
+        <h2>{{ movie.title }}</h2>
+        <img :src="getImage(movie)" alt="Poster">
+        <p class="mt-2">Aus dem Jahre {{ movie.year }}</p>
+      </div>
+    </div>
   </div>
   <!--Spacer-->
   <div class="my-5 py-5"></div>
@@ -159,6 +158,13 @@ async function load() {
   getMoviePageCount().then((count) => {
     data.maxPageCount = count;
   });
+}
+
+function getImage(movie) {
+  if (movie.image == null) {
+    return "/img/default-poster.png";
+  }
+  return movie.image.replace('@._V1_.jpg', '@._V1_QL75_UX380_CR0,0,380,562_.jpg');
 }
 
 // called by vue.js input / form
@@ -318,5 +324,9 @@ async function loadTagsForMovie() {
 
 select.desktop {
   max-width: 11rem;
+}
+
+img {
+  max-width: 400px;
 }
 </style>
