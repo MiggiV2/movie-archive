@@ -13,15 +13,16 @@
                     <div class="row">
                         <!--Data-->
                         <div class="col">
-                            <h4>{{ props.movie.name }}</h4>
+                            <h4>{{ props.movie.title }}</h4>
                             <!--Poster_Mobile-->
-                            <div class="mobile" v-if="props.movie.omdbData != undefined">
-                                <img v-if="props.movie.omdbData.Poster != undefined" :src="props.movie.omdbData.Poster"
-                                    alt="Movie Poster">
+                            <div class="mobile" v-if="props.movie.image != undefined">
+                                <img :src="props.movie.image" alt="Movie Poster">
                             </div>
+                            <!--Details-->
                             <p>Zu finden in {{ props.movie.block }}</p>
                             <p>Aus dem Jahre {{ props.movie.year }}</p>
                             <p>Type: {{ props.movie.type }}</p>
+                            <!--Links-->
                             <p class="wikis">
                                 <a class="btn btn-primary" v-if="allowIframe(props.movie.wikiUrl)"
                                     :href="props.movie.wikiUrl">Mehr Details auf Wikipedia <i
@@ -33,29 +34,25 @@
                             </p>
                             <p class="youtube-search">
                                 <a class="btn btn-danger"
-                                    :href="'https://www.youtube.com/results?search_query=Trailer ' + props.movie.name">
+                                    :href="'https://www.youtube.com/results?search_query=Trailer ' + props.movie.title">
                                     Trailer auf Youtube suchen <i class="bi bi-youtube"></i>
                                 </a>
                             </p>
                         </div>
                         <!--Poster_Desktop-->
-                        <div class="col desktop" v-if="props.movie.omdbData != undefined">
-                            <img v-if="props.movie.omdbData.Poster != undefined" :src="props.movie.omdbData.Poster"
+                        <div class="col desktop">
+                            <img v-if="props.movie.image!= undefined" :src="props.movie.image"
                                 alt="Movie Poster">
                             <div v-else>
-                                <p>Keine Poster gefunden...</p>
-                                <img src="/img/default-poster.png"
-                                    alt="Default Poster from https://pixabay.com/vectors/android-sci-fi-retro-poster-7479380/"
-                                    width="300" height="420">
+                                <img src="/img/default-poster.webp" alt="Default Poster">
                             </div>
                         </div>
-                    </div>
-                    <hr v-if="props.movie.tags.length > 0">
+                    </div>                    
+                    <hr v-if="props.movie.genres != undefined && props.movie.genres.length > 0">
                     <!--Tags-->
                     <div class="row justify-content-center">
-                        <div class="col-auto" v-for="tag in props.movie.tags" :key="tag.name"
-                            @click="sendTagSelectedEvent(tag)" data-bs-dismiss="modal">
-                            <p class="tag-outline">#{{ tag.name }}</p>
+                        <div class="col-auto" v-for="name in props.movie.genres" :key="name">
+                            <p class="tag-outline">#{{ name }}</p>
                         </div>
                     </div>
                 </div>
@@ -112,11 +109,6 @@ function showUpdateModal() {
     modal.show();
 }
 
-function sendTagSelectedEvent(tag) {
-    emit('tagSelected', tag);
-}
-
-
 function startURLWith(url, domainArray) {
     for (let index = 0; index < domainArray.length; index++) {
         const element = domainArray[index];
@@ -164,10 +156,11 @@ img {
     -webkit-box-shadow: 4px 4px 5px 0px rgba(0, 0, 0, 0.75);
     -moz-box-shadow: 4px 4px 5px 0px rgba(0, 0, 0, 0.75);
     box-shadow: 4px 4px 5px 0px rgba(0, 0, 0, 0.75);
+    max-width: 100%;
 }
 
 .wikis {
-    margin-top: 11rem;
+    margin-top: 17rem;
 }
 
 .modal-footer>.row {

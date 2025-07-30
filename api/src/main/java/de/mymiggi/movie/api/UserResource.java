@@ -4,6 +4,7 @@ import de.mymiggi.movie.api.actions.user.GetMovieByIDAction;
 import de.mymiggi.movie.api.actions.user.GetMoviesAction;
 import de.mymiggi.movie.api.actions.user.GetSortedMoviesAction;
 import de.mymiggi.movie.api.actions.user.SearchAction;
+import de.mymiggi.movie.api.entity.DetailedMovie;
 import de.mymiggi.movie.api.entity.MoviePreview;
 import de.mymiggi.movie.api.entity.config.DefaultPage;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
@@ -12,7 +13,6 @@ import de.mymiggi.movie.api.entity.db.TagMovieRelation;
 import de.mymiggi.movie.api.service.ExportService;
 import de.mymiggi.movie.api.service.SyncService;
 import io.quarkus.panache.common.Sort;
-import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -20,7 +20,7 @@ import jakarta.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.Map;
 
-@Authenticated
+//@Authenticated
 @Path("movie-archive/user")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -56,7 +56,7 @@ public class UserResource
 
 	@GET
 	@Path("get-movie-by-id")
-	public MovieEntity getMovieByID(@QueryParam("id") long id)
+	public DetailedMovie getMovieByID(@QueryParam("id") long id)
 	{
 		return getMovieByIDAction.run(id);
 	}

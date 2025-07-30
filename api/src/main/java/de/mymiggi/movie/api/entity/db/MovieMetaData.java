@@ -34,7 +34,6 @@ public class MovieMetaData extends PanacheEntityBase
 	}
 
 	// Used by jackson
-
 	public MovieMetaData()
 	{
 	}

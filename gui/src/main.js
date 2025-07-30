@@ -6,7 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css"
 import "@/assets/css/style.css";
 import { getCookie } from './tools/Cookies';
-import { runRefreshTokenFlow } from './tools/Auth';
+import { openLogin, runRefreshTokenFlow } from './tools/Auth';
 
 createApp(App).use(router).mount('#app');
 
@@ -18,7 +18,7 @@ if (!hasToken) {
     if (hasRefreshToken) {
         runRefreshTokenFlow();
     }
-    else if(hasUserData && window.location.pathname != "/logout") {
-        window.location = "/logout";
+    else if(hasUserData && !window.location.pathname.startsWith("/auth")) {
+        openLogin();
     }
 }

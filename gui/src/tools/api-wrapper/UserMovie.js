@@ -3,9 +3,9 @@ import { checkToken } from "@/tools/Auth";
 
 const HOST = process.env.VUE_APP_API_HOST;
 
-export async function getMovies(page) {
+export async function getMovie(id) {
     await checkToken();
-    return fetch(HOST + "user/get-movies?page=" + page, {
+    return fetch(HOST + "user/get-movie-by-id?id=" + id, {
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + getCookie("accessToken")

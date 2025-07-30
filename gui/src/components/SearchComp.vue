@@ -1,6 +1,6 @@
 <template>
   <!-- search -->
-  <div id="search-input" class="container">
+  <div id="search-input" class="container mb-5">
     <form @submit="search" onsubmit="return false">
       <div class="input-group mb-3">
         <input type="text" class="form-control" placeholder="Welchen Film suche Sie?"
@@ -55,7 +55,7 @@
   <!-- movies -->
   <div class="container">
     <div class="row">
-      <div class="col-xl-4 text-center my-3" v-for="(movie, index) in data.movies" :key="index"
+      <div class="col-xl-4 text-center my-3 movie" v-for="(movie, index) in data.movies" :key="index"
         @click="showMovie(movie)">
         <h2>{{ movie.title }}</h2>
         <img :src="getImage(movie)" alt="Poster">
@@ -72,12 +72,11 @@
 </template>
 
 <script setup>
-import { getPostUrl } from "@/tools/api-wrapper/omdbapi";
 import {
   getSortedMovies,
   searchMovie,
   searchByTag,
-  getTagsByMovie
+  getMovie
 } from "@/tools/api-wrapper/UserMovie";
 import { reactive, ref } from "@vue/reactivity";
 import { Modal } from "bootstrap";
@@ -154,7 +153,6 @@ async function load() {
   } else {
     await startSearch();
   }
-  tagModalRef.value.loadTags();
   getMoviePageCount().then((count) => {
     data.maxPageCount = count;
   });
@@ -162,7 +160,7 @@ async function load() {
 
 function getImage(movie) {
   if (movie.image == null) {
-    return "/img/default-poster.png";
+    return "/img/default-poster.webp";
   }
   return movie.image.replace('@._V1_.jpg', '@._V1_QL75_UX380_CR0,0,380,562_.jpg');
 }
@@ -206,12 +204,15 @@ async function setSortIDAndLoad(event) {
 }
 
 async function showMovie(movie) {
-  data.currentMovie = movie;
-  await loadTagsForMovie();
-  loadPoster(movie);
-  var modalElement = document.getElementById("movieModal");
-  var modal = new Modal(modalElement);
-  modal.show();
+  getMovie(movie.id).then((m) => {
+    data.currentMovie = m;
+    var modalElement = document.getElementById("movieModal");
+    var modal = new Modal(modalElement);
+    modal.show();
+  }).catch((e) => {
+    console.error(e);
+    alert("Something went wrong! " + e);
+  });
 }
 
 async function loadSortedMovies() {
@@ -249,21 +250,6 @@ async function sendSearch() {
   }
 }
 
-function loadPoster(movie) {
-  let cacheKey = movie.year + "-" + movie.name;
-  if (localStorage.getItem(cacheKey)) {
-    data.currentMovie.omdbData = JSON.parse(localStorage.getItem(cacheKey));
-  }
-  else {
-    getPostUrl(movie).then(omdbData => {
-      data.currentMovie.omdbData = omdbData;
-      if (omdbData.Response != "False") {
-        localStorage.setItem(cacheKey, JSON.stringify(omdbData));
-      }
-    });
-  }
-}
-
 async function loadMoviesByTag(tag) {
   await searchByTag(tag.id).then(movies => {
     data.movies = movies;
@@ -289,13 +275,6 @@ async function loadMoviesByTag(tag) {
     .finally(() => {
       data.isLoading = false;
     });
-}
-
-async function loadTagsForMovie() {
-  data.currentMovie.tags = [{ name: "no", id: 0 }];
-  await getTagsByMovie(data.currentMovie.id).then(tags => {
-    data.currentMovie.tags = tags;
-  })
 }
 </script>
 
@@ -328,5 +307,14 @@ select.desktop {
 
 img {
   max-width: 400px;
+  border-radius: 20px;
+  -webkit-box-shadow: 4px 4px 5px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 4px 4px 5px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 4px 4px 5px 0px rgba(0, 0, 0, 0.75);
+}
+
+.movie {
+  cursor: pointer;
+  transition: transform 0.2s;
 }
 </style>
