@@ -46,7 +46,7 @@ public class UserResourceTest
 			.then().statusCode(200)
 			.body("year", is(2012))
 			.body("title", is("Alien - Prometheus - Dunkle Zeichen"))
-			.body("block", is("Block 1"))
+			.body("block", is("A1"))
 			.body("wikiUrl", is("https://de.wikipedia.org/wiki/Prometheus_%E2%80%93_Dunkle_Zeichen"))
 			.body("type", is("BD"));
 	}

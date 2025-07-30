@@ -13,6 +13,7 @@ import de.mymiggi.movie.api.entity.db.TagMovieRelation;
 import de.mymiggi.movie.api.service.ExportService;
 import de.mymiggi.movie.api.service.SyncService;
 import io.quarkus.panache.common.Sort;
+import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -20,7 +21,7 @@ import jakarta.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.Map;
 
-//@Authenticated
+@Authenticated
 @Path("movie-archive/user")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
