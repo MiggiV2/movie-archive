@@ -13,7 +13,7 @@
           GitHub <i class="bi bi-github"></i>
         </a>
       </div>
-      <div class="col-auto">
+      <div class="col-auto desktop">
         <a href="https://code.mymiggi.de/Miggi">
           Forgejo <i class="bi bi-git"></i>
         </a>

@@ -180,5 +180,9 @@ img {
     .mobile>img {
         margin-bottom: 2rem;
     }
+
+    img {
+        max-width: 75%;
+    }
 }
 </style>

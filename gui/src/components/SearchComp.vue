@@ -306,7 +306,8 @@ select.desktop {
 }
 
 img {
-  max-width: 400px;
+  width: 400px;
+  max-width: 80%;
   border-radius: 20px;
   -webkit-box-shadow: 4px 4px 5px 0px rgba(0, 0, 0, 0.75);
   -moz-box-shadow: 4px 4px 5px 0px rgba(0, 0, 0, 0.75);
