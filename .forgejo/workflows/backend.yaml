@@ -1,0 +1,55 @@
+name: Test Quarkus Backend
+
+on:
+  push:
+    branches:
+      - main
+      - cicd
+
+jobs:
+  build:
+    runs-on: docker
+
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres:17-alpine
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: quarkus
+          POSTGRES_DB: quarkus
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Opens tcp port 5432 on the host and service container
+          - 5432:5432
+              
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: https://github.com/actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+      
+      - name: Set Quarkus Postgres host
+        working-directory: api
+        run: echo "QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://localhost:5432/quarkus" >> $GITHUB_ENV
+
+      - name: Run maven test
+        working-directory: api
+        run: ./mvnw clean test -fae
+
+      - name: Run maven package
+        working-directory: api
+        run: ./mvnw package -Dquarkus.container-image.push=false
