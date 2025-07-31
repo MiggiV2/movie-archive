@@ -43,7 +43,7 @@
     <div class="row">
       <div v-for="index in 9" :key="index" class="col-xl-4 text-center my-3 placeholder-glow">
         <h2><span class="placeholder col-6"></span></h2>
-        <span style="height: 600px;" class="placeholder col-12"></span>
+        <span style="height: 490px;" class="placeholder col-10"></span>
         <p class="mt-2">Aus dem Jahre <span class="placeholder col-2"></span></p>
       </div>
     </div>
@@ -110,7 +110,7 @@ const data = reactive({
     }
   },
   query: urlParams.has("query") ? urlParams.get("query") : "",
-  isLoading: true,
+  isLoading: false,
   lastSearch: 0,
   currentPage: 0,
   maxPageCount: 0,
@@ -131,15 +131,13 @@ async function handleScroll() {
 
   const pixelCountForTigger = window.innerHeight * 0.8;
   // Check if the user has scrolled to the bottom of the page
-  if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - pixelCountForTigger) {
-    // If there are more pages to load
-    if (data.currentPage < data.maxPageCount) {
-      // Increment the current page and load more movies
-      data.currentPage++;
-      await loadSortedMovies();
-    } else {
-      console.log("No more pages to load.");
-    }
+  const needToLoadNextPage = (window.innerHeight + window.scrollY) >= document.body.offsetHeight - pixelCountForTigger && !data.isLoading;
+  const hasNextPage = data.currentPage < data.maxPageCount;
+  if (needToLoadNextPage && hasNextPage) {
+    data.currentPage++;
+    // console.log("requesting data...")
+    await loadSortedMovies();
+    // console.log("request done!")
   }
 }
 
@@ -306,7 +304,8 @@ select.desktop {
 }
 
 img {
-  width: 400px;
+  /*width: 400px;*/
+  height: 490px;
   max-width: 80%;
   border-radius: 20px;
   -webkit-box-shadow: 4px 4px 5px 0px rgba(0, 0, 0, 0.75);
@@ -317,5 +316,14 @@ img {
 .movie {
   cursor: pointer;
   transition: transform 0.2s;
+}
+
+/** Molbile */
+@media (max-width: 1400px) {
+  img {
+    height: unset;
+    min-height: 300px;
+    max-height: 400px;
+  }
 }
 </style>
