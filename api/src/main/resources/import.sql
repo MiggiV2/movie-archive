@@ -951,3 +951,8 @@ VALUES (11, 5, 6),
        (14, 5, 9),
        (15, 5, 10),
        (16, 5, 11);
+
+INSERT INTO public.moviemetadata
+VALUES (7, 7440, 2013, 144, 240, 'tt1483013',
+        'https://m.media-amazon.com/images/M/MV5BMTQwMDY0MTA4MF5BMl5BanBnXkFtZTcwNzI3MDgxOQ@@._V1_.jpg',
+        '{Action,Adventure,Sci-Fi}');

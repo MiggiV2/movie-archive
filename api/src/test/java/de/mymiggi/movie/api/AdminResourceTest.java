@@ -53,6 +53,33 @@ public class AdminResourceTest
 	}
 
 	@Test
+	void testUpdateOnlyMovieEntityWithExistingMetaData()
+	{
+		String newBlock = "Block 9";
+		MovieEntity entity = new MovieEntity(2013, "Oblivion", "Block 8",
+			"https://de.wikipedia.org/wiki/Oblivion_(Film)", "BD");
+		entity.id = 240L;
+		entity.block = newBlock;
+		MovieMetaData movieMetaData = new MovieMetaData();
+		movieMetaData.setImdbId("tt1483013");
+		DetailedMovie detailedMovie = new DetailedMovie(entity, movieMetaData);
+
+		given()
+			.when()
+			.contentType(ContentType.JSON)
+			.body(detailedMovie)
+			.put("update-movie")
+			.then()
+			.statusCode(200)
+			.body("title", is(entity.name))
+			.body("id", is(entity.id.intValue()))
+			.body("block", is(entity.block))
+			.body("originalName", is(entity.originalName))
+			.body("block", is(entity.block))
+			.body("runtime", is(7440));
+	}
+
+	@Test
 	void testUpdateWithMetadata()
 	{
 		MovieEntity entity = new MovieEntity(1999, "Matrix", "Block 7",

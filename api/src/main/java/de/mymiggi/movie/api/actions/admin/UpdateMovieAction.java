@@ -60,11 +60,12 @@ public class UpdateMovieAction extends AbstractAuditLogAction
 		if (meta.isPresent())
 		{
 			MovieMetaData movieMetaData = meta.get();
-			if (!movieMetaData.getImdbId().equals(detailedMovie.getExternalId()))
+			if (movieMetaData.getImdbId().equals(detailedMovie.getExternalId()))
 			{
-				movieMetaData.delete();
-				MovieMetaData.flush();
+				return movieMetaData;
 			}
+			movieMetaData.delete();
+			MovieMetaData.flush();
 		}
 		return persistNewData(detailedMovie, movieEntity);
 	}

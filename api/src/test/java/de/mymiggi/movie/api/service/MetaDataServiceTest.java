@@ -45,6 +45,6 @@ public class MetaDataServiceTest
 
 		assertTrue(metaData.isPresent());
 		metaData.get().persist();
-		assertEquals(2, MovieMetaData.count());
+		assertEquals(3, MovieMetaData.count());
 	}
 }
