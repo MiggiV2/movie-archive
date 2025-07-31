@@ -9,8 +9,6 @@ import de.mymiggi.movie.api.actions.user.AddTagsAction;
 import de.mymiggi.movie.api.entity.DetailedMovie;
 import de.mymiggi.movie.api.entity.db.AuditLogEntity;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
-import jakarta.annotation.security.RolesAllowed;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -19,8 +17,6 @@ import jakarta.ws.rs.core.MediaType;
 import java.util.List;
 
 @Path("movie-archive/admin")
-@RolesAllowed("movie_admins@sso.mymiggi.de")
-@ApplicationScoped
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class AdminResource
