@@ -30,7 +30,7 @@ public class AdminResourceTest
 	}
 
 	@Test
-	void testUpdate()
+	void testUpdateOnlyMovieEntity()
 	{
 		MovieEntity entity = new MovieEntity(2015, "Maggie", "Block 8",
 			"https://de.wikipedia.org/wiki/Maggie_(2015)", "BD");
@@ -55,12 +55,12 @@ public class AdminResourceTest
 	@Test
 	void testUpdateWithMetadata()
 	{
-		MovieEntity entity = new MovieEntity(2015, "Maggie", "Block 8",
-			"https://de.wikipedia.org/wiki/Maggie_(2015)", "BD");
-		entity.id = 223L;
-		entity.originalName = "Maggie";
+		MovieEntity entity = new MovieEntity(1999, "Matrix", "Block 7",
+			"https://de.wikipedia.org/wiki/Matrix_(Film)", "BD");
+		entity.id = 226L;
+		entity.originalName = "Matrix";
 		MovieMetaData movieMetaData = new MovieMetaData();
-		movieMetaData.setImdbId("tt1881002");
+		movieMetaData.setImdbId("tt0133093");
 		DetailedMovie detailedMovie = new DetailedMovie(entity, movieMetaData);
 
 		given()
@@ -75,7 +75,7 @@ public class AdminResourceTest
 			.body("block", is(entity.block))
 			.body("originalName", is(entity.originalName))
 			.body("block", is(entity.block))
-			.body("runtime", is(5700));
+			.body("runtime", is(8160));
 	}
 
 	@Test
