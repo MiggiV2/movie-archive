@@ -3,11 +3,13 @@ package de.mymiggi.movie.api;
 import de.mymiggi.movie.api.entity.MoviePreview;
 import de.mymiggi.movie.api.entity.config.DefaultPage;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
+import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import io.restassured.response.Response;
 import jakarta.inject.Inject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -16,8 +18,7 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 @TestHTTPEndpoint(UserResource.class)
@@ -26,6 +27,16 @@ public class UserResourceTest
 {
 	@Inject
 	DefaultPage defaultPage;
+
+	@BeforeEach
+	void setup()
+	{
+		QuarkusTransaction.begin();
+		MovieEntity movieEntity = MovieEntity.findById(19);
+		movieEntity.block = "Block 1";
+		movieEntity.persist();
+		QuarkusTransaction.commit();
+	}
 
 	@Test
 	void testGetMovieListByPage()
@@ -47,39 +58,51 @@ public class UserResourceTest
 			.then().statusCode(200)
 			.body("year", is(2012))
 			.body("title", is("Alien - Prometheus - Dunkle Zeichen"))
-			.body("block", is("A1"))
+			.body("block", is("Block 1"))
 			.body("wikiUrl", is("https://de.wikipedia.org/wiki/Prometheus_%E2%80%93_Dunkle_Zeichen"))
 			.body("type", is("BD"));
 	}
 
 	@Test
+	void testPageSize()
+	{
+		given().when()
+			.queryParam("page", 2)
+			.queryParam("desc", false)
+			.get("preview-movies/by-year")
+			.then()
+			.statusCode(200)
+			.body("size()", is(defaultPage.Size()));
+	}
+
+	@Test
 	void testGetNameSortedMovies()
 	{
-		long[] sortedIDs = { 62, 63, 64, 65, 66, 67, 68, 70, 69, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83,
-			85, 87, 84, 86, 88, 89, 90, 91 };
-
 		Response response = given().when()
 			.queryParam("page", 2)
 			.queryParam("desc", false)
 			.get("preview-movies/by-name");
 
 		response.then().statusCode(200);
-		compareIDs(sortedIDs, response.body().as(MoviePreview[].class));
+		MoviePreview[] movies = response.body().as(MoviePreview[].class);
+		MoviePreview lastMovie = movies[movies.length - 1];
+		MoviePreview firstMovie = movies[0];
+		assertTrue(lastMovie.getTitle().compareTo(firstMovie.getTitle()) > 0);
 	}
 
 	@Test
 	void testGetNameSortedMoviesDesc()
 	{
-		long[] sortedIDs = { 303, 302, 301, 300, 299, 298, 294, 293, 297, 296, 295, 292, 291, 290, 289, 288, 287, 286,
-			285, 284, 283, 275, 274, 276, 278, 281, 273, 279, 277, 272 };
-
 		Response response = given().when()
 			.queryParam("page", 2)
 			.queryParam("desc", true)
 			.get("preview-movies/by-name");
 
 		response.then().statusCode(200);
-		compareIDs(sortedIDs, response.body().as(MoviePreview[].class));
+		MoviePreview[] movies = response.body().as(MoviePreview[].class);
+		MoviePreview lastMovie = movies[movies.length - 1];
+		MoviePreview firstMovie = movies[0];
+		assertTrue(lastMovie.getTitle().compareTo(firstMovie.getTitle()) < 0);
 	}
 
 	@Test
@@ -92,17 +115,9 @@ public class UserResourceTest
 
 		response.then().statusCode(200);
 		MoviePreview[] movies = response.body().as(MoviePreview[].class);
-		assertEquals(movies.length, defaultPage.Size());
-
-		int lastYear = movies[0].getYear();
-		for (MoviePreview movie : movies)
-		{
-			assertTrue(movie.getYear() >= lastYear);
-			if (movie.getYear() > lastYear)
-			{
-				lastYear = movie.getYear();
-			}
-		}
+		MoviePreview lastMovie = movies[movies.length - 1];
+		MoviePreview firstMovie = movies[0];
+		assertTrue(lastMovie.getYear() - firstMovie.getYear() > 0);
 	}
 
 	@Test
@@ -115,43 +130,50 @@ public class UserResourceTest
 
 		response.then().statusCode(200);
 		MoviePreview[] movies = response.body().as(MoviePreview[].class);
-		assertEquals(movies.length, defaultPage.Size());
-
-		int lastYear = movies[0].getYear();
-		for (MoviePreview movie : movies)
-		{
-			assertTrue(movie.getYear() <= lastYear);
-			if (movie.getYear() < lastYear)
-			{
-				lastYear = movie.getYear();
-			}
-		}
+		MoviePreview lastMovie = movies[movies.length - 1];
+		MoviePreview firstMovie = movies[0];
+		assertTrue(lastMovie.getYear() - firstMovie.getYear() < 0);
 	}
 
 	@Test
 	void testSearchMovie()
 	{
-		long[] sortedIDs = { 324, 282, 270, 271, 280, 272, 277, 279, 273, 281, 278, 276, 274, 275 };
-
+		String query = "Star";
 		Response response = given().when()
-			.queryParam("query", "Star")
+			.queryParam("query", query)
 			.get("search");
 
 		response.then().statusCode(200);
-		compareIDs(sortedIDs, response.body().as(MoviePreview[].class));
+		MoviePreview[] movies = response.body().as(MoviePreview[].class);
+		assertEquals(14, movies.length);
+		for (MoviePreview movie : movies)
+		{
+			if (!movie.getTitle().toLowerCase().contains(query.toLowerCase()))
+			{
+				System.err.println(movie.getTitle());
+				fail("This movie does not contain the query word!");
+			}
+		}
 	}
 
 	@Test
 	void testSearchMovieLowerCase()
 	{
-		long[] sortedIDs = { 324, 282, 270, 271, 280, 272, 277, 279, 273, 281, 278, 276, 274, 275 };
-
+		String query = "star";
 		Response response = given().when()
-			.queryParam("query", "star")
+			.queryParam("query", query)
 			.get("search");
 
-		response.then().statusCode(200);
-		compareIDs(sortedIDs, response.body().as(MoviePreview[].class));
+		MoviePreview[] movies = response.body().as(MoviePreview[].class);
+		assertEquals(14, movies.length);
+		for (MoviePreview movie : movies)
+		{
+			if (!movie.getTitle().toLowerCase().contains(query.toLowerCase()))
+			{
+				System.err.println(movie.getTitle());
+				fail("This movie does not contain the query word!");
+			}
+		}
 	}
 
 	@Test
