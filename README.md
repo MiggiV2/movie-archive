@@ -12,10 +12,10 @@ This project does not store any video files! Only the information about movies y
 
 ## Vue.JS frontend:
 Search:
-![search_page](./assets/Screenshot%202024-04-01%20at%2008-06-03%20MovieArchive%20Suche.avif)
+![search_page](./assets/Screenshot%202025-07-31%20at%2011-50-05%20MovieArchive%20Suche.avif)
 
 Movie Information:
-![movie_information](./assets/Screenshot%202024-04-01%20at%2008-06-17%20MovieArchive%20Suche.avif)
+![movie_information](./assets/Screenshot%202025-07-31%20at%2011-55-31%20MovieArchive%20Suche.avif)
 
 Admin Log:
 ![admin_log](./assets/Screenshot%202024-04-01%20at%2008-06-32%20MovieArchive%20Auditlog.avif)
