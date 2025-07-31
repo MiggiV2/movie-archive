@@ -59,4 +59,14 @@ public class MoviePreview
 	{
 		return id;
 	}
+
+	@Override
+	public String toString()
+	{
+		return "MoviePreview{" +
+			"title='" + title + '\'' +
+			", year=" + year +
+			", id=" + id +
+			'}';
+	}
 }
