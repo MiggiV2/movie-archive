@@ -2,9 +2,9 @@
   <div class="container text-center my-5 pb-5">
     <div>
       <h1 class="mb-5">
-        Herzlich Willkommen im Filmarchiv <span class="desktop">von {{ owner }}</span>!
+        Herzlich Willkommen im Filmarchiv<span class="desktop"> von {{ owner }}</span>!
       </h1>
-      <div class="m-4">
+      <div class="my-4">
         <img class="modern-shadow mb-2" src="/img/start_page.webp" />
       </div>
       <div class="container-secondary py-4 mb-2">
@@ -16,7 +16,7 @@
         </h4>
         <h4>Bereit das Archive zu durchstöbern?</h4>
       </div>
-      <a type="button" class="btn btn-primary btn-lg" role="button" href="/search" v-if="user.login">
+      <a type="button" class="btn btn-outline-secondary btn-lg" role="button" href="/search" v-if="user.login">
         <i class="bi bi-search"></i> Suchen
       </a>
     </div>
@@ -82,7 +82,7 @@ img {
   border-radius: var(--bs-border-radius-lg);
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 768px) {
   img {
     max-height: unset;
     max-width: 100%;

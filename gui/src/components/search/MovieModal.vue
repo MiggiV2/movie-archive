@@ -110,6 +110,9 @@ function showUpdateModal() {
 }
 
 function startURLWith(url, domainArray) {
+    if(!url){
+        return false;
+    }
     for (let index = 0; index < domainArray.length; index++) {
         const element = domainArray[index];
         if (url.startsWith(element)) {

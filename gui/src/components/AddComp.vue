@@ -1,32 +1,13 @@
 <template>
   <div class="container">
-    <form id="add-form" class="box needs-validation" onsubmit="return false" @submit="save()" novalidate>
-      <h2>Einen neuen Film hinzufügen</h2>
+    <h2 class="my-5 text-center">Einen neuen Film hinzufügen</h2>
+    <form id="add-form" class="needs-validation" onsubmit="return false" @submit="save()" novalidate>
       <div class="mb-3 row">
         <label for="staticEmail" class="col-sm-2 col-form-label">Name</label>
         <div class="col-sm-9">
           <input type="text" class="form-control" id="staticEmail" placeholder="Film Titel" required
-            v-model="movie.name" />
+            v-model="movie.title" />
           <div class="invalid-feedback">Bitte gibt einen Film Namen ein!</div>
-        </div>
-      </div>
-      <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-2 col-form-label">WikipediaURL</label>
-        <div class="col-sm-9">
-          <input type="text" class="form-control" id="inputPassword" placeholder="https://de.wikipedia.org/wiki/..."
-            v-model="movie.wikiUrl" />
-          <div class="invalid-feedback">
-            Bitte gibt einen Wikipedia Link ein!
-          </div>
-        </div>
-      </div>
-      <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-2 col-form-label">Block</label>
-        <div class="col-sm-9">
-          <input type="number" class="form-control" id="inputPassword" placeholder="1" required v-model="movie.block" />
-          <div class="invalid-feedback">
-            Bitte gibt eine gültige Nummber ein!
-          </div>
         </div>
       </div>
       <div class="mb-3 row">
@@ -38,31 +19,60 @@
             Bitte gibt eine gültige Jahreszahl ein!
           </div>
         </div>
+      </div>      
+      <div class="mb-3 row">
+        <label for="inputPassword" class="col-sm-2 col-form-label">Block</label>
+        <div class="col-sm-9">
+          <input type="number" class="form-control" id="inputPassword" placeholder="1" required v-model="movie.block" />
+          <div class="invalid-feedback">
+            Bitte gibt eine gültige Nummber ein!
+          </div>
+        </div>
       </div>
       <div class="mb-3 row">
         <label for="inputPassword" class="col-sm-2 col-form-label">Type</label>
         <div class="col-sm-9">
           <select class="form-select" required v-model="movie.type">
-            <option selected disabled value="">Wähle einen Type</option>
-            <option value="BD">BluRay Disc</option>
+            <option selected value="BD">BluRay Disc</option>
             <option value="4k-BD">BluRay Disc 4k</option>
             <option value="DVD">DVD</option>
           </select>
           <div class="invalid-feedback">Bitte wähle eine Kategorie</div>
         </div>
       </div>
-      <button class="btn btn-success" type="submit">
+      <div class="mb-3 row">
+        <label for="inputPassword" class="col-sm-2 col-form-label">WikipediaURL</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="inputPassword" placeholder="https://de.wikipedia.org/wiki/..."
+            v-model="movie.wikiUrl" />
+          <div class="invalid-feedback">
+            Bitte gibt einen Wikipedia Link ein!
+          </div>
+        </div>
+      </div>      
+      <div class="mb-3 row">
+        <label for="inputPassword" class="col-sm-2">IMDB ID</label>
+        <div class="col-sm-9">
+          <input type="text" class="form-control" id="inputPassword" placeholder="tt0000000" v-model="movie.imdbId" />
+        </div>
+      </div>      
+      <button class="btn btn-success" id="save-button" type="submit">
         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="status.isSending"></span>
         Speichern
       </button>
     </form>
+    <div v-if="savedMovie.image" class="text-center mb-5">
+      <h2>{{ savedMovie.title }}</h2>
+      <img class="modern-shadow" :src="savedMovie.image" alt="" />
+      <p class="mt-2">{{ savedMovie.year }}</p>
+    </div>    
     <!-- toast -->
     <div>
       <div class="position-fixed top-0 end-0 p-3" style="z-index: 101">
         <div id="errorToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
           <div class="toast-header">
-            <img src="/img/false.png" class="rounded me-2" alt="Error" v-if="status.failed" />
-            <img src="/img/tick.png" class="rounded me-2" alt="Done" v-else />
+            <img src="/img/false.png" class="rounded me-2 small" alt="Error" v-if="status.failed" />
+            <img src="/img/tick.png" class="rounded me-2 small" alt="Done" v-else />
             <strong class="me-auto">{{ status.message }}</strong>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
           </div>
@@ -80,11 +90,20 @@ import { Toast } from "bootstrap";
 import { onMounted } from "vue";
 
 const movie = reactive({
-  name: undefined,
+  title: undefined,
   year: undefined,
   block: undefined,
   wikiUrl: undefined,
-  type: "",
+  type: "BD",
+  image: undefined,
+  imdbId: undefined
+});
+
+const savedMovie = reactive({
+  title: undefined,
+  year: undefined,
+  image: undefined,
+  imdbId: undefined
 });
 
 const status = reactive({
@@ -109,9 +128,17 @@ async function save() {
 async function sendSave() {
   await addMovie(movie)
     .then((addedMovie) => {
-      status.message = "Film '" + addedMovie.name + "' gespeichert!";
+      status.message = "Film '" + addedMovie.title + "' gespeichert!";
       status.failed = false;
-      resetMovie();
+      if (addedMovie.externalId) {
+        savedMovie.imdbId = addedMovie.externalId;
+        savedMovie.image = addedMovie.image;
+        savedMovie.title = addedMovie.title;
+        savedMovie.year = addedMovie.year;
+      }
+      setTimeout(() => {
+        resetMovie();
+      }, 3000);      
     })
     .catch((e) => {
       console.log(e);
@@ -124,12 +151,14 @@ async function sendSave() {
     });
 }
 
+/* eslint-disable */
 function resetMovie() {
-  movie.name = undefined;
+  movie.title = undefined;
   movie.year = undefined;
   movie.block = undefined;
   movie.wikiUrl = undefined;
-  movie.type = "";
+  movie.type = "BD";
+  movie.imdbId = undefined;
   var form = document.getElementById("add-form");
   form.classList.remove("was-validated");
 }
@@ -142,15 +171,16 @@ function showToast() {
 </script>
 
 <style scoped>
-.box h2 {
-  margin: 1rem auto 3rem;
-}
-
 #save-button {
   margin: 2rem auto 1.5rem;
 }
 
-img {
+img.modern-shadow {
+  height: 500px;
+  border-radius: 20px;
+}
+
+img.small {
   max-width: 40px;
   margin-right: 1rem !important;
 }

@@ -56,7 +56,7 @@
       <div class="col-xl-4 text-center my-3 movie" v-for="(movie, index) in data.movies" :key="index"
         @click="showMovie(movie)">
         <h2>{{ movie.title }}</h2>
-        <img :src="getImage(movie)" alt="Poster">
+        <img :src="getImage(movie)" alt="Poster" class="modern-shadow">
         <p class="mt-2">Aus dem Jahre {{ movie.year }}</p>
       </div>
     </div>
@@ -302,13 +302,9 @@ select.desktop {
 }
 
 img {
-  /*width: 400px;*/
   height: 490px;
   max-width: 80%;
   border-radius: 20px;
-  -webkit-box-shadow: 4px 4px 5px 0px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: 4px 4px 5px 0px rgba(0, 0, 0, 0.75);
-  box-shadow: 4px 4px 5px 0px rgba(0, 0, 0, 0.75);
 }
 
 .movie {
