@@ -28,7 +28,7 @@ jobs:
 
       - name: Set .env for production
         working-directory: gui
-        run: echo ${{ secrets.ENV_PROD }} > .env
+        run: echo ${{ secrets.ENV_PROD }} > .env && ls -l && cat .env
 
       - name: Build and push
         uses: docker/build-push-action@v6
