@@ -6,7 +6,8 @@ on:
       - main
       - cicd
     paths:
-      - 'gui/**'      
+      - 'gui/**'
+      - '.forgejo/workflows/frontend.yaml'
 
 jobs:
   build:
