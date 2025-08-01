@@ -3,20 +3,19 @@
     <div class="row align-items-center">
       <div class="col-auto">
         <h2>
-          <router-link to="/" class="link"><i class="bi bi-camera-reels desktop"></i> MovieArchive
-            <i class="bi bi-film desktop"></i></router-link>
+          <router-link to="/" class="link">MovieArchive </router-link>
         </h2>
       </div>
       <!--desktop-menu-->
       <div class="col" />
       <div class="col-auto desktop">
-        <h4 v-if="user.simpleName != null && user.isAdmin">
-          <router-link to="/add"><i class="bi bi-plus-circle"></i> Neuer Film</router-link>
+        <h4 v-if="user.simpleName != null">
+          <router-link to="/search"><i class="bi bi-search"></i> Suchen</router-link>
         </h4>
       </div>
       <div class="col-auto desktop">
-        <h4 v-if="user.simpleName != null">
-          <router-link to="/search"><i class="bi bi-search"></i> Suchen</router-link>
+        <h4 v-if="user.simpleName != null && user.isAdmin">
+          <router-link to="/add"><i class="bi bi-plus-lg"></i> Hinzufügen</router-link>
         </h4>
       </div>
       <!--UserName/Login-->
@@ -74,7 +73,7 @@
             {{ user.simpleName }} <i class="bi bi-person-circle"></i>
           </div>
           <div v-if="user.isAdmin" class="col-6">
-            <router-link to="/add"><i class="bi bi-plus-circle"></i> Neuer Film</router-link>
+            <router-link to="/add"><i class="bi bi-plus"></i> Neuer Film</router-link>
           </div>
           <div class="col-6">
             <a @click="openLogout()">

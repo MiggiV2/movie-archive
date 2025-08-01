@@ -1,31 +1,21 @@
 <template>
-  <div class="container">
-    <div class="box">
+  <div class="container text-center my-5 pb-5">
+    <div>
       <h1>
-        Herzlich Willkommen im Filmarchiv
-        <span class="desktop">von {{ owner }}</span>
+        Willkommen im Filmarchiv <span class="desktop">von {{ owner }}</span>
       </h1>
-      <img src="/img/film.jpg" alt="" class="desktop" />
-      <img
-        class="mobile"
-        src="/img/cinema.jpg"
-        alt=""
-      />
+      <div class="m-4">
+        <img class="modern-shadow mb-4" src="/img/start_page.webp" />
+      </div>
       <h4 id="counter">
         Aktuell sind {{ user.movies }} Filme in diesem Archiv verzeichnet!
       </h4>
       <h4 v-if="!user.login">
         Wenn Sie sich einloggen, können Sie alle Filme aufgelistet finden!
       </h4>
-      <h4>Die Filme können sortiert und gefiltert werden.</h4>
-      <h4>Auch können die Einträge durchsucht werden!</h4>
-      <a
-        type="button"
-        class="btn btn-outline-light btn-lg"
-        role="button"
-        href="/search"
-        v-if="user.login"
-        >Suchen <i class="bi bi-search"></i>
+      <h4>Bereit deinen nächsten Film zu finden?</h4>
+      <a type="button" class="btn btn-outline-light btn-lg" role="button" href="/search" v-if="user.login">
+        <i class="bi bi-search"></i> Suchen
       </a>
     </div>
   </div>
@@ -64,20 +54,36 @@ function countAnimation(count) {
 </script>
 
 <style scoped>
+.container {
+  cursor: default;
+}
+
 h1 {
   margin: 1rem;
 }
-.box {
-  margin-bottom: 6rem;
-}
+
 #counter {
   margin-bottom: 2rem;
 }
+
 a.btn {
   margin-top: 2rem;
+  width: 30rem;
 }
+
 img {
-  max-width: 100%;
-  margin-bottom: 2rem;
+  max-height: 40rem;
+  border-radius: 20px;
+}
+
+@media (max-width: 1200px) {
+  img {
+    max-height: unset;
+    max-width: 100%;
+  }
+
+  a.btn {
+    width: 100%;
+  }
 }
 </style>
