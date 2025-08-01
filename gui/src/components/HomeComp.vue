@@ -5,16 +5,18 @@
         Willkommen im Filmarchiv <span class="desktop">von {{ owner }}</span>
       </h1>
       <div class="m-4">
-        <img class="modern-shadow mb-4" src="/img/start_page.webp" />
+        <img class="modern-shadow mb-2" src="/img/start_page.webp" />
       </div>
-      <h4 id="counter">
-        Aktuell sind {{ user.movies }} Filme in diesem Archiv verzeichnet!
-      </h4>
-      <h4 v-if="!user.login">
-        Wenn Sie sich einloggen, können Sie alle Filme aufgelistet finden!
-      </h4>
-      <h4>Bereit deinen nächsten Film zu finden?</h4>
-      <a type="button" class="btn btn-outline-light btn-lg" role="button" href="/search" v-if="user.login">
+      <div class="container-secondary py-4 mb-2">
+        <h4 id="counter">
+          Aktuell sind {{ user.movies }} Filme in diesem Archiv verzeichnet!
+        </h4>
+        <h4 v-if="!user.login">
+          Wenn Sie sich einloggen, können Sie alle Filme aufgelistet finden!
+        </h4>
+        <h4>Bereit deinen nächsten Film zu finden?</h4>
+      </div>
+      <a type="button" class="btn btn-primary btn-lg" role="button" href="/search" v-if="user.login">
         <i class="bi bi-search"></i> Suchen
       </a>
     </div>
@@ -68,12 +70,12 @@ h1 {
 
 a.btn {
   margin-top: 2rem;
-  width: 30rem;
+  width: 60rem;
 }
 
 img {
   max-height: 40rem;
-  border-radius: 20px;
+  border-radius: var(--bs-border-radius-lg);
 }
 
 @media (max-width: 1200px) {

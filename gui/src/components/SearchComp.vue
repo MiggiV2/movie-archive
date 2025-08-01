@@ -284,18 +284,18 @@ async function loadMoviesByTag(tag) {
 
 #search-input input {
   background: unset;
-  color: white;
+  color: var(--text-color);
 }
 
 #search-input select {
-  color: white;
+  color: var(--text-color);
   background: transparent;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
 }
 
 #search-input ::placeholder {
-  color: white;
+  color: var(--text-color);
   opacity: 0.9;
 }
 

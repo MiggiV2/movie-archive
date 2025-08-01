@@ -69,7 +69,7 @@
                                 class="btn btn-outline-primary" data-bs-dismiss="modal">
                                 <i class="bi bi-pencil"></i> <span class="desktop">Update</span>
                             </button>
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
                                 Schließen
                             </button>
                         </div>

@@ -1,14 +1,108 @@
 :root {
-    --background-color: #2b2e31;
-    --text-color: #f8f9fa;
-    --secondary-color: #212326;
-    --primary-color: #1f2022;
-    --selected-color: var(--secondary-color);
+    /*
+    --text-color: #ebe9fc;
+    --background-color: #010104;
+    --primary-color: #efb115;
+    --secondary-color: #1b73ee;
+    --accent-color: #ffffff;
+    
+    --text-color: #131110;
+    --background-color: #f7f5f3;
+    --primary-color: #51412f;
+    --secondary-color: #caac8c;
+    --accent-color: #b87f42;    
+
+    --text-color: #0e0706;
+    --background-color: #faf4f3;
+    --primary-color: #9b540c;
+    --secondary-color: #d5c09e;
+    --accent-color: #c4b477;
+    
+    --text: #070c09;
+    --background: #fafcfb;
+    --primary: #63a57e;
+    --secondary: #a5c7cb;
+    --accent: #8aa7bb;
+*/
+    --text: #110c07;
+    --background: #fbf7f5;
+    --primary: #b77c4f;
+    --secondary: #a3d1d9;
+    --accent: #7b74c6;
+
+    --text-50: #f8f2ed;
+    --text-100: #f0e6db;
+    --text-200: #e1ccb7;
+    --text-300: #d3b392;
+    --text-400: #c4996e;
+    --text-500: #b5804a;
+    --text-600: #91663b;
+    --text-700: #6d4d2c;
+    --text-800: #48331e;
+    --text-900: #241a0f;
+    --text-950: #120d07;
+
+    --background-50: #f8f0ed;
+    --background-100: #f0e2db;
+    --background-200: #e2c5b6;
+    --background-300: #d3a892;
+    --background-400: #c58a6d;
+    --background-500: #b66d49;
+    --background-600: #92573a;
+    --background-700: #6d422c;
+    --background-800: #492c1d;
+    --background-900: #24160f;
+    --background-950: #120b07;
+
+    --primary-50: #f8f2ed;
+    --primary-100: #f0e4db;
+    --primary-200: #e1c9b7;
+    --primary-300: #d3ae92;
+    --primary-400: #c4936e;
+    --primary-500: #b5784a;
+    --primary-600: #91603b;
+    --primary-700: #6d482c;
+    --primary-800: #48301e;
+    --primary-900: #24180f;
+    --primary-950: #120c07;
+
+    --secondary-50: #edf6f8;
+    --secondary-100: #dbedf0;
+    --secondary-200: #b7dbe1;
+    --secondary-300: #92c9d3;
+    --secondary-400: #6eb7c4;
+    --secondary-500: #4aa5b5;
+    --secondary-600: #3b8491;
+    --secondary-700: #2c636d;
+    --secondary-800: #1e4248;
+    --secondary-900: #0f2124;
+    --secondary-950: #071012;
+
+    --accent-50: #eeedf8;
+    --accent-100: #dddbf0;
+    --accent-200: #bab7e1;
+    --accent-300: #9892d3;
+    --accent-400: #756ec4;
+    --accent-500: #534ab5;
+    --accent-600: #423b91;
+    --accent-700: #322c6d;
+    --accent-800: #211e48;
+    --accent-900: #110f24;
+    --accent-950: #080712;
+
+    --text-color: var(--text);
+    --background-color: var(--background);
+    --primary-color: var(--primary);
+    --secondary-color: var(--secondary-200);
+    --accent-color: var(--accent);
+
+    --bs-border-color: var(--secondary-color);
 }
 
 body {
     background-color: var(--background-color);
     color: var(--text-color);
+    font-family: "Inter", sans-serif;
 }
 
 .mobile {
@@ -51,6 +145,47 @@ a:hover {
     box-shadow: 4px 4px 5px 0px rgba(0, 0, 0, 0.75);
 }
 
+.container-secondary {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 60rem;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    border-radius: var(--bs-border-radius-lg);
+}
+
+/* Override Bootstrap styles */
+.btn-primary {
+    --bs-btn-color: var(--background-color);
+    --bs-btn-border-color: var(--primary-color);
+    --bs-btn-bg: var(--primary-color);
+    --bs-btn-hover-color: var(--background-color);
+    --bs-btn-hover-bg: var(--primary-color);
+    --bs-btn-hover-border-color: var(--primary-color);
+}
+
+.btn-secondary {
+    --bs-btn-color: var(--text-color);
+    --bs-btn-border-color: var(--secondary-color);
+    --bs-btn-bg: var(--secondary-color);
+    --bs-btn-hover-color: var(--background-color);
+    --bs-btn-hover-bg: var(--secondary-color);
+    --bs-btn-hover-border-color: var(--secondary-color);
+}
+
+.btn-primary:hover {
+    box-shadow: 0 20px 80px -10px var(--primary-color);
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--primary-color);
+    --bs-btn-border-color: var(--primary-color);
+    --bs-btn-hover-color: var(--background-color);
+    --bs-btn-hover-bg: var(--primary-color);
+    --bs-btn-hover-border-color: var(--primary-color);
+}
+
+/* Responsive Design */
 @media (max-width: 768px) {
     .mobile {
         display: unset;

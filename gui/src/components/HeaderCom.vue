@@ -170,6 +170,7 @@ nav {
 
 .header-content {
   background-color: var(--primary-color);
+  color: var(--background-color);
 }
 
 #dummy {

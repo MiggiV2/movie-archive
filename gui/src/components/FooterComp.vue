@@ -28,7 +28,9 @@ footer {
   bottom: 0;
   width: 100%;
   height: 40px;
-  background-color: var(--primary-color);
+  color: var(--text-color);
+  background-color: var(--background-color);
+  border-top: 1px solid var(--secondary-600);
 }
 .row {
   height: 100%;
