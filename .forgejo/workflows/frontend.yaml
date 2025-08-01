@@ -1,8 +1,5 @@
 name: Build Vue.js Frontend
 
-env:
-  VUE_APP_API_HOST: $${ secrets.VUE_APP_API_HOST }
-
 on:
   push:
     branches:
@@ -31,7 +28,7 @@ jobs:
 
       - name: Set .env for production
         working-directory: gui
-        run: echo ${{ secrets.ENV_PROD }} > .env && ls -l && cat .env
+        run: echo ${{ secrets.VUE_APP_API_HOST }} >> .env && ls -lha && cat .env
 
       - name: Build and push
         uses: docker/build-push-action@v6
