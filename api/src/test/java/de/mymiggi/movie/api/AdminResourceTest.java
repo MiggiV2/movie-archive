@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @QuarkusTest
 @TestHTTPEndpoint(AdminResource.class)
@@ -25,7 +26,7 @@ public class AdminResourceTest
 	void testAddAndDelete()
 	{
 		long moviesBefore = MovieEntity.count();
-		MovieEntity movie = testAdd(moviesBefore);
+		DetailedMovie movie = testAdd(moviesBefore);
 		testDelete(moviesBefore, movie);
 	}
 
@@ -191,31 +192,34 @@ public class AdminResourceTest
 		assertEquals("A1", firstMovie.block);
 	}
 
-	private MovieEntity testAdd(long moviesBefore)
+	private DetailedMovie testAdd(long moviesBefore)
 	{
 		MovieEntity entity = new MovieEntity(2077, "Cyberpunk 2077", "Block1",
 			"https://de.wikipedia.org/wiki/Cyberpunk2077", "DB");
+		entity.id = 0L;
+		DetailedMovie detailedMovie = new DetailedMovie(entity, new MovieMetaData());
 
 		Response response = given()
 			.when()
 			.contentType(ContentType.JSON)
-			.body(entity)
+			.body(detailedMovie)
 			.post("add-movie");
 
 		response.then().statusCode(200);
-		MovieEntity movie = response.body().as(MovieEntity.class);
+		DetailedMovie movie = response.body().as(DetailedMovie.class);
 
-		assertEquals(entity.name, movie.name);
+		assertEquals(entity.name, movie.getTitle());
+		assertNotEquals(entity.id, movie.getId());
 		assertEquals(moviesBefore + 1, MovieEntity.count());
 		return movie;
 	}
 
-	private void testDelete(long moviesBefore, MovieEntity movie)
+	private void testDelete(long moviesBefore, DetailedMovie movie)
 	{
 		Response delResponse = given()
 			.when()
 			.contentType(ContentType.JSON)
-			.queryParam("id", movie.id)
+			.queryParam("id", movie.getId())
 			.delete("delete-movie");
 
 		delResponse.then().statusCode(204);

@@ -8,7 +8,6 @@ import de.mymiggi.movie.api.actions.auditlog.GetAuditLogAction;
 import de.mymiggi.movie.api.actions.user.AddTagsAction;
 import de.mymiggi.movie.api.entity.DetailedMovie;
 import de.mymiggi.movie.api.entity.db.AuditLogEntity;
-import de.mymiggi.movie.api.entity.db.MovieEntity;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -45,7 +44,7 @@ public class AdminResource
 	@POST
 	@Path("add-movie")
 	@Transactional
-	public MovieEntity addMovie(MovieEntity movieEntity)
+	public DetailedMovie addMovie(DetailedMovie movieEntity)
 	{
 		return addMovieAction.run(movieEntity);
 	}

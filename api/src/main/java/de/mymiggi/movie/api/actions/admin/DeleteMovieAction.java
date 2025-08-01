@@ -4,6 +4,8 @@ import de.mymiggi.movie.api.actions.auditlog.AbstractAuditLogAction;
 import de.mymiggi.movie.api.actions.auditlog.SaveAuditLogAction;
 import de.mymiggi.movie.api.entity.AuditLogType;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
+import de.mymiggi.movie.api.entity.db.MovieMetaData;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.oidc.UserInfo;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -30,9 +32,16 @@ public class DeleteMovieAction extends AbstractAuditLogAction
 			throw new NotFoundException("Can't find your movie!");
 		}
 		movieEntity.ifPresent(movie -> {
+			handleMetadata(movie);
 			movie.delete();
 			new SaveAuditLogAction().run(userInfo, this, String.format("Removed movie '%s'", movie.name), movie);
 		});
+	}
+
+	private void handleMetadata(MovieEntity movie)
+	{
+		Optional<MovieMetaData> metaData = MovieMetaData.find("movieEntity", movie).firstResultOptional();
+		metaData.ifPresent(PanacheEntityBase::delete);
 	}
 
 	@Override
