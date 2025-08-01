@@ -19,7 +19,7 @@
           <option value="4">Jahr /\</option>
           <option value="5" disabled>Relevanz</option>
         </select>
-        <button class="btn btn-outline-light mobile" type="button" data-bs-toggle="collapse"
+        <button class="btn btn-outline mobile" type="button" data-bs-toggle="collapse"
           data-bs-target="#collapseMenu" aria-expanded="false" aria-controls="collapseMenu">
           Sortieren
         </button>
@@ -28,7 +28,6 @@
   </div>
   <!--mobile-sort-content-->
   <div class="container collapse" id="collapseMenu">
-    <div class="card card-body">
       <select @change="setSortIDAndLoad($event)" class="form-select" aria-label="Default select example">
         <option value="0">Keine Sortierung</option>
         <option value="1">Alphapethisch \/</option>
@@ -36,7 +35,6 @@
         <option value="3">Jahr \/</option>
         <option value="4">Jahr /\</option>
       </select>
-    </div>
   </div>
   <!-- placeholder -->
   <div v-if="data.isLoading" class="container">
@@ -284,18 +282,18 @@ async function loadMoviesByTag(tag) {
 
 #search-input input {
   background: unset;
-  color: var(--text-color);
+  color: var(--secondary-800);
 }
 
 #search-input select {
-  color: var(--text-color);
+  color: var(--secondary-800);;
   background: transparent;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
 }
 
 #search-input ::placeholder {
-  color: var(--text-color);
+  color: var(--secondary-800);
   opacity: 0.9;
 }
 

@@ -1,8 +1,8 @@
 <template>
   <div class="container text-center my-5 pb-5">
     <div>
-      <h1>
-        Willkommen im Filmarchiv <span class="desktop">von {{ owner }}</span>
+      <h1 class="mb-5">
+        Herzlich Willkommen im Filmarchiv <span class="desktop">von {{ owner }}</span>!
       </h1>
       <div class="m-4">
         <img class="modern-shadow mb-2" src="/img/start_page.webp" />
@@ -14,7 +14,7 @@
         <h4 v-if="!user.login">
           Wenn Sie sich einloggen, können Sie alle Filme aufgelistet finden!
         </h4>
-        <h4>Bereit deinen nächsten Film zu finden?</h4>
+        <h4>Bereit das Archive zu durchstöbern?</h4>
       </div>
       <a type="button" class="btn btn-primary btn-lg" role="button" href="/search" v-if="user.login">
         <i class="bi bi-search"></i> Suchen
@@ -68,13 +68,17 @@ h1 {
   margin-bottom: 2rem;
 }
 
+.container-secondary {
+  max-width: 40rem;
+}
+
 a.btn {
   margin-top: 2rem;
-  width: 60rem;
+  width: 40rem;
 }
 
 img {
-  max-height: 40rem;
+  max-width: 40rem;
   border-radius: var(--bs-border-radius-lg);
 }
 
