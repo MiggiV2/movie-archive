@@ -26,6 +26,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Set .env for production
+        working-directory: gui
+        run: echo ${{ secrets.ENV_PROD }} > .env
+
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
