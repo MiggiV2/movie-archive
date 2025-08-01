@@ -1,0 +1,14 @@
+@font-face {
+    font-family: 'Inter';
+    src: url('../font/Inter_18pt-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'NataSans';
+    src: url('../font/NataSans-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
