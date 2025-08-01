@@ -14,7 +14,7 @@
         <label for="inputPassword" class="col-sm-2 col-form-label">WikipediaURL</label>
         <div class="col-sm-9">
           <input type="text" class="form-control" id="inputPassword" placeholder="https://de.wikipedia.org/wiki/..."
-            required v-model="movie.wikiUrl" />
+            v-model="movie.wikiUrl" />
           <div class="invalid-feedback">
             Bitte gibt einen Wikipedia Link ein!
           </div>
