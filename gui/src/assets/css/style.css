@@ -150,7 +150,7 @@ a:hover {
     margin-right: auto;
     max-width: 60rem;
     background-color: var(--secondary-color);
-    color: var(--text-color);
+    color: var(--secondary-900);
     border-radius: var(--bs-border-radius-lg);
 }
 
@@ -165,7 +165,7 @@ a:hover {
 }
 
 .btn-secondary {
-    --bs-btn-color: var(--text-color);
+    --bs-btn-color: var(--secondary-900);
     --bs-btn-border-color: var(--secondary-color);
     --bs-btn-bg: var(--secondary-color);
     --bs-btn-hover-color: var(--background-color);
@@ -183,6 +183,14 @@ a:hover {
     --bs-btn-hover-color: var(--background-color);
     --bs-btn-hover-bg: var(--primary-color);
     --bs-btn-hover-border-color: var(--primary-color);
+}
+
+.btn-outline-secondary {
+    --bs-btn-color: var(--secondary-800);
+    --bs-btn-border-color: var(--secondary-color);
+    --bs-btn-hover-color: var(--background-color);
+    --bs-btn-hover-bg: var(--secondary-color);
+    --bs-btn-hover-border-color: var(--secondary-color);
 }
 
 /* Responsive Design */
