@@ -7,14 +7,14 @@
       <div class="my-4">
         <img class="modern-shadow mb-2" src="/img/start_page.webp" />
       </div>
-      <div class="container-secondary py-4 mb-2">
-        <h4 id="counter">
-          Aktuell sind {{ user.movies }} Filme in diesem Archiv verzeichnet!
-        </h4>
-        <h4 v-if="!user.login">
+      <div class="container-secondary py-3 mb-2">
+        <p id="counter">
+          Aktuell sind {{ user.movies }} Filme <span class="desktop">in diesem Archiv </span>verzeichnet!
+        </p>
+        <p v-if="!user.login">
           Wenn Sie sich einloggen, können Sie alle Filme aufgelistet finden!
-        </h4>
-        <h4>Bereit das Archive zu durchstöbern?</h4>
+        </p>
+        <p>Bereit das Archive zu durchstöbern?</p>
       </div>
       <a type="button" class="btn btn-outline-secondary btn-lg" role="button" href="/search" v-if="user.login">
         <i class="bi bi-search"></i> Suchen
@@ -64,8 +64,12 @@ h1 {
   margin: 1rem;
 }
 
+p {
+  font-size: 1.1rem;
+}
+
 #counter {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .container-secondary {

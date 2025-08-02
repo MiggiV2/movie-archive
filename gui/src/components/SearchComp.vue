@@ -29,7 +29,6 @@
   <!--mobile-sort-content-->
   <div class="container collapse" id="collapseMenu">
       <select @change="setSortIDAndLoad($event)" class="form-select" aria-label="Default select example">
-        <option value="0">Keine Sortierung</option>
         <option value="1">Alphapethisch \/</option>
         <option value="2">Alphapethisch /\</option>
         <option value="3">Jahr \/</option>
