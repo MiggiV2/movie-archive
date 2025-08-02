@@ -194,8 +194,8 @@ public class AdminResourceTest
 
 	private DetailedMovie testAdd(long moviesBefore)
 	{
-		MovieEntity entity = new MovieEntity(2077, "Cyberpunk 2077", "Block1",
-			"https://de.wikipedia.org/wiki/Cyberpunk2077", "DB");
+		MovieEntity entity = new MovieEntity(2025, "The Fantastic Four: First Steps", "Block1",
+			"https://de.wikipedia.org/wiki/The_Fantastic_Four", "DB");
 		entity.id = 0L;
 		DetailedMovie detailedMovie = new DetailedMovie(entity, new MovieMetaData());
 
@@ -210,6 +210,7 @@ public class AdminResourceTest
 
 		assertEquals(entity.name, movie.getTitle());
 		assertNotEquals(entity.id, movie.getId());
+		assertNotEquals(0, movie.getRuntime());
 		assertEquals(moviesBefore + 1, MovieEntity.count());
 		return movie;
 	}

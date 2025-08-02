@@ -12,12 +12,15 @@ import io.quarkus.oidc.UserInfo;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
 @ApplicationScoped
 public class AddMovieAction extends AbstractAuditLogAction
 {
+	private static final Logger log = LoggerFactory.getLogger(AddMovieAction.class);
 	@Inject
 	UserInfo userInfo;
 
@@ -62,10 +65,14 @@ public class AddMovieAction extends AbstractAuditLogAction
 
 	private Optional<MovieMetaData> fetchMetaData(DetailedMovie detailedMovie, MovieEntity movieEntity)
 	{
+		// Get external ID if not provided
 		if (detailedMovie.getExternalId() == null || detailedMovie.getExternalId().isBlank())
 		{
-			return metaDataService.getMetaData(movieEntity);
+			Optional<MovieMetaData> metaData = metaDataService.getMetaData(movieEntity);
+			metaData.ifPresent(movieMetaData -> detailedMovie.setExternalId(movieMetaData.getImdbId()));
 		}
+		// Fetch FULL metadata by ID
+		log.info("Fetched meta data for movie '{}'", detailedMovie.getExternalId());
 		Optional<Title> title = metaDataService.getMetaDataById(detailedMovie.getExternalId());
 		return title.map(MovieMetaData::new);
 	}
