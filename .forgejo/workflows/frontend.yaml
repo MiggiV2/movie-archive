@@ -26,16 +26,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Set .env for production
-        working-directory: gui
-        run: |
-          echo "VUE_APP_API_HOST=${{ secrets.VUE_APP_API_HOST }}" >> .env
-          echo "VUE_APP_AUTH_HOST=${{ secrets.VUE_APP_AUTH_HOST }}" >> .env
-          echo "VUE_APP_AUTH_CLIENT_ID=${{ secrets.VUE_APP_AUTH_CLIENT_ID }}" >> .env
-          echo "VUE_APP_OWNER=${{ secrets.VUE_APP_OWNER }}" >> .env
-          echo "VUE_APP_OMDB_KEY=${{ secrets.VUE_APP_OMDB_KEY }}" >> .env
-          echo "VUE_APP_AUTH_ADMIN=${{ secrets.VUE_APP_AUTH_ADMIN }}" >> .env
-
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
