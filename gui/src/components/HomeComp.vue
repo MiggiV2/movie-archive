@@ -28,11 +28,13 @@ import { getCookie } from "@/tools/Cookies";
 import { reactive } from "@vue/reactivity";
 import { getMovieCount } from "@/tools/api-wrapper/PubMovie";
 
-var owner = process.env.VUE_APP_OWNER;
+var owner = localStorage.getItem("platformOwner");
 var user = reactive({
   login: getCookie("refreshToken"),
   movies: 0,
 });
+
+updateOwner();
 
 getMovieCount().then((count) => {
   if (count != null) {
@@ -51,6 +53,14 @@ function countAnimation(count) {
       user.movies++;
       countAnimation(count);
     }, 800 / (count - user.movies));
+  }
+}
+
+function updateOwner() {
+  owner = localStorage.getItem("platformOwner");
+  if (!owner) {
+    // wait
+    setTimeout(() => updateOwner(), 100);
   }
 }
 </script>

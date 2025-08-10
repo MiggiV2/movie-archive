@@ -7,7 +7,7 @@ export async function openLogin() {
     const config = await fetchOpenIdConnectDiscovery();
     const state = generateRandomString(42);
     const authURL = config.authorization_endpoint +
-        "?client_id=" + process.env.VUE_APP_AUTH_CLIENT_ID +
+        "?client_id=" + localStorage.getItem("authClientId") +
         "&redirect_uri=" + redirectUrl.replace(":", "%3A").replaceAll("/", "%2F") +
         "&response_type=code" +
         "&scope=openid%20email%20profile%20groups&state=" + state;
@@ -66,7 +66,7 @@ async function fetchOpenIdConnectDiscovery() {
         return JSON.parse(config);
     }
 
-    const url = process.env.VUE_APP_AUTH_HOST + "/.well-known/openid-configuration";
+    const url = localStorage.getItem("authServerUrl") + "/.well-known/openid-configuration";
     try {
         const response = await fetch(url);
 
@@ -88,7 +88,7 @@ async function exchangeCodeForToken(code) {
     const config = await fetchOpenIdConnectDiscovery();
     const tokenEndpoint = config.token_endpoint;
     const codeVerifier = localStorage.getItem("codeVerifier");
-    const clientId = process.env.VUE_APP_AUTH_CLIENT_ID;
+    const clientId = localStorage.getItem("authClientId");
 
     // Prepare the request body
     const body = new URLSearchParams();
@@ -127,7 +127,7 @@ export async function runRefreshTokenFlow() {
     const params = new URLSearchParams();
     params.append('grant_type', 'refresh_token');
     params.append('refresh_token', refreshToken);
-    params.append('client_id', process.env.VUE_APP_AUTH_CLIENT_ID); // Replace with your actual client ID
+    params.append('client_id', localStorage.getItem("authClientId")); // Replace with your actual client ID
 
     try {
         const response = await fetch(tokenEndpoint, {

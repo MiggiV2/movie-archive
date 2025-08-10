@@ -1,7 +1,6 @@
 import { getCookie } from "@/tools/Cookies";
 import { checkToken } from "@/tools/Auth";
-
-const HOST = process.env.VUE_APP_API_HOST;
+import { HOST } from "@/main";
 
 export async function getMovie(id) {
     await checkToken();

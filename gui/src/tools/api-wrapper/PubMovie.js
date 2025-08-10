@@ -1,4 +1,4 @@
-const HOST = process.env.VUE_APP_API_HOST;
+import { HOST } from "@/main";
 
 export function getMovieCount() {
     return fetch(HOST + "public/movie-count", {
@@ -15,6 +15,19 @@ export function getMovieCount() {
 
 export function getMoviePageCount() {
     return fetch(HOST + "public/movie-page-count", {
+        headers: {
+            "Content-Type": "application/json",
+        },
+    }).then(response => {
+        if (response.status == 200) {
+            return response.json();
+        }
+        console.error("Can't load movie page count!");
+    });
+}
+
+export function getConfig() {
+    return fetch(HOST + "public/config", {
         headers: {
             "Content-Type": "application/json",
         },

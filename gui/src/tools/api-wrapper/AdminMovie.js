@@ -1,11 +1,10 @@
 import { getCookie } from "@/tools/Cookies";
 import { checkToken } from "@/tools/Auth";
-
-const HOST = process.env.VUE_APP_API_HOST;
+import { HOST } from "@/main";
 
 export async function addMovie(movie) {
     await checkToken();
-    return fetch(HOST + "admin/add-movie", {
+    return fetch(HOST + "admin/add-movie", {        
         body: JSON.stringify(movie),
         method: "POST",
         headers: {

@@ -39,14 +39,14 @@ export async function initUserData() {
         localStorage.setItem("preferred_username", user.preferred_username);
         localStorage.setItem("email", user.email);
         localStorage.setItem("email_verified", user.email_verified);
-        const adminGroup = process.env.VUE_APP_AUTH_ADMIN;
+        const adminGroup = localStorage.getItem("adminRole");
         localStorage.setItem("is_admin", user.groups.includes(adminGroup));
     }
 }
 
 
 async function getUserInfo() {
-    const clientId = process.env.VUE_APP_AUTH_CLIENT_ID;
+    const clientId = localStorage.getItem("authClientId");
     const userInfoEndpoint = `https://sso.mymiggi.de/oauth2/openid/${clientId}/userinfo`; // User info endpoint
 
     try {
