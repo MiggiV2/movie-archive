@@ -32,4 +32,17 @@ public class PublicResourceTest
 			.statusCode(200)
 			.body(is("12"));
 	}
+
+	@Test
+	void testConfig()
+	{
+		given().when()
+			.get("config")
+			.then()
+			.statusCode(200)
+			.body("authServerUrl", is("https://sso.mymiggi.de/oauth2/openid/movies-spa"))
+			.body("authClientId", is("movies-spa"))
+			.body("adminRole", is("movie_admins@sso.mymiggi.de"))
+			.body("platformOwner", is("Dev"));
+	}
 }

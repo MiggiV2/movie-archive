@@ -1,6 +1,8 @@
 package de.mymiggi.movie.api;
 
+import de.mymiggi.movie.api.actions.pub.GetFrontendConfigAction;
 import de.mymiggi.movie.api.entity.config.DefaultPage;
+import de.mymiggi.movie.api.entity.config.FrontendConfig;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import de.mymiggi.movie.api.service.ExportService;
 import jakarta.inject.Inject;
@@ -14,12 +16,14 @@ public class PublicResource
 {
 	DefaultPage defaultPage;
 	ExportService exportService;
+	GetFrontendConfigAction configAction;
 
 	@Inject
-	public PublicResource(DefaultPage defaultPage, ExportService exportService)
+	public PublicResource(DefaultPage defaultPage, ExportService exportService, GetFrontendConfigAction configAction)
 	{
 		this.defaultPage = defaultPage;
 		this.exportService = exportService;
+		this.configAction = configAction;
 	}
 
 	@GET
@@ -36,6 +40,14 @@ public class PublicResource
 	public long getMoviePageCount()
 	{
 		return Math.ceilDiv(MovieEntity.count(), defaultPage.Size()) - 1;
+	}
+
+	@GET
+	@Path("config")
+	@Produces(MediaType.APPLICATION_JSON)
+	public FrontendConfig getFrontendConfig()
+	{
+		return configAction.getFrontendConfig();
 	}
 
 	@GET
