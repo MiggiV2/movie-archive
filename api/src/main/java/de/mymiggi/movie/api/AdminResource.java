@@ -15,7 +15,7 @@ import jakarta.ws.rs.core.MediaType;
 
 import java.util.List;
 
-@Path("movie-archive/admin")
+@Path("admin")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class AdminResource
