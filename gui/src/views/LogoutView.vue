@@ -12,8 +12,6 @@ import Footer from "@/components/FooterComp.vue";
 document.title = 'MovieArchive | Bitte warten...';
 
 import {reactive} from "@vue/reactivity";
-import { openLogout } from "@/tools/Auth";
-
 var timer = reactive({
   time: 3
 });
@@ -30,6 +28,10 @@ function decreaseTimer() {
       window.location = "/";
       }
   },1000);
+}
+
+function openLogout() {
+  // dummy
 }
 </script>
 

@@ -1,13 +1,14 @@
-import { getCookie } from "@/tools/Cookies";
-import { checkToken } from "@/tools/Auth";
 import { HOST } from "@/main";
+import { getAuthManager } from "../AuthManager";
+
+const mgr = getAuthManager();
 
 export async function getMovie(id) {
-    await checkToken();
+    const user = await mgr?.getUser();
     return fetch(HOST + "user/get-movie-by-id?id=" + id, {
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + getCookie("accessToken")
+            "Authorization": "Bearer " + user.access_token
         },
     }).then(response => {
         if (response.status == 200) {
@@ -22,11 +23,11 @@ export async function getMovie(id) {
 }
 
 export async function searchMovie(query) {
-    await checkToken();
+    const user = await mgr?.getUser();
     return fetch(HOST + "user/search?query=" + query, {
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + getCookie("accessToken")
+            "Authorization": "Bearer " + user.access_token
         },
     }).then(response => {
         if (response.status == 200) {
@@ -41,12 +42,12 @@ export async function searchMovie(query) {
 }
 
 export async function getSortedMovies(page, sortID) {
-    await checkToken();
+    const user = await mgr?.getUser();
     var sort = getSorteByID(sortID);
     return fetch(HOST + "user/preview-movies/by-" + sort.sortType + "?page=" + page + "&desc=" + sort.desc, {
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + getCookie("accessToken")
+            "Authorization": "Bearer " + user.access_token
         },
     }).then(response => {
         if (response.status == 200) {
@@ -61,11 +62,11 @@ export async function getSortedMovies(page, sortID) {
 }
 
 export async function getTags() {
-    await checkToken();
+    const user = await mgr?.getUser();
     return fetch(HOST + "user/tags", {
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + getCookie("accessToken")
+            "Authorization": "Bearer " + user.access_token
         },
     }).then(response => {
         if (response.status == 200) {
@@ -80,11 +81,11 @@ export async function getTags() {
 }
 
 export async function searchByTag(tagId) {
-    await checkToken();
+    const user = await mgr?.getUser();
     return fetch(HOST + "user/tags/" + tagId, {
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + getCookie("accessToken")
+            "Authorization": "Bearer " + user.access_token
         },
     }).then(response => {
         if (response.status == 200) {
@@ -100,11 +101,11 @@ export async function searchByTag(tagId) {
 
 
 export async function getTagsByMovie(movieId) {
-    await checkToken();
+    const user = await mgr?.getUser();
     return fetch(HOST + "user/tags/by-movie/" + movieId, {
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + getCookie("accessToken")
+            "Authorization": "Bearer " + user.access_token
         },
     }).then(response => {
         if (response.status == 200) {
@@ -119,11 +120,11 @@ export async function getTagsByMovie(movieId) {
 }
 
 export async function getExportSession() {
-    await checkToken();
+    const user = await mgr?.getUser();
     return fetch(HOST + "user/export/session", {
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + getCookie("accessToken")
+            "Authorization": "Bearer " + user.access_token
         },
     }).then(response => {
         if (response.status == 200) {

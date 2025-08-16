@@ -2,9 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import HomePage from '@/views/HomePageView';
 
-import { openLogin, runRefreshTokenFlow } from '@/tools/Auth';
-import { getCookie } from '@/tools/Cookies';
-
 const routes = [{
     path: '/',
     name: 'home',
@@ -44,17 +41,6 @@ const routes = [{
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes
-})
-
-router.beforeEach(async (guard) => {    
-    const isCallback = guard.path.endsWith('auth') || guard.path.endsWith('logout') || guard.path.endsWith('');
-    if (isCallback) return;
-
-    if (!getCookie("accessToken") && !getCookie("refreshToken")) {
-        openLogin();
-    } else if (!getCookie("accessToken")) {
-        await runRefreshTokenFlow();
-    }
 })
 
 export default router

@@ -1,15 +1,16 @@
-import { getCookie } from "@/tools/Cookies";
-import { checkToken } from "@/tools/Auth";
 import { HOST } from "@/main";
+import { getAuthManager } from "../AuthManager";
+
+var mgr = getAuthManager();
 
 export async function addMovie(movie) {
-    await checkToken();
+    const user = await mgr?.getUser();
     return fetch(HOST + "admin/add-movie", {        
         body: JSON.stringify(movie),
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + getCookie("accessToken")
+            "Authorization": "Bearer " + user.access_token
         },
     }).then(response => {
         if (response.status == 200) {
@@ -27,13 +28,13 @@ export async function addMovie(movie) {
 }
 
 export async function updateMovie(movie) {
-    await checkToken();
+    const user = await mgr?.getUser();
     return fetch(HOST + "admin/update-movie", {
         body: JSON.stringify(movie),
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + getCookie("accessToken")
+            "Authorization": "Bearer " + user.access_token
         },
     }).then(response => {
         if (response.status == 200) {
@@ -55,13 +56,13 @@ export async function updateMovie(movie) {
 
 
 export async function deleteMovie(movie) {
-    await checkToken();
+    const user = await mgr?.getUser();
     return fetch(HOST + "admin/delete-movie?id=" + movie.id, {
         body: JSON.stringify(movie),
         method: "DELETE",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + getCookie("accessToken")
+            "Authorization": "Bearer " + user.access_token
         },
     }).then(response => {
         if (response.ok) {
@@ -79,11 +80,11 @@ export async function deleteMovie(movie) {
 }
 
 export async function getAuditLog(page) {
-    await checkToken();
+    const user = await mgr?.getUser();
     return fetch(HOST + "admin/auditlog?page=" + page, {
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + getCookie("accessToken")
+            "Authorization": "Bearer " + user.access_token
         },
     }).then(response => {
         if (response.status == 200) {
@@ -104,11 +105,11 @@ export async function getAuditLog(page) {
 }
 
 export async function getAuditLogPageCount() {
-    await checkToken();
+    const user = await mgr?.getUser();
     return fetch(HOST + "admin/auditlog-page-count", {
         headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + getCookie("accessToken")
+            "Authorization": "Bearer " + user.access_token
         },
     }).then(response => {
         if (response.status == 200) {

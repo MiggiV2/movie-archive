@@ -24,13 +24,14 @@
 </template>
 
 <script setup>
-import { getCookie } from "@/tools/Cookies";
 import { reactive } from "@vue/reactivity";
 import { getMovieCount } from "@/tools/api-wrapper/PubMovie";
+import { getAuthManager } from "@/tools/AuthManager";
 
 var owner = localStorage.getItem("platformOwner");
+const mgr = getAuthManager();
 var user = reactive({
-  login: getCookie("refreshToken"),
+  login: false,
   movies: 0,
 });
 
@@ -45,6 +46,17 @@ getMovieCount().then((count) => {
     }
     countAnimation(count);
   }
+});
+
+mgr?.getUser().then((userData) => {
+  if (userData) {
+    user.login = true;
+  } else {
+    user.login = false;
+  }
+}).catch(err => {
+  console.error("Error fetching user data:", err);
+  user.login = false;
 });
 
 function countAnimation(count) {

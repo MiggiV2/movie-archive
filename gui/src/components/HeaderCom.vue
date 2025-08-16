@@ -101,17 +101,17 @@
 </template>
 
 <script setup>
-import { getCookie, setCookieSeasson } from "@/tools/Cookies";
-import { getUserName, getUsersSimpleName, isAdmin } from "@/tools/User";
-import { openLogin, openLogout } from "@/tools/Auth";
+import { isAdmin } from "@/tools/User";
 import { reactive } from "@vue/reactivity";
-import { Modal, Toast } from "bootstrap";
+import { Modal } from "bootstrap";
 import { getRandomMotto } from "@/tools/Motto";
 import UserModal from "@/components/UserModal.vue";
 import { onMounted } from "vue";
 import { getExportSession } from "@/tools/api-wrapper/UserMovie";
 import { DownloadExport } from "@/tools/api-wrapper/PubMovie";
+import { getAuthManager, login } from "@/tools/AuthManager";
 
+const mgr = getAuthManager();
 var user = reactive({
   simpleName: null,
   fullName: null,
@@ -120,26 +120,18 @@ var user = reactive({
 });
 
 onMounted(() => {
-  if (getCookie("refreshToken")) {
-    user.simpleName = getUsersSimpleName();
-    user.fullName = getUserName();
-    user.isAdmin = isAdmin();
-    user.motto = getRandomMotto(user);
-    if (getCookie("login-toast") != "showed") {
-      showToast();
-      console.log(getRandomMotto(user));
+  mgr?.getUser().then((userData) => {
+    if (userData) {
+      user.simpleName = userData.profile.name;
+      user.fullName = userData.profile.name;
+      user.isAdmin = isAdmin();
+      user.motto = getRandomMotto(user);
     }
-  }
+  }).catch((err) => {
+    console.error("Error fetching user data:", err);
+  });
 });
 
-function showToast() {
-  setTimeout(() => {
-    var toastLiveExample = document.getElementById("liveToast");
-    var toast = new Toast(toastLiveExample);
-    toast.show();
-    setCookieSeasson("login-toast", "showed");
-  }, 100);
-}
 function showUserModal() {
   var modalElement = document.getElementById("user-modal");
   var userModal = new Modal(modalElement);
@@ -147,6 +139,19 @@ function showUserModal() {
 }
 function startExport() {
   getExportSession().then(DownloadExport);
+}
+function openLogin() {
+  login();
+}
+function openLogout() {
+  mgr?.removeUser().then(() => {
+    console.log("User logged out successfully.");
+    localStorage.removeItem("is_admin");
+    user.simpleName = null;
+    user.fullName = null;
+    user.isAdmin = false;
+    user.motto = "";
+  });
 }
 </script>
 

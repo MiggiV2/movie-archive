@@ -8,42 +8,34 @@
     </div>
   </div>
   <div v-else>
-      <h2>Hacking Versuch im Gange!</h2>
-      <p>Schließen Sie sofort alle anderen Browser Tabs und löschen Sie ihre Cookies!</p>
+    <h2>Login fehlgeschlagen</h2>
   </div>
 </template>
 
 <script setup>
-const { login } = require("@/tools/Auth");
-const { getCookie } = require("@/tools/Cookies");
-const { reactive }=require("@vue/reactivity");
+import { getAuthManager } from "@/tools/AuthManager";
+import { onMounted } from "vue";
 
-const urlParams = new URLSearchParams(window.location.search);
-const code = urlParams.get("code");
+const { reactive } = require("@vue/reactivity");
+
 var showWarning = reactive({
-    status: false
+  status: false
 });
 
-if (code == null || code.length < 10) {
-  alert("Failed to login! PS: Need code param");
-} else {
-  if (getCookie("state") != urlParams.get("state")) {
-    titleWarning();
-    showWarning.status = true;
-  } else {
-    login(code);    
-  }
-}
+onMounted(() => {
+  const mgr = getAuthManager();
+  mgr?.signinCallback().then((user) => {
+    console.log("Sign-in callback successful", user.profile.name);
 
-function titleWarning() {
-  setTimeout(() => {
-    document.title = "Achtung!!!";
-  }, 500);
-  setTimeout(() => {
-    document.title = "Hacking Versuch!";
-    titleWarning();
-  }, 1000);
-}
+    const adminGroup = localStorage.getItem("adminRole");
+    localStorage.setItem("is_admin", user.profile.groups.includes(adminGroup));
+
+    window.location = "/";
+  }).catch(err => {
+    console.error("Error in sign-in callback:", err);
+    showWarning.status = true;
+  });
+});
 </script>
 
 <style scoped>
@@ -51,7 +43,8 @@ h2 {
   margin-top: 2rem;
   text-align: center;
 }
+
 p {
-    text-align: center;
+  text-align: center;
 }
 </style>
