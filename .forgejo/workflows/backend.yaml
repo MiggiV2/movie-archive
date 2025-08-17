@@ -2,9 +2,6 @@ name: Test Quarkus Backend
 
 on:
   push:
-    branches:
-      - main
-      - cicd
     paths:
       - 'api/**'
       - '.forgejo/workflows/backend.yaml'
