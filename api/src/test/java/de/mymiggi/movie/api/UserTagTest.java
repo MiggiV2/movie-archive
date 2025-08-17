@@ -9,6 +9,7 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
@@ -27,13 +28,10 @@ public class UserTagTest
 		response.then().statusCode(200);
 		TagEntity[] tags = response.body().as(TagEntity[].class);
 		TagEntity[] expectedTags = {
-			new TagEntity("Action", null), new TagEntity("Disaster", null),
-			new TagEntity("Fantasy", null), new TagEntity("Romance", null),
-			new TagEntity("Sci-Fi", null), new TagEntity("Thriller", null),
-			new TagEntity("Adventure", null), new TagEntity("Animation", null),
-			new TagEntity("Mystery", null), new TagEntity("Horror", null) };
+			new TagEntity("Oscar Winner", null), new TagEntity("Cult Classic", null),
+			new TagEntity("Top Rated", null), new TagEntity("Drama", null) };
 
-		assertEquals(10, tags.length);
+		assertEquals(expectedTags.length, tags.length);
 		for (int i = 0; i < expectedTags.length; i++)
 		{
 			assertEquals(expectedTags[i].getName(), tags[i].getName());
@@ -43,24 +41,23 @@ public class UserTagTest
 	@Test
 	void testTagsEmpty()
 	{
-		long movieId = 2;
-		Response response = given().when()
-			.get("tags/by-movie/" + movieId);
-
-		response.then().statusCode(200);
-		TagEntity[] tags = response.body().as(TagEntity[].class);
-		assertEquals(0, tags.length);
+		given()
+			.when()
+			.get("tags/by-movie/" + 19)
+			.then()
+			.statusCode(200)
+			.body("size()", is(0));
 	}
 
 	@Test
 	void testTagList()
 	{
-		Response response = given().when().get("tags");
-
-		response.then().statusCode(200);
-		TagEntity[] tags = response.body().as(TagEntity[].class);
-
-		assertEquals(11, tags.length);
+		given()
+			.when()
+			.get("tags")
+			.then()
+			.statusCode(200)
+			.body("size()", is(10));
 	}
 
 	@Test
