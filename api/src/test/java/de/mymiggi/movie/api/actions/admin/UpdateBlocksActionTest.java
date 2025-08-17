@@ -30,7 +30,7 @@ class UpdateBlocksActionTest
 	void shouldGetBlockA2()
 	{
 		// given
-		int index = 42;
+		int index = 7;
 
 		// when
 		String block = action.getNewBlock(index);
@@ -43,7 +43,7 @@ class UpdateBlocksActionTest
 	void shouldGetBlockA1()
 	{
 		// given
-		int index = 12;
+		int index = 3;
 
 		// when
 		String block = action.getNewBlock(index);
@@ -56,7 +56,7 @@ class UpdateBlocksActionTest
 	void shouldGetBlockA4()
 	{
 		// given
-		int index = 3 * 30 + 10;
+		int index = 3 * 4 + 1;
 
 		// when
 		String block = action.getNewBlock(index);
@@ -69,7 +69,7 @@ class UpdateBlocksActionTest
 	void shouldGetBlockB1()
 	{
 		// given
-		int index = 4 * 30;
+		int index = 4 * 4;
 
 		// when
 		String block = action.getNewBlock(index);
@@ -82,7 +82,7 @@ class UpdateBlocksActionTest
 	void shouldGetBlockB4()
 	{
 		// given
-		int index = 4 * 30 + 4 * 40 - 1;
+		int index = 4 * 4 + 4 * 5 - 1;
 
 		// when
 		String block = action.getNewBlock(index);
@@ -95,7 +95,7 @@ class UpdateBlocksActionTest
 	void shouldGetBlockC2()
 	{
 		// given
-		int index = 4 * 30 + 4 * 40 + 30;
+		int index = 4 * 4 + 4 * 5 + 7;
 
 		// when
 		String block = action.getNewBlock(index);

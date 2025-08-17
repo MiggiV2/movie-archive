@@ -53,13 +53,13 @@ public class UserResourceTest
 	void testGetMovieListByID()
 	{
 		given().when()
-			.queryParam("id", 19)
+			.queryParam("id", 10)
 			.get("get-movie-by-id")
 			.then().statusCode(200)
-			.body("year", is(2012))
-			.body("title", is("Alien - Prometheus - Dunkle Zeichen"))
-			.body("block", is("Block 1"))
-			.body("wikiUrl", is("https://de.wikipedia.org/wiki/Prometheus_%E2%80%93_Dunkle_Zeichen"))
+			.body("year", is(2014))
+			.body("title", is("Interstellar"))
+			.body("block", is("J"))
+			.body("wikiUrl", is("https://en.wikipedia.org/wiki/Interstellar_(film)"))
 			.body("type", is("BD"));
 	}
 
@@ -138,14 +138,14 @@ public class UserResourceTest
 	@Test
 	void testSearchMovie()
 	{
-		String query = "Star";
+		String query = "Jok";
 		Response response = given().when()
 			.queryParam("query", query)
 			.get("search");
 
 		response.then().statusCode(200);
 		MoviePreview[] movies = response.body().as(MoviePreview[].class);
-		assertEquals(14, movies.length);
+		assertEquals(1, movies.length);
 		for (MoviePreview movie : movies)
 		{
 			if (!movie.getTitle().toLowerCase().contains(query.toLowerCase()))
@@ -159,13 +159,13 @@ public class UserResourceTest
 	@Test
 	void testSearchMovieLowerCase()
 	{
-		String query = "star";
+		String query = "jok";
 		Response response = given().when()
 			.queryParam("query", query)
 			.get("search");
 
 		MoviePreview[] movies = response.body().as(MoviePreview[].class);
-		assertEquals(14, movies.length);
+		assertEquals(1, movies.length);
 		for (MoviePreview movie : movies)
 		{
 			if (!movie.getTitle().toLowerCase().contains(query.toLowerCase()))
@@ -179,10 +179,10 @@ public class UserResourceTest
 	@Test
 	void testSearchMovieMoreWords()
 	{
-		long[] sortedIDs = { 273, 278 };
+		long[] sortedIDs = { 3 };
 
 		Response response = given().when()
-			.queryParam("query", "Star Jedi")
+			.queryParam("query", "Forrest")
 			.get("search");
 
 		response.then().statusCode(200);
@@ -193,10 +193,10 @@ public class UserResourceTest
 	@Test
 	void testSearchMovieMoreWords2()
 	{
-		long[] sortedIDs = { 178, 185, 186 };
+		long[] sortedIDs = { 7 };
 
 		Response response = given().when()
-			.queryParam("query", "Bond Gold")
+			.queryParam("query", "The M")
 			.get("search");
 
 		response.then().statusCode(200);
@@ -212,7 +212,7 @@ public class UserResourceTest
 		response.then().statusCode(200);
 		Map<Long, String> hashes = response.body().as(HashResult.class);
 
-		assertEquals(363, hashes.size());
+		assertEquals(20, hashes.size());
 		for (Long id : hashes.keySet())
 		{
 			assertEquals(32, hashes.get(id).length());
@@ -222,8 +222,8 @@ public class UserResourceTest
 	@Test
 	void slq()
 	{
-		List<MovieEntity> movies = MovieEntity.find("name ILIKE ?1 AND name ILIKE ?2", "%Star%", "%Jedi%").list();
-		assertEquals(2, movies.size());
+		List<MovieEntity> movies = MovieEntity.find("name ILIKE ?1 AND name ILIKE ?2", "%Silence%", "%Lambs%").list();
+		assertEquals(1, movies.size());
 	}
 
 	private void compareIDs(long[] sortedIDs, MoviePreview[] movies)
