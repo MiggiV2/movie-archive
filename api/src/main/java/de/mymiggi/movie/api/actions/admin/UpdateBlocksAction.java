@@ -4,6 +4,7 @@ import de.mymiggi.movie.api.entity.db.MovieEntity;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.panache.common.Page;
 import io.quarkus.panache.common.Sort;
+import io.quarkus.runtime.configuration.ConfigUtils;
 import jakarta.enterprise.context.ApplicationScoped;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.Map;
 public class UpdateBlocksAction
 {
 	private static final int BLOCKS_PER_LEVEL = 4;
-	private final Map<String, Integer> levelBlockHeightMap = Map.of(
+	private Map<String, Integer> levelBlockHeightMap = Map.of(
 		"A", 30,
 		"B", 40,
 		"C", 30,
@@ -22,6 +23,17 @@ public class UpdateBlocksAction
 
 	public long updateAllBlocks()
 	{
+		boolean isTest = ConfigUtils.getProfiles().contains("test");
+		if (isTest)
+		{
+			levelBlockHeightMap = Map.of(
+				"A", 4,
+				"B", 5,
+				"C", 4,
+				"D", 5
+			);
+		}
+
 		PanacheQuery<MovieEntity> movieQuery = MovieEntity.findAll(Sort.ascending("name"));
 		movieQuery.page(Page.ofSize(25));
 
