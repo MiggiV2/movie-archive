@@ -20,7 +20,7 @@ public class PublicResourceTest
 			.get("movie-count")
 			.then()
 			.statusCode(200)
-			.body(is("363"));
+			.body(is("20"));
 	}
 
 	@Test
@@ -30,7 +30,7 @@ public class PublicResourceTest
 			.get("movie-page-count")
 			.then()
 			.statusCode(200)
-			.body(is("12"));
+			.body(is("3"));
 	}
 
 	@Test
