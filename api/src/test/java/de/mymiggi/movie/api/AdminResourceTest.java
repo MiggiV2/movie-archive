@@ -1,19 +1,15 @@
 package de.mymiggi.movie.api;
 
+import de.mymiggi.movie.api.actions.admin.AddMovieAction;
 import de.mymiggi.movie.api.entity.DetailedMovie;
-import de.mymiggi.movie.api.entity.db.MovieEntity;
-import de.mymiggi.movie.api.entity.db.MovieMetaData;
-import de.mymiggi.movie.api.entity.db.TagEntity;
-import de.mymiggi.movie.api.entity.db.TagMovieRelation;
+import de.mymiggi.movie.api.entity.db.*;
 import io.quarkus.panache.common.Sort;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import jakarta.inject.Inject;
-import org.flywaydb.core.Flyway;
-import org.junit.jupiter.api.BeforeEach;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -26,16 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 @TestSecurity(user = "admin", roles = "movie_admins@sso.mymiggi.de")
 public class AdminResourceTest
 {
-	@Inject
-	Flyway flyway;
-
-	@BeforeEach
-	void resetDatabase()
-	{
-		flyway.clean();
-		flyway.migrate();
-	}
-
 	@Test
 	void testAddAndDelete()
 	{
@@ -47,10 +33,10 @@ public class AdminResourceTest
 	@Test
 	void testUpdateOnlyMovieEntity()
 	{
-		MovieEntity entity = new MovieEntity(1999, "The Matrix", "G",
-			"https://en.wikipedia.org/wiki/The_Matrix", "BD");
-		entity.id = 7L;
-		entity.originalName = "Matrix";
+		MovieEntity entity = new MovieEntity(2015, "Maggie", "Block 8",
+			"https://de.wikipedia.org/wiki/Maggie_(2015)", "BD");
+		entity.id = 223L;
+		entity.originalName = "Maggie";
 		DetailedMovie detailedMovie = new DetailedMovie(entity, new MovieMetaData());
 
 		given()
@@ -70,37 +56,13 @@ public class AdminResourceTest
 	@Test
 	void testUpdateOnlyMovieEntityWithExistingMetaData()
 	{
-		MovieEntity entity = new MovieEntity(1999, "The Matrix", "M",
-			"https://en.wikipedia.org/wiki/The_Matrix", "BD");
-		entity.id = 7L;
-		entity.originalName = "Matrix";
-		DetailedMovie detailedMovie = new DetailedMovie(entity, new MovieMetaData());
-		detailedMovie.setExternalId("tt0133093");
-
-		given()
-			.when()
-			.contentType(ContentType.JSON)
-			.body(detailedMovie)
-			.put("update-movie")
-			.then()
-			.statusCode(200)
-			.body("title", is(entity.name))
-			.body("id", is(entity.id.intValue()))
-			.body("block", is(entity.block))
-			.body("originalName", is(entity.originalName))
-			.body("block", is(entity.block))
-			.body("runtime", is(136));
-	}
-
-	@Test
-	void testUpdateWithNewMetadata()
-	{
-		MovieEntity entity = new MovieEntity(2000, "Gladiator", "K",
-			"https://en.wikipedia.org/wiki/Gladiator_(2000_film)", "BD");
-		entity.id = 11L;
-		entity.originalName = "Gladiator";
+		String newBlock = "Block 9";
+		MovieEntity entity = new MovieEntity(2013, "Oblivion", "Block 8",
+			"https://de.wikipedia.org/wiki/Oblivion_(Film)", "BD");
+		entity.id = 240L;
+		entity.block = newBlock;
 		MovieMetaData movieMetaData = new MovieMetaData();
-		movieMetaData.setImdbId("tt0172495");
+		movieMetaData.setImdbId("tt1483013");
 		DetailedMovie detailedMovie = new DetailedMovie(entity, movieMetaData);
 
 		given()
@@ -115,7 +77,33 @@ public class AdminResourceTest
 			.body("block", is(entity.block))
 			.body("originalName", is(entity.originalName))
 			.body("block", is(entity.block))
-			.body("runtime", is(9300));
+			.body("runtime", is(7440));
+	}
+
+	@Test
+	void testUpdateWithMetadata()
+	{
+		MovieEntity entity = new MovieEntity(1999, "Matrix", "Block 7",
+			"https://de.wikipedia.org/wiki/Matrix_(Film)", "BD");
+		entity.id = 226L;
+		entity.originalName = "Matrix";
+		MovieMetaData movieMetaData = new MovieMetaData();
+		movieMetaData.setImdbId("tt0133093");
+		DetailedMovie detailedMovie = new DetailedMovie(entity, movieMetaData);
+
+		given()
+			.when()
+			.contentType(ContentType.JSON)
+			.body(detailedMovie)
+			.put("update-movie")
+			.then()
+			.statusCode(200)
+			.body("title", is(entity.name))
+			.body("id", is(entity.id.intValue()))
+			.body("block", is(entity.block))
+			.body("originalName", is(entity.originalName))
+			.body("block", is(entity.block))
+			.body("runtime", is(8160));
 	}
 
 	@Test
@@ -127,7 +115,7 @@ public class AdminResourceTest
 		// Check count of tags before
 		MovieEntity movieEntity = MovieEntity.findById(movieId);
 		long savedTags = TagMovieRelation.find("movie", movieEntity).count();
-		assertEquals(1, savedTags);
+		assertEquals(6, savedTags);
 
 		// Updates
 		given()
@@ -146,19 +134,39 @@ public class AdminResourceTest
 	}
 
 	@Test
-	void testAuditLogPageCount()
+	@Transactional
+	void test0AuditLogPageCount()
 	{
+		AuditLogEntity.deleteAll();
+
 		given()
 			.when()
 			.get("auditlog-page-count")
 			.then()
 			.statusCode(200)
-			.body(is("4"));
+			.body(is("0"));
 	}
 
 	@Test
+	@Transactional
+	void testAuditLogPageCount()
+	{
+		createDummyLog();
+
+		given()
+			.when()
+			.get("auditlog-page-count")
+			.then()
+			.statusCode(200)
+			.body(is("0"));
+	}
+
+	@Test
+	@Transactional
 	void testAuditLogPage()
 	{
+		createDummyLog();
+
 		given()
 			.when()
 			.queryParam("page", "0")
@@ -177,11 +185,11 @@ public class AdminResourceTest
 			.then()
 			.statusCode(204);
 
+		MovieEntity lastMovie = MovieEntity.findAll(Sort.descending("name")).firstResult();
+		assertEquals("C3", lastMovie.block);
+
 		MovieEntity firstMovie = MovieEntity.findAll(Sort.ascending("name")).firstResult();
 		assertEquals("A1", firstMovie.block);
-
-		MovieEntity lastMovie = MovieEntity.findAll(Sort.descending("name")).firstResult();
-		assertEquals("B1", lastMovie.block);
 	}
 
 	private DetailedMovie testAdd(long moviesBefore)
@@ -217,5 +225,13 @@ public class AdminResourceTest
 
 		delResponse.then().statusCode(204);
 		assertEquals(moviesBefore, MovieEntity.count());
+	}
+
+	private void createDummyLog()
+	{
+		MovieEntity movie = new MovieEntity();
+		movie.id = 0L;
+		AuditLogEntity auditLog = new AuditLogEntity("test-user", new AddMovieAction(), "Added movie", movie);
+		auditLog.persist();
 	}
 }

@@ -38,19 +38,13 @@ public class MetaDataServiceTest
 	@Transactional
 	void persistMetaData()
 	{
-		// The Dark Knight
-		MovieEntity movieEntity = MovieEntity.findById(9);
+		// Arrival - 2016
+		MovieEntity movieEntity = MovieEntity.findById(34);
 		assertNotNull(movieEntity);
-
-		// Fetch meta data
 		Optional<MovieMetaData> metaData = metaDataService.getMetaData(movieEntity);
-		assertTrue(metaData.isPresent());
 
-		// Check persistence
-		long countBefore = MovieMetaData.count();
+		assertTrue(metaData.isPresent());
 		metaData.get().persist();
-		long countAfter = MovieMetaData.count();
-		assertEquals(19, countBefore);
-		assertEquals(20, countAfter);
+		assertEquals(3, MovieMetaData.count());
 	}
 }
