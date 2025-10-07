@@ -12,7 +12,9 @@
               <p>Name: {{ data.user.preferred_username }}</p>
               <p>Gruppe: {{ data.user.group }}</p>
               <p>Verifizierte E-Mail: {{ data.user.email_verified }}</p>
-              <p v-if="data.user.isAdmin"><a href="/audit-log">Admin-Log <i class="bi bi-shield-check"></i></a></p>
+              <router-link to="/audit-log" v-if="data.user.isAdmin">
+                <p data-bs-dismiss="modal" aria-label="Close">Admin-Log <i class="bi bi-shield-check"></i></p>
+              </router-link>
             </div>
             <div class="col"></div>
             <div class="col-auto">

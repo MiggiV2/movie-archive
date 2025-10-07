@@ -16,9 +16,9 @@
         </p>
         <p>Bereit das Archive zu durchstöbern?</p>
       </div>
-      <a type="button" class="btn btn-outline-secondary btn-lg" role="button" href="/search" v-if="user.login">
+      <router-link class="btn btn-outline-secondary btn-lg" to="/search" v-if="user.login">
         <i class="bi bi-search"></i> Suchen
-      </a>
+      </router-link>
     </div>
   </div>
 </template>
