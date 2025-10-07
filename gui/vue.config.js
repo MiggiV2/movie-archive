@@ -1,4 +1,10 @@
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
-  transpileDependencies: true
+  transpileDependencies: true,
+  configureWebpack: {
+    performance: {
+      maxEntrypointSize: 650000,
+      maxAssetSize: 350000
+    }
+  }
 })
