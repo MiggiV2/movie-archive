@@ -15,7 +15,9 @@
 <script setup>
 import { getAuthManager } from "@/tools/AuthManager";
 import { onMounted } from "vue";
+import { useRouter } from 'vue-router'
 
+const router = useRouter();
 const { reactive } = require("@vue/reactivity");
 
 var showWarning = reactive({
@@ -30,7 +32,7 @@ onMounted(() => {
     const adminGroup = localStorage.getItem("adminRole");
     localStorage.setItem("is_admin", user.profile.groups.includes(adminGroup));
 
-    window.location = "/";
+    router.push("/");
   }).catch(err => {
     console.error("Error in sign-in callback:", err);
     showWarning.status = true;
