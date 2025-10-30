@@ -36,7 +36,7 @@
 import { onMounted } from "vue";
 
 const { isAdmin, getPreferredUsername, isUserMailVerified } = require("@/tools/User");
-const { reactive } = require("@vue/reactivity");
+const { reactive } = require("vue");
 
 const data = reactive({
   user: {

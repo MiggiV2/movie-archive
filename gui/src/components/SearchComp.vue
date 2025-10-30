@@ -75,7 +75,7 @@ import {
   searchByTag,
   getMovie
 } from "@/tools/api-wrapper/UserMovie";
-import { reactive, ref } from "@vue/reactivity";
+import { reactive, ref } from "vue";
 import { Modal } from "bootstrap";
 import { getMoviePageCount } from "@/tools/api-wrapper/PubMovie";
 import { isAdmin } from "@/tools/User";

@@ -26,7 +26,7 @@ const {
   getAuditLog,
   getAuditLogPageCount,
 } = require("@/tools/api-wrapper/AdminMovie");
-const { reactive } = require("@vue/reactivity");
+const { reactive } = require("vue");
 
 const data = reactive({
   log: [],

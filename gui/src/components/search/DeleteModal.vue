@@ -39,7 +39,7 @@
 </template>
 
 <script setup>
-const { reactive } = require("@vue/reactivity");
+const { reactive } = require("vue");
 import { deleteMovie } from "@/tools/api-wrapper/AdminMovie";
 // eslint-disable-next-line
 const props = defineProps({

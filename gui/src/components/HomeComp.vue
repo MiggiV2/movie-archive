@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-import { reactive } from "@vue/reactivity";
+import { reactive } from "vue";
 import { getMovieCount } from "@/tools/api-wrapper/PubMovie";
 import { getAuthManager } from "@/tools/AuthManager";
 

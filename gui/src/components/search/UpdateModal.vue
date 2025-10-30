@@ -69,7 +69,7 @@
 </template>
 
 <script setup>
-const { reactive } = require("@vue/reactivity");
+const { reactive } = require("vue");
 import { updateMovie } from "@/tools/api-wrapper/AdminMovie";
 import { Modal } from "bootstrap";
 import { onMounted } from "vue";

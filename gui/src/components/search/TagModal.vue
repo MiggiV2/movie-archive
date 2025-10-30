@@ -33,7 +33,7 @@
 </template>
 
 <script setup>
-const { reactive } = require("@vue/reactivity");
+const { reactive } = require("vue");
 import { getTags } from "@/tools/api-wrapper/UserMovie";
 // eslint-disable-next-line
 const emit = defineEmits(['tagSelected'])

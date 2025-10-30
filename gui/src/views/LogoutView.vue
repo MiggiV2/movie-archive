@@ -11,7 +11,7 @@
 import Footer from "@/components/FooterComp.vue";
 document.title = 'MovieArchive | Bitte warten...';
 
-import {reactive} from "@vue/reactivity";
+import {reactive} from "vue";
 var timer = reactive({
   time: 3
 });

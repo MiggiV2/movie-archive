@@ -102,7 +102,7 @@
 
 <script setup>
 import { isAdmin } from "@/tools/User";
-import { reactive } from "@vue/reactivity";
+import { reactive } from "vue";
 import { Modal } from "bootstrap";
 import { getRandomMotto } from "@/tools/Motto";
 import UserModal from "@/components/UserModal.vue";

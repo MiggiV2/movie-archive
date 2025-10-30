@@ -83,7 +83,7 @@
 </template>
 
 <script setup>
-import { reactive } from "@vue/reactivity";
+import { reactive } from "vue";
 import { setCustomValidation } from "@/tools/BS5Helper";
 import { addMovie } from "@/tools/api-wrapper/AdminMovie";
 import { Toast } from "bootstrap";

@@ -18,7 +18,7 @@ import { onMounted } from "vue";
 import { useRouter } from 'vue-router'
 
 const router = useRouter();
-const { reactive } = require("@vue/reactivity");
+const { reactive } = require("vue");
 
 var showWarning = reactive({
   status: false
