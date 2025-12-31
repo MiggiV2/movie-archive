@@ -32,7 +32,7 @@ onMounted(() => {
     const adminGroup = localStorage.getItem("adminRole");
     localStorage.setItem("is_admin", user.profile.groups.includes(adminGroup));
 
-    router.push("/");
+    router.push("/search");
   }).catch(err => {
     console.error("Error in sign-in callback:", err);
     showWarning.status = true;
