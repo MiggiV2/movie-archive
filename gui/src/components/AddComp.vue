@@ -1,67 +1,66 @@
 <template>
   <div class="container">
-    <h2 class="my-5 text-center">Einen neuen Film hinzufügen</h2>
-    <form id="add-form" class="needs-validation" onsubmit="return false" @submit="save()" novalidate>
-      <div class="mb-3 row">
-        <label for="staticEmail" class="col-sm-2 col-form-label">Name</label>
-        <div class="col-sm-9">
-          <input type="text" class="form-control" id="staticEmail" placeholder="Film Titel" required
-            v-model="movie.title" />
-          <div class="invalid-feedback">Bitte gibt einen Film Namen ein!</div>
-        </div>
-      </div>
-      <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-2 col-form-label">Jahr</label>
-        <div class="col-sm-9 has-validation">
-          <input type="number" class="form-control" id="inputPassword" placeholder="2020" required
-            v-model="movie.year" />
-          <div class="invalid-feedback">
-            Bitte gibt eine gültige Jahreszahl ein!
+    <div class="bg-white p-5 modern-shadow mt-5 rounded">
+      <h2 class="mb-4 text-center">Einen neuen Film hinzufügen</h2>
+      <form id="add-form" class="needs-validation" onsubmit="return false" @submit="save()" novalidate>
+        <div class="mb-3 row">
+          <label for="inputName" class="col-sm-2 col-form-label"><i class="bi bi-film me-2"></i>Name</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="inputName" placeholder="Film Titel" required
+              v-model="movie.title" />
+            <div class="invalid-feedback">Bitte gibt einen Film Namen ein!</div>
           </div>
         </div>
-      </div>      
-      <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-2 col-form-label">Block</label>
-        <div class="col-sm-9">
-          <input type="number" class="form-control" id="inputPassword" placeholder="1" required v-model="movie.block" />
-          <div class="invalid-feedback">
-            Bitte gibt eine gültige Nummber ein!
+        <div class="mb-3 row">
+          <label for="inputYear" class="col-sm-2 col-form-label"><i class="bi bi-calendar me-2"></i>Jahr</label>
+          <div class="col-sm-10 has-validation">
+            <input type="number" class="form-control" id="inputYear" placeholder="2020" required
+              v-model="movie.year" />
+            <div class="invalid-feedback">
+              Bitte gibt eine gültige Jahreszahl ein!
+            </div>
+          </div>
+        </div>      
+        <div class="mb-3 row">
+          <label for="inputBlock" class="col-sm-2 col-form-label"><i class="bi bi-box me-2"></i>Block</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="inputBlock" placeholder="A1" required v-model="movie.block" />
+            <div class="invalid-feedback">
+              Bitte gibt eine gültige Nummber ein!
+            </div>
           </div>
         </div>
-      </div>
-      <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-2 col-form-label">Type</label>
-        <div class="col-sm-9">
-          <select class="form-select" required v-model="movie.type">
-            <option selected value="BD">BluRay Disc</option>
-            <option value="4k-BD">BluRay Disc 4k</option>
-            <option value="DVD">DVD</option>
-          </select>
-          <div class="invalid-feedback">Bitte wähle eine Kategorie</div>
-        </div>
-      </div>
-      <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-2 col-form-label">WikipediaURL</label>
-        <div class="col-sm-9">
-          <input type="text" class="form-control" id="inputPassword" placeholder="https://de.wikipedia.org/wiki/..."
-            v-model="movie.wikiUrl" />
-          <div class="invalid-feedback">
-            Bitte gibt einen Wikipedia Link ein!
+        <div class="mb-3 row">
+          <label for="inputType" class="col-sm-2 col-form-label"><i class="bi bi-disc me-2"></i>Type</label>
+          <div class="col-sm-10">
+            <select class="form-select" id="inputType" required v-model="movie.type">
+              <option selected value="BD">BluRay Disc</option>
+              <option value="4k-BD">BluRay Disc 4k</option>
+              <option value="DVD">DVD</option>
+            </select>
+            <div class="invalid-feedback">Bitte wähle eine Kategorie</div>
           </div>
         </div>
-      </div>      
-      <div class="mb-3 row">
-        <label for="inputPassword" class="col-sm-2">IMDB ID</label>
-        <div class="col-sm-9">
-          <input type="text" class="form-control" id="inputPassword" placeholder="tt0000000" v-model="movie.imdbId" />
-        </div>
-      </div>      
-      <button class="btn btn-success" id="save-button" type="submit">
-        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="status.isSending"></span>
-        Speichern
-      </button>
-    </form>
-    <div v-if="savedMovie.image" class="text-center mb-5">
+        <div class="mb-3 row">
+          <label for="inputWiki" class="col-sm-2 col-form-label"><i class="bi bi-link me-2"></i>Wiki URL <span class="text-muted small">(Optional)</span></label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="inputWiki" placeholder="https://de.wikipedia.org/wiki/..."
+              v-model="movie.wikiUrl" />
+          </div>
+        </div>      
+        <div class="mb-3 row">
+          <label for="inputImdb" class="col-sm-2 col-form-label"><i class="bi bi-camera-reels me-2"></i>IMDB ID <span class="text-muted small">(Optional)</span></label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" id="inputImdb" placeholder="tt0000000" v-model="movie.imdbId" />
+          </div>
+        </div>      
+        <button class="btn btn-primary w-100 mt-3" id="save-button" type="submit">
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" v-if="status.isSending"></span>
+          Speichern
+        </button>
+      </form>
+    </div>
+    <div v-if="savedMovie.image" class="text-center mb-5 mt-5">
       <h2>{{ savedMovie.title }}</h2>
       <img class="modern-shadow" :src="savedMovie.image" alt="" />
       <p class="mt-2">{{ savedMovie.year }}</p>
@@ -171,10 +170,6 @@ function showToast() {
 </script>
 
 <style scoped>
-#save-button {
-  margin: 2rem auto 1.5rem;
-}
-
 img.modern-shadow {
   height: 500px;
   border-radius: 20px;
