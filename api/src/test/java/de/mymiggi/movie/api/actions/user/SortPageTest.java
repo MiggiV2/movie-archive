@@ -7,10 +7,13 @@ import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
 @QuarkusTest
+// Add to config:
+// %test.quarkus.flyway.locations=filesystem:src/main/resources/dev-db/migration,filesystem:src/main/resources/db/migration
 public class SortPageTest
 {
 	@Inject
@@ -23,19 +26,26 @@ public class SortPageTest
 		int page = 0;
 		boolean desc = true;
 		DefaultPage mockedConfig = () -> 30;
+		Set<Long> seenIds = new java.util.HashSet<>();
 
 		// when
-		List<MoviePreview> firstPage = getSortedMoviesAction.previewsByYear(page, desc, mockedConfig);
-		List<MoviePreview> secondPage = getSortedMoviesAction.previewsByYear(page + 1, desc, mockedConfig);
-
-		// then
-		List<MoviePreview> duplicates = firstPage.stream()
-			.filter(movie -> secondPage.stream().anyMatch(m -> m.getId() == movie.getId()))
-			.toList();
-		if (!duplicates.isEmpty())
+		while (true)
 		{
-			duplicates.forEach(dup -> System.err.println("Duplicate found: " + dup.getId() + " - " + dup.getTitle()));
-			fail("Duplicates found between pages!");
+			List<MoviePreview> currentPage = getSortedMoviesAction.previewsByYear(page, desc, mockedConfig);
+			if (currentPage.isEmpty())
+			{
+				break;
+			}
+
+			for (MoviePreview movie : currentPage)
+			{
+				if (seenIds.contains(movie.getId()))
+				{
+					fail("Duplicate found: " + movie.getId() + " - " + movie.getTitle());
+				}
+				seenIds.add(movie.getId());
+			}
+			page++;
 		}
 	}
 }
