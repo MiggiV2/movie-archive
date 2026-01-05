@@ -14,7 +14,7 @@ import java.util.List;
 @ApplicationScoped
 public class GetSortedMoviesAction
 {
-	private static PanacheQuery<MovieEntity> getQuery(boolean desc, String columns)
+	private static PanacheQuery<MovieEntity> getQuery(boolean desc, String... columns)
 	{
 		return desc
 			? MovieEntity.findAll(Sort.descending(columns))
@@ -37,13 +37,13 @@ public class GetSortedMoviesAction
 
 	public List<MovieEntity> runByYear(int page, boolean desc, DefaultPage defaultPage)
 	{
-		PanacheQuery<MovieEntity> movieArchive = getQuery(desc, "year");
+		PanacheQuery<MovieEntity> movieArchive = getQuery(desc, "year", "name");
 		return run(movieArchive, page, defaultPage);
 	}
 
 	public List<MovieEntity> runByName(int page, boolean desc, DefaultPage defaultPage)
 	{
-		PanacheQuery<MovieEntity> movieArchive = getQuery(desc, "name");
+		PanacheQuery<MovieEntity> movieArchive = getQuery(desc, "name", "year");
 		return run(movieArchive, page, defaultPage);
 	}
 
