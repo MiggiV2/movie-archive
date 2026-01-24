@@ -6,12 +6,17 @@ import de.mymiggi.movie.api.entity.config.FrontendConfig;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import de.mymiggi.movie.api.service.ExportService;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
 @Path("public")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Deprecated
 public class PublicResource
 {
 	DefaultPage defaultPage;

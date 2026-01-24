@@ -14,7 +14,13 @@ import de.mymiggi.movie.api.service.ExportService;
 import de.mymiggi.movie.api.service.SyncService;
 import io.quarkus.panache.common.Sort;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 
 import java.util.List;
@@ -23,6 +29,7 @@ import java.util.Map;
 @Path("user")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
+@Deprecated
 public class UserResource
 {
 	DefaultPage defaultPage;
