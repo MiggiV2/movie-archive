@@ -1,6 +1,5 @@
 package de.mymiggi.movie.api;
 
-import de.mymiggi.movie.api.entity.db.TagEntity;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
@@ -23,5 +22,27 @@ public class TagResourceTest
 			.then()
 			.statusCode(200)
 			.body("size()", is(479));
+	}
+
+	@Test
+	void testGetTagMovies()
+	{
+		given()
+			.when()
+			.pathParam("id", 13)
+			.get("tags/{id}")
+			.then()
+			.statusCode(200);
+	}
+
+	@Test
+	void testGetTagMoviesFail()
+	{
+		given()
+			.when()
+			.pathParam("id", 999)
+			.get("tags/{id}")
+			.then()
+			.statusCode(404);
 	}
 }

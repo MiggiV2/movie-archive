@@ -30,11 +30,4 @@ public class GetMoviesAction
 		}
 		return movieArchive.page(page, defaultPage.Size()).list();
 	}
-
-	public List<MoviePreview> previews(int page, DefaultPage defaultPage)
-	{
-		return run(page, defaultPage).stream()
-			.map(GetMoviesAction::enrichMovie)
-			.toList();
-	}
 }

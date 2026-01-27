@@ -44,6 +44,26 @@ public class MovieResourceTest
 	}
 
 	@Test
+	void testCount()
+	{
+		given().when()
+			.get("count")
+			.then()
+			.statusCode(200)
+			.body(is(String.valueOf(MovieEntity.count())));
+	}
+
+	@Test
+	void testGetMovieListByPageOne()
+	{
+		given().when()
+			.queryParam("page", 1)
+			.get()
+			.then()
+			.statusCode(200);
+	}
+
+	@Test
 	void testGetMovieListByPage()
 	{
 		given().when()

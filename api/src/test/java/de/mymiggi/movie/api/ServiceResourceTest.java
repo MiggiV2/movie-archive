@@ -36,4 +36,24 @@ public class ServiceResourceTest
 			.then()
 			.statusCode(200);
 	}
+
+	@Test
+	void testExport()
+	{
+		String session = given()
+			.when()
+			.get("export/session")
+			.then()
+			.statusCode(200)
+			.extract()
+			.body()
+			.asString();
+
+		given()
+			.when()
+			.pathParam("id", session)
+			.get("export/session/{id}/movies.csv")
+			.then()
+			.statusCode(200);
+	}
 }
