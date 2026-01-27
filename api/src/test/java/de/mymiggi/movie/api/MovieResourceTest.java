@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 @QuarkusTest
 @TestHTTPEndpoint(MovieResource.class)
-@TestSecurity(user = "test", roles = "movie_admins@sso.mymiggi.de")
+@TestSecurity(user = "test", roles = "movie_group@sso.mymiggi.de")
 public class MovieResourceTest
 {
 	@Inject
@@ -174,6 +174,7 @@ public class MovieResourceTest
 	}
 
 	@Test
+	@TestSecurity(user = "admin", roles = "movie_admins@sso.mymiggi.de")
 	void testAddAndListTags()
 	{
 		long movieId = 278L;
@@ -195,6 +196,7 @@ public class MovieResourceTest
 	}
 
 	@Test
+	@TestSecurity(user = "admin", roles = "movie_admins@sso.mymiggi.de")
 	void testAddAndDelete()
 	{
 		long moviesBefore = MovieEntity.count();
@@ -203,6 +205,7 @@ public class MovieResourceTest
 	}
 
 	@Test
+	@TestSecurity(user = "admin", roles = "movie_admins@sso.mymiggi.de")
 	void testUpdateMovie()
 	{
 		MovieEntity entity = MovieEntity.findById(278L);
