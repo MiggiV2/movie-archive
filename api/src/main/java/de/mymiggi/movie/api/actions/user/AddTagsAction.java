@@ -1,12 +1,10 @@
 package de.mymiggi.movie.api.actions.user;
 
-import de.mymiggi.movie.api.UserResource;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import de.mymiggi.movie.api.entity.db.TagEntity;
 import de.mymiggi.movie.api.entity.db.TagMovieRelation;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
 import org.jboss.logging.Logger;
 
@@ -20,9 +18,6 @@ import java.util.Optional;
 public class AddTagsAction
 {
 	private static final Logger LOG = Logger.getLogger(AddTagsAction.class.getSimpleName());
-
-	@Inject
-	UserResource userResource;
 
 	public void run(Long movieId, String[] tags)
 	{
