@@ -1,9 +1,12 @@
 package de.mymiggi.movie.api.actions.user;
 
 import de.mymiggi.movie.api.entity.MoviePreview;
+import de.mymiggi.movie.api.entity.db.MovieEntity;
+import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -15,6 +18,19 @@ class SearchActionTest
 {
 	@Inject
 	SearchAction searchAction;
+
+	@BeforeEach
+	void setup()
+	{
+		QuarkusTransaction.begin();
+		MovieEntity movieEntity = MovieEntity.findById(278L);
+		if (movieEntity != null)
+		{
+			movieEntity.name = "Oppenheimer";
+			movieEntity.persist();
+		}
+		QuarkusTransaction.commit();
+	}
 
 	@Test
 	void testSearchWithNullQuery()
