@@ -1,7 +1,7 @@
 import { HOST } from "@/main";
 
 export function getMovieCount() {
-    return fetch(HOST + "public/movie-count", {
+    return fetch(HOST + "movie/count", {
         headers: {
             "Content-Type": "application/json",
         },
@@ -14,7 +14,7 @@ export function getMovieCount() {
 }
 
 export function getMoviePageCount() {
-    return fetch(HOST + "public/movie-page-count", {
+    return fetch(HOST + "movie/pages", {
         headers: {
             "Content-Type": "application/json",
         },
@@ -27,7 +27,7 @@ export function getMoviePageCount() {
 }
 
 export function getConfig() {
-    return fetch(HOST + "public/config", {
+    return fetch(HOST + "service/config", {
         headers: {
             "Content-Type": "application/json",
         },
@@ -40,5 +40,5 @@ export function getConfig() {
 }
 
 export function DownloadExport(session) {
-    window.open(HOST + "public/export/csv/" + session + "/export-movies.csv");
+    window.open(HOST + "service/export/session/" + session + "/movies.csv");
 }

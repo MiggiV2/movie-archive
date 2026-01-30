@@ -5,7 +5,7 @@ var mgr = getAuthManager();
 
 export async function addMovie(movie) {
     const user = await mgr?.getUser();
-    return fetch(HOST + "admin/add-movie", {        
+    return fetch(HOST + "movie", {        
         body: JSON.stringify(movie),
         method: "POST",
         headers: {
@@ -29,7 +29,7 @@ export async function addMovie(movie) {
 
 export async function updateMovie(movie) {
     const user = await mgr?.getUser();
-    return fetch(HOST + "admin/update-movie", {
+    return fetch(HOST + "movie", {
         body: JSON.stringify(movie),
         method: "PUT",
         headers: {
@@ -57,7 +57,7 @@ export async function updateMovie(movie) {
 
 export async function deleteMovie(movie) {
     const user = await mgr?.getUser();
-    return fetch(HOST + "admin/delete-movie?id=" + movie.id, {
+    return fetch(HOST + "movie?id=" + movie.id, {
         body: JSON.stringify(movie),
         method: "DELETE",
         headers: {
@@ -81,7 +81,7 @@ export async function deleteMovie(movie) {
 
 export async function getAuditLog(page) {
     const user = await mgr?.getUser();
-    return fetch(HOST + "admin/auditlog?page=" + page, {
+    return fetch(HOST + "audit?page=" + page, {
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + user.access_token
@@ -106,7 +106,7 @@ export async function getAuditLog(page) {
 
 export async function getAuditLogPageCount() {
     const user = await mgr?.getUser();
-    return fetch(HOST + "admin/auditlog-page-count", {
+    return fetch(HOST + "audit/pages", {
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + user.access_token

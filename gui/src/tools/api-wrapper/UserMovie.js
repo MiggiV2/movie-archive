@@ -5,7 +5,7 @@ const mgr = getAuthManager();
 
 export async function getMovie(id) {
     const user = await mgr?.getUser();
-    return fetch(HOST + "user/get-movie-by-id?id=" + id, {
+    return fetch(HOST + "movie/" + id, {
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + user.access_token
@@ -24,7 +24,7 @@ export async function getMovie(id) {
 
 export async function searchMovie(query) {
     const user = await mgr?.getUser();
-    return fetch(HOST + "user/search?query=" + query, {
+    return fetch(HOST + "movie/search?query=" + query, {
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + user.access_token
@@ -44,7 +44,7 @@ export async function searchMovie(query) {
 export async function getSortedMovies(page, sortID) {
     const user = await mgr?.getUser();
     var sort = getSorteByID(sortID);
-    return fetch(HOST + "user/preview-movies/by-" + sort.sortType + "?page=" + page + "&desc=" + sort.desc, {
+    return fetch(HOST + "movie/preview/by-" + sort.sortType + "?page=" + page + "&desc=" + sort.desc, {
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + user.access_token
@@ -63,7 +63,7 @@ export async function getSortedMovies(page, sortID) {
 
 export async function getTags() {
     const user = await mgr?.getUser();
-    return fetch(HOST + "user/tags", {
+    return fetch(HOST + "tag/tags", {
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + user.access_token
@@ -82,7 +82,7 @@ export async function getTags() {
 
 export async function searchByTag(tagId) {
     const user = await mgr?.getUser();
-    return fetch(HOST + "user/tags/" + tagId, {
+    return fetch(HOST + "tag/tags/" + tagId, {
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + user.access_token
@@ -102,7 +102,7 @@ export async function searchByTag(tagId) {
 
 export async function getTagsByMovie(movieId) {
     const user = await mgr?.getUser();
-    return fetch(HOST + "user/tags/by-movie/" + movieId, {
+    return fetch(HOST + "movie/" + movieId + "/tags", {
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + user.access_token
@@ -121,7 +121,7 @@ export async function getTagsByMovie(movieId) {
 
 export async function getExportSession() {
     const user = await mgr?.getUser();
-    return fetch(HOST + "user/export/session", {
+    return fetch(HOST + "service/export/session", {
         headers: {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + user.access_token

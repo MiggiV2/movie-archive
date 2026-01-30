@@ -12,8 +12,8 @@ import { login } from './tools/AuthManager';
 createApp(App).use(router).mount('#app');
 
 export const HOST = window.location.hostname == "localhost"
-    ? "http://localhost:8080/api/v1/movie-archive/"
-    : window.location.protocol + "//" + window.location.host + "/api/v1/movie-archive/";
+    ? "http://localhost:8080/api/v2/"
+    : window.location.protocol + "//" + window.location.host + "/api/v2/";
 console.log("API Host: " + HOST);
 
 if (!localStorage.getItem("authServerUrl")) {
