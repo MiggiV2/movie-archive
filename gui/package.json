@@ -1,6 +1,6 @@
 {
     "name": "movie-archive",
-    "version": "1.4.1-SNAPSHOT",
+    "version": "2.0.0-SNAPSHOT",
     "private": true,
     "scripts": {
         "serve": "vue-cli-service serve --port 1024 --https",
