@@ -70,7 +70,7 @@
 
 <script setup>
 const { reactive } = require("vue");
-import { updateMovie } from "@/tools/api-wrapper/AdminMovie";
+import { updateMovie } from "@/tools/api-wrapper/Movie";
 import { Modal } from "bootstrap";
 import { onMounted } from "vue";
 // eslint-disable-next-line

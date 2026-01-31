@@ -6,7 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css"
 import "@/assets/css/style.css";
 import "@/assets/css/font.css";
-import { getConfig } from './tools/api-wrapper/PubMovie';
+import { getConfig } from './tools/api-wrapper/Service';
 import { login } from './tools/AuthManager';
 
 createApp(App).use(router).mount('#app');

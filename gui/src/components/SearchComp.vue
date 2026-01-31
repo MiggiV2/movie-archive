@@ -72,12 +72,12 @@
 import {
   getSortedMovies,
   searchMovie,
-  searchByTag,
   getMovie
-} from "@/tools/api-wrapper/UserMovie";
+} from "@/tools/api-wrapper/Movie";
+import { searchByTag } from "@/tools/api-wrapper/Tag";
 import { reactive, ref } from "vue";
 import { Modal } from "bootstrap";
-import { getMoviePageCount } from "@/tools/api-wrapper/PubMovie";
+import { getMoviePageCount } from "@/tools/api-wrapper/Movie";
 import { isAdmin } from "@/tools/User";
 import UpdateModal from "@/components/search/UpdateModal.vue";
 import DeleteModal from "@/components/search/DeleteModal.vue";

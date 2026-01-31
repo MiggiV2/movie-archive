@@ -40,7 +40,7 @@
 
 <script setup>
 const { reactive } = require("vue");
-import { deleteMovie } from "@/tools/api-wrapper/AdminMovie";
+import { deleteMovie } from "@/tools/api-wrapper/Movie";
 // eslint-disable-next-line
 const props = defineProps({
     movie: {},

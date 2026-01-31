@@ -25,7 +25,7 @@
 
 <script setup>
 import { reactive } from "vue";
-import { getMovieCount } from "@/tools/api-wrapper/PubMovie";
+import { getMovieCount } from "@/tools/api-wrapper/Movie";
 import { getAuthManager } from "@/tools/AuthManager";
 
 var owner = localStorage.getItem("platformOwner");

@@ -107,8 +107,7 @@ import { Modal } from "bootstrap";
 import { getRandomMotto } from "@/tools/Motto";
 import UserModal from "@/components/UserModal.vue";
 import { onMounted } from "vue";
-import { getExportSession } from "@/tools/api-wrapper/UserMovie";
-import { DownloadExport } from "@/tools/api-wrapper/PubMovie";
+import { DownloadExport, getExportSession } from "@/tools/api-wrapper/Service";
 import { getAuthManager, login } from "@/tools/AuthManager";
 
 const mgr = getAuthManager();

@@ -84,7 +84,7 @@
 <script setup>
 import { reactive } from "vue";
 import { setCustomValidation } from "@/tools/BS5Helper";
-import { addMovie } from "@/tools/api-wrapper/AdminMovie";
+import { addMovie } from "@/tools/api-wrapper/Movie";
 import { Toast } from "bootstrap";
 import { onMounted } from "vue";
 

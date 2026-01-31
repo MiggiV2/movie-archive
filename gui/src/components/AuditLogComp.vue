@@ -25,7 +25,7 @@ import { onMounted } from 'vue';
 const {
   getAuditLog,
   getAuditLogPageCount,
-} = require("@/tools/api-wrapper/AdminMovie");
+} = require("@/tools/api-wrapper/Audit");
 const { reactive } = require("vue");
 
 const data = reactive({
