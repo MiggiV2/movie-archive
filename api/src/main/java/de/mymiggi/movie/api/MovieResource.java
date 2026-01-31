@@ -14,7 +14,6 @@ import de.mymiggi.movie.api.entity.config.DefaultPage;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import de.mymiggi.movie.api.entity.db.TagEntity;
 import de.mymiggi.movie.api.entity.db.TagMovieRelation;
-import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -106,7 +105,6 @@ public class MovieResource
 	}
 
 	@GET
-	@PermitAll
 	@Path("pages")
 	@Produces(MediaType.TEXT_PLAIN)
 	public long getMoviePageCount()
