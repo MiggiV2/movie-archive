@@ -1,4 +1,7 @@
 import { HOST } from "@/main";
+import { getAuthManager } from "../AuthManager";
+
+const mgr = getAuthManager();
 
 export function getMovieCount() {
     return fetch(HOST + "movie/count", {
@@ -13,10 +16,12 @@ export function getMovieCount() {
     });
 }
 
-export function getMoviePageCount() {
+export async function getMoviePageCount() {
+    const user = await mgr?.getUser();
     return fetch(HOST + "movie/pages", {
         headers: {
             "Content-Type": "application/json",
+            "Authorization": "Bearer " + user.access_token,
         },
     }).then(response => {
         if (response.status == 200) {
