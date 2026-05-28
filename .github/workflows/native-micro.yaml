@@ -2,11 +2,8 @@ name: Build Quarkus Native Micro Image
 
 on:
   push:
-    branches:
-      - main
-    paths:
-      - 'api/**'
-      - '.github/workflows/native-micro.yaml'
+    tags:
+      - 'movie-archive-*'
   workflow_dispatch:
 
 permissions:
@@ -28,9 +25,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
       - name: Login to Forgejo Registry
         uses: docker/login-action@v3
         with:
@@ -38,16 +32,10 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Build native executable (container build via Mandrel)
+      - name: Build native image and push (via Quarkus + jib)
         working-directory: api
-        run: ./mvnw -B package -Pnative -DskipTests -Dquarkus.native.container-build=true -Dquarkus.container-image.build=false -Dquarkus.container-image.push=false
-
-      - name: Build and push native-micro image
-        uses: docker/build-push-action@v6
-        with:
-          context: api
-          file: api/src/main/docker/Dockerfile.native-micro
-          push: true
-          tags: |
-            code.mymiggi.de/miggi/movie-api-native-micro:dev-${{ github.run_number }}
-            code.mymiggi.de/miggi/movie-api-native-micro:latest
+        run: >-
+          ./mvnw -B package -Pnative -DskipTests
+          -Dquarkus.native.container-build=true
+          -Dquarkus.container-image.additional-tags=latest
+          -Dquarkus.jib.base-native-image=quay.io/quarkus/quarkus-micro-image:2.0
