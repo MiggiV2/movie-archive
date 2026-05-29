@@ -2,7 +2,7 @@
 
 Movie Archive is a web app to manage a personal Blu-ray collection. It stores metadata only (no video files) and offers search, tagging, exports, and an audit log.
 
-![start_page](./assets/Screenshot%202023-07-19%20at%2011-05-25%20MovieArchive%20Home.png)
+![home](./assets/ui-home.png)
 
 ## Features
 - Add, update, and search movies with metadata, ratings, and tags
@@ -61,11 +61,12 @@ docker build -f src/main/docker/Dockerfile.jvm -t movie-api .
 ```
 
 ## Screenshots
-Search:
-![search_page](./assets/Screenshot%202025-07-31%20at%2011-50-05%20MovieArchive%20Suche.avif)
 
-Movie Information:
-![movie_information](./assets/Screenshot%202025-07-31%20at%2011-55-31%20MovieArchive%20Suche.avif)
+Browse:
+![movies](./assets/ui-movies.png)
 
-Admin Log:
-![admin_log](./assets/Screenshot%202024-04-01%20at%2008-06-32%20MovieArchive%20Auditlog.avif)
+Movie detail:
+![movie_detail](./assets/ui-movie-detail.png)
+
+Audit log:
+![audit](./assets/ui-audit.png)
