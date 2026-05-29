@@ -28,15 +28,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Compute image tag from pom version
-        id: tag
-        working-directory: api
-        run: |
-          VERSION=$(./mvnw -B -q help:evaluate -Dexpression=project.version -DforceStdout)
-          TAG="snapshot-${VERSION%-SNAPSHOT}"
-          echo "value=$TAG" >> "$GITHUB_OUTPUT"
-          echo "Image tag: $TAG"
-
       - name: Login to Forgejo Registry
         uses: docker/login-action@v3
         with:
@@ -47,8 +38,6 @@ jobs:
       - name: Build native image and push (via Quarkus + jib)
         working-directory: api
         run: >-
-          ./mvnw -B package -Pnative -DskipTests
+          ./mvnw -B package -Pnative
           -Dquarkus.native.container-build=true
-          -Dquarkus.container-image.tag=${{ steps.tag.outputs.value }}
           -Dquarkus.container-image.additional-tags=latest
-          -Dquarkus.jib.base-native-image=quay.io/quarkus/quarkus-micro-image:2.0
