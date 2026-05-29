@@ -26,10 +26,13 @@ public class MovieTemplateExtensions
 		return thumb(movie.getImage());
 	}
 
-	/** Full-size poster for the detail view, or the fallback. */
+	/**
+	 * Detail-view poster. The poster renders at most 320px wide, so we serve the same low-res
+	 * 380x562 IMDb variant as the grid thumbnail instead of the multi-MB original.
+	 */
 	public static String posterFull(DetailedMovie movie)
 	{
-		return full(movie.getImage());
+		return thumb(movie.getImage());
 	}
 
 	private static String thumb(String image)
@@ -40,10 +43,5 @@ public class MovieTemplateExtensions
 		}
 		// IMDb image URLs accept inline resize/crop directives; request a 380x562 poster.
 		return image.replace("@._V1_.jpg", "@._V1_QL75_UX380_CR0,0,380,562_.jpg");
-	}
-
-	private static String full(String image)
-	{
-		return (image == null || image.isBlank()) ? DEFAULT_POSTER : image;
 	}
 }
