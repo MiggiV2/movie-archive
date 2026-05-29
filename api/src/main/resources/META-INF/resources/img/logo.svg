@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Movie Archive">
+  <defs>
+    <linearGradient id="ma-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0c97a"/>
+      <stop offset="50%" stop-color="#e3a94f"/>
+      <stop offset="100%" stop-color="#9b5e34"/>
+    </linearGradient>
+    <linearGradient id="ma-shine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.28"/>
+      <stop offset="45%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect x="3" y="3" width="58" height="58" rx="17" fill="url(#ma-grad)"/>
+  <rect x="3" y="3" width="58" height="58" rx="17" fill="url(#ma-shine)"/>
+  <g fill="#ffffff" opacity="0.9">
+    <rect x="11.5" y="13" width="5" height="6" rx="1.6"/>
+    <rect x="11.5" y="29" width="5" height="6" rx="1.6"/>
+    <rect x="11.5" y="45" width="5" height="6" rx="1.6"/>
+    <rect x="47.5" y="13" width="5" height="6" rx="1.6"/>
+    <rect x="47.5" y="29" width="5" height="6" rx="1.6"/>
+    <rect x="47.5" y="45" width="5" height="6" rx="1.6"/>
+  </g>
+  <path d="M26 21.5 L45 32 L26 42.5 Z" fill="#ffffff"/>
+</svg>
