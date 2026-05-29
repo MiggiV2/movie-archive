@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'api/**'
-      - '.github/workflows/native-micro.yaml'
   workflow_dispatch:
 
 permissions:
@@ -36,7 +33,6 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Build native image and push (via Quarkus + jib)
-        working-directory: api
         run: >-
           ./mvnw -B package -Pnative
           -Dquarkus.native.container-build=true
