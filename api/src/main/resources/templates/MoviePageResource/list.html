@@ -1,0 +1,65 @@
+{#include base}
+{#title}Browse — Movie Archive{/title}
+
+<div class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center justify-content-between gap-2 my-3">
+	<div class="position-relative flex-grow-1" style="max-width: 28rem;">
+		<i class="bi bi-search position-absolute" style="left: 0.8rem; top: 0.65rem; opacity: 0.6;"></i>
+		<input type="search" name="query" class="form-control ps-5" placeholder="Search movies…"
+			   hx-get="/ui/movies/search"
+			   hx-trigger="keyup changed delay:300ms, search"
+			   hx-target="#results"
+			   hx-indicator="#search-spinner"
+			   autocomplete="off">
+	</div>
+	<div class="d-flex align-items-center gap-2">
+		<span id="search-spinner" class="htmx-indicator spinner-border spinner-border-sm text-secondary"></span>
+		<div class="btn-group" role="group" aria-label="Sort">
+			<a class="btn btn-sm {#if sort == 'name'}btn-primary{#else}btn-outline-primary{/if}"
+			   href="/ui/movies?sort=name&desc={desc}">Name</a>
+			<a class="btn btn-sm {#if sort == 'year'}btn-primary{#else}btn-outline-primary{/if}"
+			   href="/ui/movies?sort=year&desc={desc}">Year</a>
+		</div>
+		<a class="btn btn-sm btn-outline-primary" href="/ui/movies?sort={sort}&desc={toggleDesc}"
+		   title="Toggle direction">
+			<i class="bi {#if desc}bi-sort-down{#else}bi-sort-up{/if}"></i>
+		</a>
+	</div>
+</div>
+
+<div id="results">
+	{#fragment id=cards}
+	{#if movies.isEmpty}
+		<p class="text-center text-secondary-emphasis my-5">No movies found.</p>
+	{#else}
+		<div class="movie-grid">
+			{#for movie in movies}
+			<article class="movie-card modern-shadow"
+					 hx-get="/ui/movies/{movie.id}"
+					 hx-target="#modal-root"
+					 hx-swap="innerHTML">
+				<img class="poster" src="{movie.posterThumb}" alt="{movie.title}" loading="lazy">
+				<div class="meta">
+					<p class="title">{movie.title}</p>
+					<span class="year">{movie.year}</span>
+				</div>
+			</article>
+			{/for}
+		</div>
+	{/if}
+	{/fragment}
+
+	{#if !movies.isEmpty}
+	<nav class="d-flex justify-content-between align-items-center my-4">
+		<a class="btn btn-outline-primary {#if page <= 0}disabled{/if}"
+		   href="/ui/movies?page={prevPage}&sort={sort}&desc={desc}">
+			<i class="bi bi-chevron-left"></i> Prev
+		</a>
+		<span class="text-secondary-emphasis">Page {displayPage}</span>
+		<a class="btn btn-outline-primary {#if !hasNext}disabled{/if}"
+		   href="/ui/movies?page={nextPage}&sort={sort}&desc={desc}">
+			Next <i class="bi bi-chevron-right"></i>
+		</a>
+	</nav>
+	{/if}
+</div>
+{/include}

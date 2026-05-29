@@ -14,7 +14,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
-@Path("service")
+@Path("api/v2/service")
 public class ServiceResource
 {
 	@Inject
