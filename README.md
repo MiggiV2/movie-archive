@@ -7,6 +7,7 @@ Movie Archive is a full-stack web app to manage a personal Blu-ray collection. I
 ## Features
 - Add, update, and search movies with metadata, ratings, and tags
 - Tag-based browsing and detailed movie view
+- Server-side UI at `/ui` (Qute templates + htmx, dark theme, served by the API)
 - CSV export of the collection
 - Admin audit log for changes
 - OIDC authentication (Keycloak-compatible)
@@ -14,12 +15,14 @@ Movie Archive is a full-stack web app to manage a personal Blu-ray collection. I
 
 ## Tech stack
 - Backend: Quarkus 3 (Java 21), REST, Flyway, PostgreSQL
-- Frontend: Vue 3, Vue Router, Bootstrap
+- Frontend (server-side): Qute templates, htmx, Bootstrap
+- Frontend (SPA): Vue 3, Vue Router, Bootstrap
 - Auth: OIDC (Keycloak)
-- Containers: Docker (Quarkus Dockerfiles, Nginx for UI)
+- Containers: Docker (Quarkus Dockerfiles, Nginx for SPA)
 
 ## Repository layout
-- `api/` - Quarkus REST API (root path `/api/v2`)
+- `api/` - Quarkus REST API (root path `/api/v2`) and server-side UI (`/ui`)
+- `api/src/main/resources/templates/` - Qute HTML templates for the server-side UI
 - `gui/` - Vue single-page app
 
 ## Development setup
@@ -67,6 +70,10 @@ Then set OIDC config (for example via env vars) to your realm issuer URL and cli
 `QUARKUS_OIDC_AUTH_SERVER_URL`, `QUARKUS_OIDC_CLIENT_ID`, `QUARKUS_OIDC_CREDENTIALS_SECRET`.
 For production, the app reads `CLIENT_ID` and `CLIENT_SECRET`
 (see `api/src/main/resources/application.properties`).
+
+In production the IdP enforces PKCE and the app runs behind a TLS-terminating
+reverse proxy. The `%prod` profile enables PKCE and proxy-forwarding headers
+automatically — no extra configuration is needed beyond `CLIENT_ID`/`CLIENT_SECRET`.
 
 ## Containers (production)
 
