@@ -8,7 +8,7 @@ import de.mymiggi.movie.api.entity.db.MovieEntity;
 import de.mymiggi.movie.api.entity.db.MovieMetaData;
 import de.mymiggi.movie.api.entity.metadata.Title;
 import de.mymiggi.movie.api.service.MetaDataService;
-import io.quarkus.oidc.UserInfo;
+import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
@@ -22,7 +22,7 @@ public class AddMovieAction extends AbstractAuditLogAction
 {
 	private static final Logger log = LoggerFactory.getLogger(AddMovieAction.class);
 	@Inject
-	UserInfo userInfo;
+	SecurityIdentity identity;
 
 	@Inject
 	MetaDataService metaDataService;
@@ -49,7 +49,7 @@ public class AddMovieAction extends AbstractAuditLogAction
 			movieMetaData.persist();
 			detailedMovie = new DetailedMovie(movieEntity, movieMetaData);
 		}
-		new SaveAuditLogAction().run(userInfo, this, String.format("Added movie '%s'", movieEntity.name), movieEntity);
+		new SaveAuditLogAction().run(identity.getPrincipal().getName(), this, String.format("Added movie '%s'", movieEntity.name), movieEntity);
 		return detailedMovie;
 	}
 

@@ -14,7 +14,7 @@ import java.util.List;
 @ApplicationScoped
 public class GetMoviesAction
 {
-	static MoviePreview enrichMovie(MovieEntity movieEntity)
+	public static MoviePreview enrichMovie(MovieEntity movieEntity)
 	{
 		PanacheQuery<MovieMetaData> movieMetaData = MovieMetaData.find("movieEntity", movieEntity);
 		return new MoviePreview(movieEntity, movieMetaData.firstResultOptional());

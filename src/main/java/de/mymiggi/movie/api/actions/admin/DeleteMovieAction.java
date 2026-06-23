@@ -6,7 +6,7 @@ import de.mymiggi.movie.api.entity.AuditLogType;
 import de.mymiggi.movie.api.entity.db.MovieEntity;
 import de.mymiggi.movie.api.entity.db.MovieMetaData;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
-import io.quarkus.oidc.UserInfo;
+import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
@@ -18,7 +18,7 @@ public class DeleteMovieAction extends AbstractAuditLogAction
 {
 
 	@Inject
-	UserInfo userInfo;
+	SecurityIdentity identity;
 
 	public void run(Long id)
 	{
@@ -34,7 +34,7 @@ public class DeleteMovieAction extends AbstractAuditLogAction
 		movieEntity.ifPresent(movie -> {
 			handleMetadata(movie);
 			movie.delete();
-			new SaveAuditLogAction().run(userInfo, this, String.format("Removed movie '%s'", movie.name), movie);
+			new SaveAuditLogAction().run(identity.getPrincipal().getName(), this, String.format("Removed movie '%s'", movie.name), movie);
 		});
 	}
 

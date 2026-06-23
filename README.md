@@ -107,6 +107,49 @@ Each token captures the creating user's role (`USER` or `ADMIN`) at creation tim
 - Token create and revoke events are recorded in the audit log.
 - Token authentication coexists with the existing OIDC browser flow; both can be active simultaneously.
 
+## MCP Server
+
+The Movie Archive exposes its operations as [Model Context Protocol](https://modelcontextprotocol.io/) tools so AI assistants (Claude, etc.) can search, browse, and — with an admin token — modify the archive. The MCP server runs alongside the REST API and UI on the same port, served over **Streamable HTTP at `/mcp`**.
+
+### Connecting a client
+
+Point any MCP-capable client at `https://<host>/mcp` (Streamable HTTP transport) and authenticate with an **API token** (see [API Tokens](#api-tokens)) via `Authorization: Bearer mvk_<secret>`. The session acts as the token's owner with the token's snapshotted role.
+
+Example Claude Desktop config (`claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "movie-archive": {
+      "type": "http",
+      "url": "https://<host>/mcp",
+      "headers": {
+        "Authorization": "Bearer mvk_<secret>"
+      }
+    }
+  }
+}
+```
+
+In development (`%dev` profile) the `/mcp` endpoint permits unauthenticated access so you can test without a token.
+
+### Available tools
+
+| Tool | Requires ADMIN token | Description |
+|------|:--------------------:|-------------|
+| `search_movies` | No | Free-text search across movie titles — returns id, title, year. Useful for recommendations or counting matches. |
+| `list_genres` | No | List all distinct genres in the archive (the IMDb genres shown in the UI), e.g. Thriller, Drama. Use for genre/mood recommendations. |
+| `find_movies_by_genre` | No | Find movies of a given genre name, case-insensitive (e.g. "thriller"). Returns id, title, year. |
+| `get_movie` | No | Full detail for a single movie by id; returns a not-found message for unknown ids. |
+| `create_movie` | Yes | Add a movie — metadata auto-enriched from IMDb; audit-logged. |
+| `update_movie` | Yes | Update an existing movie by id; audit-logged. |
+
+### Authorization behavior
+
+Read tools accept any valid token. Write tools (`create_movie`, `update_movie`) require a token with the `ADMIN` role — create one in the token UI with role `ADMIN`.
+
+When authentication or authorization fails the server returns an **MCP error with code `-32001`** (not an HTTP status). Missing, invalid, or revoked tokens are rejected at connection time.
+
 ## Screenshots
 
 Browse:

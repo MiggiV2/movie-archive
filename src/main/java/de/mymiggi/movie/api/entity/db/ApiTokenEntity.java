@@ -1,5 +1,6 @@
 package de.mymiggi.movie.api.entity.db;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.mymiggi.movie.api.entity.TokenRole;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Column;
@@ -19,6 +20,8 @@ public class ApiTokenEntity extends PanacheEntity
 {
 	public String name;
 
+	// Sensitive: the secret's hash must never be serialized into any response.
+	@JsonIgnore
 	@Column(unique = true)
 	public String tokenHash;
 

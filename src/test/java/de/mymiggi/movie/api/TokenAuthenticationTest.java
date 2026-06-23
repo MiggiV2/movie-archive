@@ -3,6 +3,7 @@ package de.mymiggi.movie.api;
 import de.mymiggi.movie.api.auth.TokenSecrets;
 import de.mymiggi.movie.api.entity.TokenRole;
 import de.mymiggi.movie.api.entity.db.ApiTokenEntity;
+import de.mymiggi.movie.api.entity.db.MovieEntity;
 import io.quarkus.narayana.jta.QuarkusTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.AfterEach;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Exercises the real {@link de.mymiggi.movie.api.auth.TokenAuthenticationMechanism} end to
@@ -73,6 +75,26 @@ class TokenAuthenticationTest
 			.post("/api/v2/movie/{movie-id}/tags")
 			.then()
 			.statusCode(204);
+	}
+
+	@Test
+	void adminTokenCanDeleteMovie()
+	{
+		// Exercises DeleteMovieAction under token auth (no OIDC UserInfo context); the audit
+		// user must come from SecurityIdentity, not an injected UserInfo.
+		QuarkusTransaction.begin();
+		MovieEntity movie = new MovieEntity(2010, "Token Delete Movie", "BlockX", "https://example.test", "BD");
+		movie.persist();
+		long id = movie.id;
+		QuarkusTransaction.commit();
+
+		given().header("Authorization", "Bearer " + adminSecret)
+			.queryParam("id", id)
+			.delete("/api/v2/movie")
+			.then()
+			.statusCode(204);
+
+		assertEquals(0, MovieEntity.count("name", "Token Delete Movie"));
 	}
 
 	@Test
