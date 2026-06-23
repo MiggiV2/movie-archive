@@ -31,7 +31,7 @@ public class MetaDataServiceTest
 
 		assertTrue(metaData.isPresent());
 		MovieMetaData movieMetaData = metaData.get();
-		assertEquals("tt2543164", movieMetaData.getImdbId());
+		assertEquals(MockMetaDataClient.MOCK_IMDB_ID, movieMetaData.getImdbId());
 		assertEquals(36L, movieMetaData.getMovieEntity().id);
 	}
 
