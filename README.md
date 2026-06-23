@@ -12,6 +12,7 @@ Movie Archive is a web app to manage a personal Blu-ray collection. It stores me
 - Admin audit log for changes
 - OIDC authentication (Keycloak-compatible)
 - REST API with OpenAPI/Swagger
+- Personal API tokens for non-interactive clients (scripts, automation, MCP)
 
 ## Tech stack
 - Quarkus 3 (Java 21), REST, Flyway, PostgreSQL
@@ -59,6 +60,52 @@ automatically — no extra configuration is needed beyond `CLIENT_ID`/`CLIENT_SE
 ./mvnw package -Dquarkus.container-image.push=false
 docker build -f src/main/docker/Dockerfile.jvm -t movie-api .
 ```
+
+## API Tokens
+
+Any logged-in user can create long-lived personal tokens for non-interactive clients (scripts, automation, the MCP server) instead of going through the OIDC browser flow.
+
+### Managing tokens
+
+**Web UI**: navigate to `/ui/tokens` ("Tokens" link in the navbar) to create, list, and revoke your own tokens. The plaintext secret is shown exactly once immediately after creation and cannot be retrieved again.
+
+**REST API** (`/api/v2/token`, requires authentication):
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/api/v2/token` | Create a token — returns `{id, name, role, createdAt, secret}`. The `secret` field is only present in this response. |
+| `GET` | `/api/v2/token` | List your own tokens — returns metadata only (`id, name, role, createdAt, lastUsedAt`), never the secret. |
+| `DELETE` | `/api/v2/token/{id}` | Revoke one of your own tokens (404 if not yours). |
+
+Create a token:
+
+```bash
+curl -s -X POST https://<host>/api/v2/token \
+  -H "Content-Type: application/json" \
+  -d '{"name": "my-script"}' \
+  # authenticate with your session or OIDC token here
+```
+
+### Using a token
+
+Send the secret in the `Authorization` header on any `/api/v2/*` request:
+
+```bash
+curl -H "Authorization: Bearer mvk_xxx" "https://<host>/api/v2/movie?page=0"
+```
+
+The request is authenticated as the token's owner.
+
+### Role snapshot
+
+Each token captures the creating user's role (`USER` or `ADMIN`) at creation time. An ADMIN token can perform admin-only operations (POST/PUT/DELETE on protected endpoints); a USER token gets a 403 on those. The snapshot is fixed — if the user's role changes later, existing tokens are unaffected. Revoke and recreate to pick up a new role.
+
+### Security notes
+
+- Only a SHA-256 hash of the secret is stored; the plaintext is never persisted or logged.
+- Secrets are 256-bit random values with an `mvk_` prefix.
+- Token create and revoke events are recorded in the audit log.
+- Token authentication coexists with the existing OIDC browser flow; both can be active simultaneously.
 
 ## Screenshots
 

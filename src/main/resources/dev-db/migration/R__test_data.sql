@@ -6114,3 +6114,17 @@ SELECT pg_catalog.setval('public.tagentity_seq', 1901, true);
 --
 
 SELECT pg_catalog.setval('public.tagmovierelation_seq', 11751, true);
+
+--
+-- API tokens for manual dev testing (secrets below; only their hashes are stored).
+--   ADMIN secret: mvk_devadmintoken000000000000000000000000000
+--   USER  secret: mvk_devusertoken00000000000000000000000000000
+--
+INSERT INTO public.apitokenentity (id, name, tokenhash, principal, role, createdat, lastusedat)
+VALUES (1, 'dev-admin', '8a30cc02871af99e8e55e818fb5d312164e779f1f1af601628a3a54857a5f9e3', 'Dev', 'ADMIN',
+        '2022-04-20 18:45:50.387297', NULL);
+INSERT INTO public.apitokenentity (id, name, tokenhash, principal, role, createdat, lastusedat)
+VALUES (2, 'dev-user', '2ac914c4c48e6a7fa5e23d888236575a3bb7d10cf3acc0747b1c0cb03ffe0233', 'Dev', 'USER',
+        '2022-04-20 18:45:50.387297', NULL);
+
+SELECT pg_catalog.setval('public.apitokenentity_seq', 51, true);

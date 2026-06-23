@@ -25,5 +25,21 @@ public enum AuditLogType
 		{
 			return "add";
 		}
+	},
+	TOKEN_CREATE
+	{
+		@Override
+		public String toString()
+		{
+			return "token-create";
+		}
+	},
+	TOKEN_REVOKE
+	{
+		@Override
+		public String toString()
+		{
+			return "token-revoke";
+		}
 	}
 }
