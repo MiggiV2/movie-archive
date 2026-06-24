@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.mymiggi</groupId>
     <artifactId>movie-archive</artifactId>
-    <version>3.0.1</version>
+    <version>3.0.2-SNAPSHOT</version>
     <properties>
         <compiler-plugin.version>3.12.1</compiler-plugin.version>
         <maven.compiler.parameters>true</maven.compiler.parameters>
