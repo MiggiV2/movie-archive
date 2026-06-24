@@ -51,6 +51,13 @@ public class TokenAuthenticationMechanism implements HttpAuthenticationMechanism
 	@Override
 	public Uni<ChallengeData> getChallenge(RoutingContext context)
 	{
+		String secret = extractSecret(context);
+		if (secret == null)
+		{
+			// Not our request: defer so the next mechanism (OIDC) can issue its redirect
+			// challenge instead of us short-circuiting the interactive login with a 401.
+			return Uni.createFrom().nullItem();
+		}
 		return Uni.createFrom().item(new ChallengeData(401, null, null));
 	}
 
