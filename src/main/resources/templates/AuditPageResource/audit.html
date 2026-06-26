@@ -1,42 +1,43 @@
 {#include base}
 {#title}Audit log — Movie Archive{/title}
 
-<h1 class="my-3"><i class="bi bi-clock-history"></i> Audit log</h1>
-
-{#if entries.isEmpty}
-	<p class="text-center text-secondary-emphasis my-5">No audit entries.</p>
-{#else}
-<div class="table-responsive">
-	<table class="table align-middle">
-		<thead>
-			<tr>
-				<th scope="col">Date</th>
-				<th scope="col">Type</th>
-				<th scope="col">User</th>
-				<th scope="col">Message</th>
-			</tr>
-		</thead>
-		<tbody>
-			{#for entry in entries}
-			<tr>
-				<td class="text-nowrap">{entry.date}</td>
-				<td><span class="badge text-bg-secondary">{entry.auditLogType}</span></td>
-				<td>{entry.userName}</td>
-				<td>{entry.message}</td>
-			</tr>
-			{/for}
-		</tbody>
-	</table>
+<div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin:.6rem 0 1.4rem">
+	<h1 style="font-size:2rem">Audit log</h1>
+	<span class="muted">Changes made by users</span>
 </div>
 
-<nav class="d-flex justify-content-between align-items-center my-4">
-	<a class="btn btn-outline-primary {#if !hasPrev}disabled{/if}" href="/ui/audit?page={prevPage}">
-		<i class="bi bi-chevron-left"></i> Prev
-	</a>
-	<span class="text-secondary-emphasis">Page {displayPage}</span>
-	<a class="btn btn-outline-primary {#if !hasNext}disabled{/if}" href="/ui/audit?page={nextPage}">
-		Next <i class="bi bi-chevron-right"></i>
-	</a>
+{#if entries.isEmpty}
+	<p class="muted" style="text-align:center;margin:3rem 0">No audit entries.</p>
+{#else}
+<div class="card table-card">
+	<div class="table-scroll">
+		<table class="data">
+			<thead>
+				<tr>
+					<th>When</th>
+					<th>Action</th>
+					<th>User</th>
+					<th>Detail</th>
+				</tr>
+			</thead>
+			<tbody>
+				{#for entry in entries}
+				<tr>
+					<td class="tnum muted" style="white-space:nowrap">{entry.date}</td>
+					<td><span class="badge {entry.auditLogType}">{entry.auditLogType}</span></td>
+					<td>{entry.userName}</td>
+					<td>{entry.message}</td>
+				</tr>
+				{/for}
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<nav style="display:flex;justify-content:space-between;align-items:center;margin:2rem 0">
+	<a class="btn btn-ghost {#if !hasPrev}disabled{/if}" href="/ui/audit?page={prevPage}">‹ Prev</a>
+	<span class="muted tnum">Page {displayPage}</span>
+	<a class="btn btn-ghost {#if !hasNext}disabled{/if}" href="/ui/audit?page={nextPage}">Next ›</a>
 </nav>
 {/if}
 {/include}

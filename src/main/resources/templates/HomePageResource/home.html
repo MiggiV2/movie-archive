@@ -1,14 +1,17 @@
 {#include base}
 {#title}Movie Archive{/title}
 
-<div class="box my-4">
-	<img src="/img/logo.svg" alt="" style="height: 84px;" class="mb-3">
-	<h1 class="mb-2 fw-bold"><span class="text-gradient">Movie Archive</span></h1>
-	<p class="mb-1 fs-5">A collection curated by <strong>{owner}</strong>.</p>
-	<p class="display-5 fw-bold rating-badge mb-3">{movieCount}</p>
-	<p class="text-secondary-emphasis mb-4">movies in the archive</p>
-	<a class="btn btn-primary btn-lg" href="/ui/movies">
-		<i class="bi bi-collection"></i> Browse the collection
-	</a>
-</div>
+<section class="card hero" style="max-width:60rem;margin-left:auto;margin-right:auto">
+	<div class="glow"></div>
+	<div class="inner">
+		<p class="eyebrow" style="margin:0 0 1rem">A personal Blu-ray collection</p>
+		<h1 style="font-size:clamp(2.4rem,6vw,3.6rem);margin:0 0 .4rem"><span class="text-grad">Movie Archive</span></h1>
+		<p class="muted" style="font-size:1.15rem;margin:0 0 1.6rem">Curated with love by <strong style="color:var(--text)">{owner}</strong></p>
+		<div class="count">{movieCount}</div>
+		<p class="muted" style="margin:.2rem 0 2rem;letter-spacing:.04em">movies on the shelf</p>
+		<a class="btn btn-primary btn-lg" href="/ui/movies">
+			<i class="bi bi-collection"></i> Browse the collection
+		</a>
+	</div>
+</section>
 {/include}

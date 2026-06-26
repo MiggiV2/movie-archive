@@ -7,7 +7,7 @@ Movie Archive is a web app to manage a personal Blu-ray collection. It stores me
 ## Features
 - Add, update, and search movies with metadata, ratings, and tags
 - Tag-based browsing and detailed movie view
-- Server-side UI at `/ui` (Qute templates + htmx, dark theme)
+- Server-side UI at `/ui` (Qute templates + htmx, "Collector's Cinema" theme with light/dark toggle)
 - CSV export of the collection
 - Admin audit log for changes
 - OIDC authentication (Keycloak-compatible)
@@ -16,7 +16,7 @@ Movie Archive is a web app to manage a personal Blu-ray collection. It stores me
 
 ## Tech stack
 - Quarkus 3 (Java 21), REST, Flyway, PostgreSQL
-- Qute templates + htmx + Bootstrap for the UI
+- Qute templates + htmx for the UI (self-contained CSS design system, no CSS framework)
 - OIDC (Keycloak)
 - Docker (Quarkus Dockerfiles)
 

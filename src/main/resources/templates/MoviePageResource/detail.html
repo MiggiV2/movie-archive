@@ -1,74 +1,66 @@
-<div class="modal-overlay position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center p-3"
-	 style="z-index: 1050;"
-	 onclick="document.getElementById('modal-root').innerHTML=''">
-	<div class="card detail-card border-0"
-		 style="max-width: 760px; width: 100%; max-height: 92vh; overflow-y: auto;"
-		 onclick="event.stopPropagation()">
+<div class="modal-overlay" onclick="document.getElementById('modal-root').innerHTML=''">
+	<div class="card detail-card" onclick="event.stopPropagation()">
 
 		<div class="detail-hero" style="--hero-bg: url('{movie.posterFull}');">
-			<div class="d-flex justify-content-between align-items-start">
+			<div class="blur"></div>
+			<div class="top">
 				<div>
-					<h2 class="detail-title mb-1">{movie.title}</h2>
-					<p class="mb-0"><span class="text-secondary-emphasis fs-5">{movie.year}</span>
+					<h1 style="font-size:2.2rem;margin:0 0 .3rem">{movie.title}</h1>
+					<div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+						<span class="muted tnum" style="font-size:1.2rem">{movie.year}</span>
 						{#if movie.externalId}
-						<span class="ms-2"><i class="bi bi-star-fill rating-badge"></i>
-							<span class="rating-badge">{movie.rating}</span></span>
+						<span class="rating" style="font-size:1.2rem"><span class="star">★</span>{movie.rating}<span class="muted" style="font-weight:500;font-size:.9rem">/ 10</span></span>
+						{#if movie.runtimeMinutes}<span class="muted">{movie.runtimeMinutes} min</span>{/if}
 						{/if}
-					</p>
+					</div>
 				</div>
-				<button type="button" class="btn-close" aria-label="Close"
-						onclick="document.getElementById('modal-root').innerHTML=''"></button>
+				<button type="button" class="btn btn-ghost icon-btn" aria-label="Close"
+						onclick="document.getElementById('modal-root').innerHTML=''">
+					<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+				</button>
 			</div>
 		</div>
 
-		<div class="card-body p-4 pt-3">
-			<div class="row g-4">
-				<div class="col-12 col-sm-5 text-center">
-					<img class="detail-poster" src="{movie.posterFull}" alt="{movie.title}">
+		<div class="detail-body">
+			<span class="detail-poster"><img src="{movie.posterFull}" alt="{movie.title}"></span>
+
+			<div>
+				{#if movie.genres}
+				<div style="display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:1.2rem">
+					{#for genre in movie.genres}<span class="chip">{genre}</span>{/for}
 				</div>
-				<div class="col-12 col-sm-7">
-					{#if movie.genres}
-						<div class="mb-3">
-							{#for genre in movie.genres}<span class="genre-tag">{genre}</span>{/for}
-						</div>
-					{/if}
+				{/if}
 
-					<dl class="row mb-0 g-1">
-						{#if movie.type}<dt class="col-4 detail-meta-label">Type</dt><dd class="col-8 mb-1">{movie.type}</dd>{/if}
-						{#if movie.originalName}<dt class="col-4 detail-meta-label">Original</dt><dd class="col-8 mb-1">{movie.originalName}</dd>{/if}
-						{#if movie.block}<dt class="col-4 detail-meta-label">Block</dt><dd class="col-8 mb-1">{movie.block}</dd>{/if}
-						{#if movie.externalId}
-							{#if movie.runtimeMinutes}<dt class="col-4 detail-meta-label">Runtime</dt><dd class="col-8 mb-1">{movie.runtimeMinutes} min</dd>{/if}
-						{/if}
-					</dl>
+				<dl class="detail-dl">
+					{#if movie.type}<dt class="eyebrow">Type</dt><dd>{movie.type}</dd>{/if}
+					{#if movie.originalName}<dt class="eyebrow">Original</dt><dd>{movie.originalName}</dd>{/if}
+					{#if movie.block}<dt class="eyebrow">Shelf</dt><dd>{movie.block}</dd>{/if}
+				</dl>
 
-					<div class="d-flex flex-wrap gap-2 mt-3">
-						{#if movie.wikiUrl}
-							<a class="btn btn-sm btn-outline-primary" href="{movie.wikiUrl}" target="_blank" rel="noopener">
-								<i class="bi bi-wikipedia"></i> Wiki
-							</a>
-						{/if}
-						<a class="btn btn-sm btn-outline-primary"
-						   href="https://www.youtube.com/results?search_query={movie.title} trailer"
-						   target="_blank" rel="noopener">
-							<i class="bi bi-youtube"></i> Trailer
-						</a>
-					</div>
-
-					{#if isAdmin}
-					<hr class="my-3">
-					<div class="d-flex gap-2">
-						<a class="btn btn-sm btn-primary" href="/ui/admin/movies/{movie.id}/edit">
-							<i class="bi bi-pencil"></i> Edit
-						</a>
-						<button class="btn btn-sm btn-danger"
-								hx-delete="/ui/admin/movies/{movie.id}"
-								hx-confirm="Delete '{movie.title}'? This cannot be undone.">
-							<i class="bi bi-trash"></i> Delete
-						</button>
-					</div>
+				<p class="eyebrow" style="margin:0 0 .6rem">Watch &amp; read</p>
+				<div style="display:flex;gap:.7rem;flex-wrap:wrap">
+					<a class="btn btn-primary" href="https://www.youtube.com/results?search_query={movie.title} trailer" target="_blank" rel="noopener">
+						<i class="bi bi-youtube"></i> Watch trailer
+					</a>
+					{#if movie.wikiUrl}
+					<a class="btn btn-ghost" href="{movie.wikiUrl}" target="_blank" rel="noopener">
+						<i class="bi bi-wikipedia"></i> Wikipedia
+					</a>
 					{/if}
 				</div>
+
+				{#if isAdmin}
+				<hr>
+				<p class="eyebrow" style="margin:0 0 .6rem">Admin</p>
+				<div style="display:flex;gap:.7rem;flex-wrap:wrap">
+					<a class="btn btn-secondary" href="/ui/admin/movies/{movie.id}/edit"><i class="bi bi-pencil"></i> Edit</a>
+					<button class="btn btn-danger"
+							hx-delete="/ui/admin/movies/{movie.id}"
+							hx-confirm="Delete '{movie.title}'? This cannot be undone.">
+						<i class="bi bi-trash"></i> Delete
+					</button>
+				</div>
+				{/if}
 			</div>
 		</div>
 	</div>

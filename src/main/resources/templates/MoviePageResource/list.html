@@ -1,27 +1,23 @@
 {#include base}
 {#title}Browse — Movie Archive{/title}
 
-<div class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center justify-content-between gap-2 my-3">
-	<div class="position-relative flex-grow-1" style="max-width: 28rem;">
-		<i class="bi bi-search position-absolute" style="left: 0.8rem; top: 0.65rem; opacity: 0.6;"></i>
-		<input type="search" name="query" class="form-control ps-5" placeholder="Search movies…"
+<div style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;justify-content:space-between;margin:.5rem 0 1.2rem">
+	<label class="input-wrap" style="flex:1 1 22rem">
+		<span class="ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+		<input type="search" name="query" class="input" placeholder="Search by title…" autocomplete="off"
 			   hx-get="/ui/movies/search"
 			   hx-trigger="keyup changed delay:300ms, search"
 			   hx-target="#results"
-			   hx-indicator="#search-spinner"
-			   autocomplete="off">
-	</div>
-	<div class="d-flex align-items-center gap-2">
-		<span id="search-spinner" class="htmx-indicator spinner-border spinner-border-sm text-secondary"></span>
-		<div class="btn-group" role="group" aria-label="Sort">
-			<a class="btn btn-sm {#if sort == 'name'}btn-primary{#else}btn-outline-primary{/if}"
-			   href="/ui/movies?sort=name&desc={desc}">Name</a>
-			<a class="btn btn-sm {#if sort == 'year'}btn-primary{#else}btn-outline-primary{/if}"
-			   href="/ui/movies?sort=year&desc={desc}">Year</a>
+			   hx-indicator="#search-spinner">
+	</label>
+	<div style="display:flex;gap:.5rem;align-items:center">
+		<span id="search-spinner" class="htmx-indicator spinner"></span>
+		<div class="segmented">
+			<a class="btn {#if sort == 'name'}btn-primary{#else}btn-ghost{/if}" href="/ui/movies?sort=name&desc={desc}">Name</a>
+			<a class="btn {#if sort == 'year'}btn-primary{#else}btn-ghost{/if}" href="/ui/movies?sort=year&desc={desc}">Year</a>
 		</div>
-		<a class="btn btn-sm btn-outline-primary" href="/ui/movies?sort={sort}&desc={toggleDesc}"
-		   title="Toggle direction">
-			<i class="bi {#if desc}bi-sort-down{#else}bi-sort-up{/if}"></i>
+		<a class="btn btn-ghost btn-sm" href="/ui/movies?sort={sort}&desc={toggleDesc}" title="Toggle direction" aria-label="Toggle sort direction">
+			<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">{#if desc}<path d="m6 9 6 6 6-6"/>{#else}<path d="m18 15-6-6-6 6"/>{/if}</svg>
 		</a>
 	</div>
 </div>
@@ -29,11 +25,11 @@
 <div id="results">
 	{#fragment id=cards}
 	{#if movies.isEmpty}
-		<p class="text-center text-secondary-emphasis my-5">No movies found.</p>
+		<p class="muted" style="text-align:center;margin:3rem 0">No movies found.</p>
 	{#else}
 		<div class="movie-grid">
 			{#for movie in movies}
-			<article class="movie-card modern-shadow"
+			<article class="movie-card"
 					 hx-get="/ui/movies/{movie.id}"
 					 hx-target="#modal-root"
 					 hx-swap="innerHTML">
@@ -49,16 +45,10 @@
 	{/fragment}
 
 	{#if !movies.isEmpty}
-	<nav class="d-flex justify-content-between align-items-center my-4">
-		<a class="btn btn-outline-primary {#if page <= 0}disabled{/if}"
-		   href="/ui/movies?page={prevPage}&sort={sort}&desc={desc}">
-			<i class="bi bi-chevron-left"></i> Prev
-		</a>
-		<span class="text-secondary-emphasis">Page {displayPage}</span>
-		<a class="btn btn-outline-primary {#if !hasNext}disabled{/if}"
-		   href="/ui/movies?page={nextPage}&sort={sort}&desc={desc}">
-			Next <i class="bi bi-chevron-right"></i>
-		</a>
+	<nav style="display:flex;justify-content:space-between;align-items:center;margin:2rem 0">
+		<a class="btn btn-ghost {#if page <= 0}disabled{/if}" href="/ui/movies?page={prevPage}&sort={sort}&desc={desc}">‹ Prev</a>
+		<span class="muted tnum">Page {displayPage}</span>
+		<a class="btn btn-ghost {#if !hasNext}disabled{/if}" href="/ui/movies?page={nextPage}&sort={sort}&desc={desc}">Next ›</a>
 	</nav>
 	{/if}
 </div>

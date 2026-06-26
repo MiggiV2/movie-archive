@@ -1,54 +1,55 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en" data-theme="light">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-	<meta name="theme-color" content="#15110c">
+	<meta name="theme-color" content="#faf6ee">
 	<title>{#insert title}Movie Archive{/}</title>
 	<link rel="icon" type="image/svg+xml" href="/img/logo.svg">
-	<link rel="stylesheet" href="/css/bootstrap.min.css">
 	<link rel="stylesheet" href="/css/bootstrap-icons.css">
 	<link rel="stylesheet" href="/css/app.css">
+	<script>
+		// Apply saved theme before paint to avoid a flash.
+		(function(){ try { var t = localStorage.getItem('ma-theme'); if (t) document.documentElement.setAttribute('data-theme', t); } catch (e) {} })();
+	</script>
 	<script src="/js/htmx.min.js"></script>
 </head>
 <body>
-<header class="app-header">
-	<nav class="navbar navbar-expand-md py-2">
-		<div class="container-fluid" style="max-width: 70rem;">
-			<a class="navbar-brand d-flex align-items-center" href="/ui">
-				<img src="/img/logo.svg" alt="" class="logo">
-				<span class="fw-semibold">Movie Archive</span>
-			</a>
-			<button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
-					data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Menu">
-				<i class="bi bi-list fs-2" style="color: var(--background-color);"></i>
-			</button>
-			<div class="collapse navbar-collapse" id="mainNav">
-				<ul class="navbar-nav ms-auto align-items-md-center gap-md-2">
-					<li class="nav-item">
-						<a class="nav-link" href="/ui/movies"><i class="bi bi-collection"></i> Browse</a>
-					</li>
-					{#if isAdmin}
-					<li class="nav-item">
-						<a class="nav-link" href="/ui/admin/movies/new"><i class="bi bi-plus-circle"></i> Add</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="/ui/audit"><i class="bi bi-clock-history"></i> Audit</a>
-					</li>
-					{/if}
-					<li class="nav-item">
-						<a class="nav-link" href="/ui/tokens"><i class="bi bi-key"></i> Tokens</a>
-					</li>
-					<li class="nav-item">
-						<span class="nav-link"><i class="bi bi-person-circle"></i> {username}</span>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link logout" href="/ui/logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
-					</li>
-				</ul>
+<header class="hdr">
+	<div class="row">
+		<a class="brand" href="/ui">
+			<span class="mark">
+				<svg viewBox="0 0 48 48" width="34" height="34" fill="none" stroke-width="2.4"><circle cx="24" cy="24" r="21"/></svg>
+				<span class="m">M</span>
+			</span>
+			Movie Archive
+		</a>
+		<nav class="nav">
+			<a href="/ui/movies"><i class="bi bi-collection"></i> Browse</a>
+			{#if isAdmin}
+			<a href="/ui/admin/movies/new"><i class="bi bi-plus-circle"></i> Add</a>
+			{/if}
+		</nav>
+		<details class="usermenu">
+			<summary>
+				<span class="av">{username.charAt(0)}</span>{username}
+				<svg class="chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+			</summary>
+			<div class="menu">
+				{#if isAdmin}
+				<a href="/ui/audit"><i class="bi bi-clock-history"></i> Audit log</a>
+				{/if}
+				<a href="/ui/tokens"><i class="bi bi-key"></i> API tokens</a>
+				<div class="sep"></div>
+				<button class="theme-item" type="button" id="themeToggle">
+					<i class="bi bi-moon-stars moon"></i><i class="bi bi-sun sun"></i>
+					<span class="lbl-dark">Dark Mode</span><span class="lbl-light">Light Mode</span>
+				</button>
+				<div class="sep"></div>
+				<a class="danger" href="/ui/logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
 			</div>
-		</div>
-	</nav>
+		</details>
+	</div>
 </header>
 
 <main>
@@ -62,6 +63,22 @@
 	Movie Archive &middot; built with Quarkus Qute
 </footer>
 
-<script src="/js/bootstrap.bundle.min.js"></script>
+<script>
+	(function () {
+		var root = document.documentElement;
+		var btn = document.getElementById('themeToggle');
+		if (btn) {
+			btn.addEventListener('click', function () {
+				var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+				root.setAttribute('data-theme', next);
+				try { localStorage.setItem('ma-theme', next); } catch (e) {}
+			});
+		}
+		// Highlight the active top-level nav item.
+		document.querySelectorAll('.nav a').forEach(function (a) {
+			if (a.getAttribute('href') === location.pathname) a.classList.add('active');
+		});
+	})();
+</script>
 </body>
 </html>

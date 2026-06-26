@@ -1,44 +1,58 @@
 {#include base}
 {#title}{#if isNew}Add movie{#else}Edit movie{/if} — Movie Archive{/title}
 
-<div class="box my-4" style="text-align: left; background: var(--background-color); border: 1px solid var(--bs-border-color);">
-	<h1 class="mb-4 text-center">{#if isNew}<i class="bi bi-plus-circle"></i> Add movie{#else}<i class="bi bi-pencil"></i> Edit movie{/if}</h1>
+<nav style="margin:.4rem 0 1.1rem;font-size:.92rem"><a class="muted" href="/ui/movies">‹ Back to Browse</a></nav>
 
+<div style="display:flex;align-items:flex-end;gap:.9rem;flex-wrap:wrap;margin-bottom:1.4rem">
+	<div>
+		<p class="eyebrow" style="margin:0 0 .35rem">{#if isNew}New entry{#else}Edit entry{/if}</p>
+		<h1 style="font-size:2.1rem">{#if isNew}Add a Movie{#else}Edit Movie{/if}</h1>
+	</div>
+	<span class="chip" style="margin-bottom:.35rem">Admin only</span>
+</div>
+
+<div class="card" style="padding:1.7rem 1.7rem 1.9rem;max-width:60rem">
 	<form {#if isNew}hx-post="/ui/admin/movies"{#else}hx-put="/ui/admin/movies/{movie.id}"{/if}>
-		<div class="row g-3">
-			<div class="col-12 col-md-8">
-				<label class="form-label">Title *</label>
-				<input class="form-control" name="title" required value="{movie.title ?: ''}">
+		<div class="form-grid">
+			<div class="field col-8">
+				<label class="label" for="f-title">Title <span class="req">*</span></label>
+				<input class="input" id="f-title" name="title" required value="{movie.title ?: ''}" placeholder="e.g. Blade Runner 2049">
 			</div>
-			<div class="col-6 col-md-4">
-				<label class="form-label">Year *</label>
-				<input class="form-control" name="year" type="number" required {#if movie.year}value="{movie.year}"{/if}>
+			<div class="field col-4">
+				<label class="label" for="f-year">Year <span class="req">*</span></label>
+				<input class="input tnum" id="f-year" name="year" type="number" inputmode="numeric" min="1888" max="2099" required {#if movie.year}value="{movie.year}"{/if} placeholder="2017">
 			</div>
-			<div class="col-12 col-md-6">
-				<label class="form-label">Type *</label>
-				<input class="form-control" name="type" required value="{movie.type ?: ''}">
+
+			<div class="field col-6">
+				<label class="label" for="f-type">Type <span class="req">*</span></label>
+				<input class="input" id="f-type" name="type" required value="{movie.type ?: ''}" placeholder="Blu-ray · DVD · 4K UHD">
 			</div>
-			<div class="col-12 col-md-6">
-				<label class="form-label">Block</label>
-				<input class="form-control" name="block" value="{movie.block ?: ''}">
+			<div class="field col-6">
+				<label class="label" for="f-block">Shelf / Block</label>
+				<input class="input" id="f-block" name="block" value="{movie.block ?: ''}" placeholder="e.g. Block A1 · 5">
 			</div>
-			<div class="col-12">
-				<label class="form-label">Original name</label>
-				<input class="form-control" name="originalName" value="{movie.originalName ?: ''}">
+
+			<div class="field col-12">
+				<label class="label" for="f-original">Original name</label>
+				<input class="input" id="f-original" name="originalName" value="{movie.originalName ?: ''}" placeholder="Original-language title (optional)">
 			</div>
-			<div class="col-12 col-md-6">
-				<label class="form-label">External ID (IMDb)</label>
-				<input class="form-control" name="externalId" value="{movie.externalId ?: ''}"
-					   placeholder="Leave empty to auto-detect">
+
+			<div class="field col-6">
+				<label class="label" for="f-ext">External ID <span class="muted" style="font-weight:500">(IMDb)</span></label>
+				<input class="input" id="f-ext" name="externalId" value="{movie.externalId ?: ''}" placeholder="tt0000000">
+				<span class="hint">Leave empty to auto-detect from title &amp; year.</span>
 			</div>
-			<div class="col-12 col-md-6">
-				<label class="form-label">Wiki URL</label>
-				<input class="form-control" name="wikiUrl" type="url" value="{movie.wikiUrl ?: ''}">
+			<div class="field col-6">
+				<label class="label" for="f-wiki">Wikipedia URL</label>
+				<input class="input" id="f-wiki" name="wikiUrl" type="url" value="{movie.wikiUrl ?: ''}" placeholder="https://en.wikipedia.org/wiki/…">
 			</div>
 		</div>
-		<div class="d-flex gap-2 mt-4">
-			<button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Save</button>
-			<a class="btn btn-outline-primary" href="/ui/movies">Cancel</a>
+
+		<hr style="margin:1.6rem 0 1.3rem">
+		<div style="display:flex;gap:.7rem;flex-wrap:wrap;align-items:center">
+			<button type="submit" class="btn btn-primary btn-lg"><i class="bi bi-check-lg"></i> {#if isNew}Add to archive{#else}Save changes{/if}</button>
+			<a class="btn btn-ghost btn-lg" href="/ui/movies">Cancel</a>
+			<span class="hint" style="margin-left:auto"><span class="req" style="color:var(--cognac);font-weight:700">*</span> Required field</span>
 		</div>
 	</form>
 </div>
