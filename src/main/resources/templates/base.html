@@ -22,17 +22,20 @@
 				<svg viewBox="0 0 48 48" width="34" height="34" fill="none" stroke-width="2.4"><circle cx="24" cy="24" r="21"/></svg>
 				<span class="m">M</span>
 			</span>
-			Movie Archive
+			<span class="txt">Movie Archive</span>
 		</a>
 		<nav class="nav">
-			<a href="/ui/movies"><i class="bi bi-collection"></i> Browse</a>
+			<a href="/ui/movies"><i class="bi bi-collection"></i><span class="lbl">Browse</span></a>
 			{#if isAdmin}
-			<a href="/ui/admin/movies/new"><i class="bi bi-plus-circle"></i> Add</a>
+			<a href="/ui/admin/movies/new"><i class="bi bi-plus-circle"></i><span class="lbl">Add</span></a>
 			{/if}
 		</nav>
+		<button class="icon-toggle" type="button" id="themeToggle" aria-label="Toggle light / dark mode" title="Toggle light / dark mode">
+			<i class="bi bi-moon-stars moon"></i><i class="bi bi-sun sun"></i>
+		</button>
 		<details class="usermenu">
 			<summary>
-				<span class="av">{username.charAt(0)}</span>{username}
+				<span class="av">{username.charAt(0)}</span><span class="uname">{username}</span>
 				<svg class="chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
 			</summary>
 			<div class="menu">
@@ -40,11 +43,6 @@
 				<a href="/ui/audit"><i class="bi bi-clock-history"></i> Audit log</a>
 				{/if}
 				<a href="/ui/tokens"><i class="bi bi-key"></i> API tokens</a>
-				<div class="sep"></div>
-				<button class="theme-item" type="button" id="themeToggle">
-					<i class="bi bi-moon-stars moon"></i><i class="bi bi-sun sun"></i>
-					<span class="lbl-dark">Dark Mode</span><span class="lbl-light">Light Mode</span>
-				</button>
 				<div class="sep"></div>
 				<a class="danger" href="/ui/logout"><i class="bi bi-box-arrow-right"></i> Logout</a>
 			</div>
@@ -66,11 +64,15 @@
 <script>
 	(function () {
 		var root = document.documentElement;
+		var meta = document.querySelector('meta[name="theme-color"]');
+		function applyMeta(t) { if (meta) meta.setAttribute('content', t === 'dark' ? '#161009' : '#faf6ee'); }
+		applyMeta(root.getAttribute('data-theme'));
 		var btn = document.getElementById('themeToggle');
 		if (btn) {
 			btn.addEventListener('click', function () {
 				var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
 				root.setAttribute('data-theme', next);
+				applyMeta(next);
 				try { localStorage.setItem('ma-theme', next); } catch (e) {}
 			});
 		}

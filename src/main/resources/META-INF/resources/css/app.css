@@ -148,12 +148,13 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 1.5rem 0; }
 .usermenu .menu .sep { height: 1px; background: var(--border-soft); margin: .35rem .3rem; }
 .usermenu .menu a.danger, .usermenu .menu a.danger .bi { color: var(--bad); }
 
-/* ---- theme toggle (in user menu) ---- */
-.menu .theme-item { width: 100%; background: none; border: 0; text-align: left; font: inherit; cursor: pointer; }
-.theme-item .sun, .theme-item .lbl-light { display: none; }
-:root[data-theme="dark"] .theme-item .moon, :root[data-theme="dark"] .theme-item .lbl-dark { display: none; }
-:root[data-theme="dark"] .theme-item .sun { display: block; }
-:root[data-theme="dark"] .theme-item .lbl-light { display: inline; }
+/* ---- theme toggle (header icon button) ---- */
+.icon-toggle { width: 44px; height: 44px; flex: none; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); color: var(--brass-700); cursor: pointer; font-size: 1.15rem; transition: background .12s, color .12s, border-color .12s; }
+.icon-toggle:hover { background: var(--brass); color: var(--ink); border-color: transparent; }
+.icon-toggle .moon { display: block; }
+.icon-toggle .sun { display: none; }
+:root[data-theme="dark"] .icon-toggle .moon { display: none; }
+:root[data-theme="dark"] .icon-toggle .sun { display: block; }
 
 /* ---- footer ---- */
 .app-footer { flex-shrink: 0; text-align: center; padding: 1rem; font-size: .85rem; border-top: 1px solid var(--border-soft); color: var(--muted); }
@@ -270,3 +271,38 @@ table.data td { padding: .85rem 1.1rem; }
 .htmx-request.htmx-indicator { opacity: 1; }
 .spinner { width: 1.1rem; height: 1.1rem; border: 2px solid var(--border); border-top-color: var(--brass); border-radius: 50%; animation: ma-spin .6s linear infinite; display: inline-block; }
 @keyframes ma-spin { to { transform: rotate(360deg); } }
+
+/* ---- mobile ---- */
+@media (max-width: 600px) {
+    body { font-size: 16px; }
+    main { padding: 1.1rem; }
+
+    /* compact header: icons stay, text labels collapse to keep one row */
+    .hdr .row { gap: .35rem; padding: .55rem .9rem; }
+    .brand { font-size: 1.05rem; gap: .45rem; }
+    .brand .txt { display: none; }
+    .nav { gap: 0; }
+    .nav a { padding: .5rem .55rem; }
+    .nav a .lbl { display: none; }
+    .nav a.active::after { left: .55rem; right: .55rem; }
+    .usermenu { margin-left: .15rem; padding-left: .55rem; }
+    .usermenu .uname { display: none; }
+    .usermenu > summary { gap: .25rem; }
+    .icon-toggle { width: 42px; height: 42px; }
+
+    h1 { font-size: 1.6rem; }
+
+    .hero { margin: 1.4rem 0; padding: 2.1rem 1.2rem; }
+    .hero .count { font-size: 3rem; }
+
+    .movie-grid { grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); gap: .8rem; }
+
+    .form-grid { gap: 1rem; }
+    .btn-lg { min-height: 52px; font-size: 1.02rem; padding: .8rem 1.2rem; }
+
+    /* detail modal goes full-screen on phones */
+    .modal-overlay { padding: 0; }
+    .detail-card { max-height: 100vh; height: 100vh; border-radius: 0; }
+    .detail-hero { border-radius: 0; padding: 1.2rem 1.2rem .9rem; }
+    .detail-body { padding: 1.2rem; gap: 1.2rem; }
+}
