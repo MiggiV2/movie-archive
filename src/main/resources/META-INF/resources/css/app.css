@@ -249,10 +249,13 @@ table.data td { padding: .85rem 1.1rem; }
 
 /* ---- movie detail modal ---- */
 .modal-overlay { position: fixed; inset: 0; z-index: 1050; background: rgba(8,6,3,.74); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 1.2rem; animation: ma-fade .18s ease both; }
-.detail-card { max-width: 780px; width: 100%; max-height: 94vh; overflow: auto; border-radius: 24px; animation: ma-pop .2s cubic-bezier(.2,.8,.2,1) both; }
+.detail-card { max-width: 780px; width: 100%; max-height: 94vh; max-height: 94dvh; overflow: auto; border-radius: 24px; animation: ma-pop .2s cubic-bezier(.2,.8,.2,1) both; }
 .detail-hero { position: relative; padding: 1.6rem 1.6rem 1rem; overflow: hidden; border-radius: 24px 24px 0 0; }
 .detail-hero .blur { position: absolute; inset: 0; background: var(--hero-bg) center/cover no-repeat; filter: blur(26px) saturate(140%); opacity: .38; transform: scale(1.25); }
 .detail-hero .top { position: relative; display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; }
+.detail-title { font-size: clamp(1.5rem, 6.5vw, 2.2rem); margin: 0 0 .3rem; overflow-wrap: anywhere; }
+.detail-meta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; font-size: clamp(1rem, 3.6vw, 1.2rem); }
+.detail-meta .scale { font-weight: 500; font-size: .75em; }
 .detail-body { padding: 1.4rem 1.6rem 1.8rem; display: grid; grid-template-columns: 240px 1fr; gap: 1.6rem; }
 @media (max-width: 640px) { .detail-body { grid-template-columns: 1fr; } }
 .detail-poster { position: relative; aspect-ratio: 2/3; border-radius: var(--r); overflow: hidden; display: block; border: 1px solid var(--border); align-self: start; box-shadow: 0 20px 50px -18px rgba(0,0,0,.5); }
@@ -302,7 +305,8 @@ table.data td { padding: .85rem 1.1rem; }
 
     /* detail modal goes full-screen on phones */
     .modal-overlay { padding: 0; }
-    .detail-card { max-height: 100vh; height: 100vh; border-radius: 0; }
+    .detail-card { max-height: 100vh; height: 100vh; max-height: 100dvh; height: 100dvh; border-radius: 0; }
     .detail-hero { border-radius: 0; padding: 1.2rem 1.2rem .9rem; }
-    .detail-body { padding: 1.2rem; gap: 1.2rem; }
+    .detail-body { padding: 1.2rem 1.2rem calc(1.2rem + env(safe-area-inset-bottom)); gap: 1.2rem; }
+    .detail-poster { width: min(240px, 52vw); margin-inline: auto; }
 }

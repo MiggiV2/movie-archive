@@ -5,11 +5,11 @@
 			<div class="blur"></div>
 			<div class="top">
 				<div>
-					<h1 style="font-size:2.2rem;margin:0 0 .3rem">{movie.title}</h1>
-					<div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
-						<span class="muted tnum" style="font-size:1.2rem">{movie.year}</span>
+					<h1 class="detail-title">{movie.title}</h1>
+					<div class="detail-meta">
+						<span class="muted tnum">{movie.year}</span>
 						{#if movie.externalId}
-						<span class="rating" style="font-size:1.2rem"><span class="star">★</span>{movie.rating}<span class="muted" style="font-weight:500;font-size:.9rem">/ 10</span></span>
+						<span class="rating"><span class="star">★</span>{movie.rating}<span class="muted scale">/ 10</span></span>
 						{#if movie.runtimeMinutes}<span class="muted">{movie.runtimeMinutes} min</span>{/if}
 						{/if}
 					</div>
