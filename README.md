@@ -61,6 +61,11 @@ automatically — no extra configuration is needed beyond `CLIENT_ID`/`CLIENT_SE
 docker build -f src/main/docker/Dockerfile.jvm -t movie-api .
 ```
 
+### Logging
+
+Console logs are plain text by default. Set `QUARKUS_LOG_CONSOLE_JSON_ENABLED=true` on the
+deployment to emit JSON (via `quarkus-logging-json`), e.g. for collection by Loki.
+
 ## API Tokens
 
 Any logged-in user can create long-lived personal tokens for non-interactive clients (scripts, automation, the MCP server) instead of going through the OIDC browser flow.
