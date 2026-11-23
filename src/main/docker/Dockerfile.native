@@ -14,7 +14,7 @@
 # docker run -i --rm -p 8080:8080 quarkus/movie-archive
 #
 ###
-FROM registry.access.redhat.com/ubi10/ubi-minimal:10.3
+FROM registry.access.redhat.com/ubi10/ubi-minimal:10.3-1795196920
 WORKDIR /work/
 RUN chown 1001 /work \
     && chmod "g+rwX" /work \
